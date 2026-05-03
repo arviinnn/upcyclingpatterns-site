@@ -1,0 +1,86 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+site_url: "https://upcyclingpatterns.com"
+display_url: "https://upcyclingpatterns.com"
+logo_url: "/images/logo.jpeg"
+
+editor:
+  preview: false
+
+collections:
+  - name: "site_settings"
+    label: "Site Settings"
+    files:
+      - name: "general"
+        label: "General Information"
+        file: "data/site.json"
+        format: "json"
+        fields:
+          - { label: "Project Name", name: "projectName", widget: "string" }
+          - { label: "Project Email", name: "projectEmail", widget: "string" }
+          - label: "Social Media"
+            name: "social"
+            widget: "object"
+            fields:
+              - { label: "Instagram URL", name: "instagram", widget: "string" }
+              - { label: "X URL", name: "x", widget: "string" }
+              - { label: "YouTube URL", name: "youtube", widget: "string" }
+              - { label: "LinkedIn URL", name: "linkedin", widget: "string" }
+
+  - name: "news"
+    label: "News"
+    files:
+      - name: "news_items"
+        label: "News Items"
+        file: "data/news.json"
+        format: "json"
+        fields:
+          - label: "News"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Year", name: "year", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Image", name: "image", widget: "image", required: false }
+
+  - name: "gallery"
+    label: "Gallery"
+    files:
+      - name: "gallery_items"
+        label: "Gallery Items"
+        file: "data/gallery.json"
+        format: "json"
+        fields:
+          - label: "Gallery"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.caption}}"
+            fields:
+              - { label: "Caption", name: "caption", widget: "string" }
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Alt Text", name: "alt", widget: "string" }
+
+  - name: "outputs"
+    label: "Outputs / Downloads"
+    files:
+      - name: "output_items"
+        label: "Output Items"
+        file: "data/outputs.json"
+        format: "json"
+        fields:
+          - label: "Outputs"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "File", name: "file", widget: "file", required: false }
+              - { label: "Cover Image", name: "image", widget: "image", required: false }
