@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "caption": "Workshop Activities",
+      "image": "/images/gallery-1.jpg",
+      "alt": "Workshop activities"
+    },
+    {
+      "caption": "Student Products",
+      "image": "/images/gallery-2.jpg",
+      "alt": "Student products"
+    },
+    {
+      "caption": "Partner Meetings",
+      "image": "/images/gallery-3.jpg",
+      "alt": "International project meeting"
+    },
+    {
+      "caption": "Presentations & Events",
+      "image": "/images/gallery-4.jpg",
+      "alt": "Sustainability presentation"
+    },
+    {
+      "caption": "Creative Displays",
+      "image": "/images/gallery-5.jpg",
+      "alt": "Creative recycling display"
+    },
+    {
+      "caption": "Team Collaboration",
+      "image": "/images/gallery-6.jpg",
+      "alt": "Project team collaboration"
+    }
+  ]
+}
