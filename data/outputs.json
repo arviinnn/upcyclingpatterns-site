@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "title": "Project Brochure",
+      "description": "A short introduction to the aims, partners, and activities of the project.",
+      "file": "",
+      "image": ""
+    },
+    {
+      "title": "Workshop Guide",
+      "description": "A practical guide containing activity samples and implementation steps.",
+      "file": "",
+      "image": ""
+    },
+    {
+      "title": "Dissemination Report",
+      "description": "A summary of project communication, outreach, and visibility activities.",
+      "file": "",
+      "image": ""
+    }
+  ]
+}
