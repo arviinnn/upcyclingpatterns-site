@@ -1,12 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
+    <!-- ================================================================
+         Upcycling Patterns — Sitemap
+         Erasmus+ KA210-SCH Project
+         Website: https://upcyclingpatterns.com/
+         Last updated: 2026-05-09
+         ================================================================ -->
+
+    <!-- English homepage -->
     <url>
         <loc>https://upcyclingpatterns.com/</loc>
-        <lastmod>2026-05-03</lastmod>
+        <lastmod>2026-05-09</lastmod>
         <changefreq>weekly</changefreq>
-        <priority>1.0</priority>
+        <priority>1.00</priority>
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://upcyclingpatterns.com/" />
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="tr"
+                href="https://upcyclingpatterns.com/tr/" />
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="x-default"
+                href="https://upcyclingpatterns.com/" />
+
+        <image:image>
+            <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
+            <image:title>Upcycling Patterns Erasmus+ Project Visual</image:title>
+            <image:caption>Upcycling Patterns project visual showing sustainability, collaboration and creative reuse.</image:caption>
+        </image:image>
+
+        <image:image>
+            <image:loc>https://upcyclingpatterns.com/images/logo.jpeg</image:loc>
+            <image:title>Upcycling Patterns Logo</image:title>
+            <image:caption>Official logo of the Upcycling Patterns Erasmus+ KA210-SCH project.</image:caption>
+        </image:image>
+    </url>
+
+    <!-- Turkish homepage -->
+    <url>
+        <loc>https://upcyclingpatterns.com/tr/</loc>
+        <lastmod>2026-05-09</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.95</priority>
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://upcyclingpatterns.com/" />
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="tr"
+                href="https://upcyclingpatterns.com/tr/" />
+
+        <xhtml:link
+                rel="alternate"
+                hreflang="x-default"
+                href="https://upcyclingpatterns.com/" />
+
+        <image:image>
+            <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
+            <image:title>Upcycling Patterns Erasmus+ Proje Görseli</image:title>
+            <image:caption>Upcycling Patterns projesinin sürdürülebilirlik, iş birliği ve ileri dönüşüm temasını gösteren ana görseli.</image:caption>
+        </image:image>
+
+        <image:image>
+            <image:loc>https://upcyclingpatterns.com/images/logo.jpeg</image:loc>
+            <image:title>Upcycling Patterns Logosu</image:title>
+            <image:caption>Upcycling Patterns Erasmus+ KA210-SCH projesinin resmi logosu.</image:caption>
+        </image:image>
     </url>
 
 </urlset>
