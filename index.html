@@ -7,6 +7,31 @@
 
   <title id="pageTitle">Upcycling Patterns | Erasmus+ KA210-SCH</title>
 
+  <!-- NETLIFY IDENTITY TOKEN FIX -->
+  <script>
+    (function () {
+      "use strict";
+
+      var hash = window.location.hash || "";
+      var search = window.location.search || "";
+
+      var hasIdentityToken =
+        hash.indexOf("invite_token=") !== -1 ||
+        hash.indexOf("recovery_token=") !== -1 ||
+        hash.indexOf("confirmation_token=") !== -1 ||
+        hash.indexOf("email_change_token=") !== -1 ||
+        search.indexOf("invite_token=") !== -1 ||
+        search.indexOf("recovery_token=") !== -1 ||
+        search.indexOf("confirmation_token=") !== -1 ||
+        search.indexOf("email_change_token=") !== -1;
+
+      if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
+        var tokenPart = hash || search.replace("?", "#");
+        window.location.replace("/admin/" + tokenPart);
+      }
+    })();
+  </script>
+
   <meta
           id="metaDescription"
           name="description"
