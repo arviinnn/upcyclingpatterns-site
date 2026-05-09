@@ -1,0 +1,14 @@
+# =========================================================
+# Netlify Redirects — Upcycling Patterns
+# =========================================================
+
+# Turkish path should use the main index.html
+/tr      /index.html   200
+/tr/     /index.html   200
+/tr/*    /index.html   200
+
+# Admin panel
+/admin   /admin/       301
+
+# Custom 404 page
+/*       /404.html     404
