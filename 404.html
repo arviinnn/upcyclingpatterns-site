@@ -1,125 +1,817 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <title>404 | Upcycling Patterns</title>
+    <title id="pageTitle">404 — Page Not Found | Upcycling Patterns</title>
+    <meta
+            id="metaDescription"
+            name="description"
+            content="The page you are looking for could not be found. Return to the Upcycling Patterns homepage."
+    />
 
     <meta name="robots" content="noindex, follow" />
+    <meta name="googlebot" content="noindex, follow" />
+    <meta name="bingbot" content="noindex, follow" />
+
+    <meta name="theme-color" content="#2f7a43" />
+    <meta name="color-scheme" content="light" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no, email=no, address=no" />
+
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta
+            http-equiv="Permissions-Policy"
+            content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
+    />
+    <meta
+            http-equiv="Content-Security-Policy"
+            content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    />
+
+    <link rel="canonical" href="https://upcyclingpatterns.com/404.html" />
+    <link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/404.html" />
+    <link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/tr/404.html" />
+    <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/404.html" />
+
+    <link rel="icon" href="/images/favicon.png" type="image/png" sizes="32x32" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- NETLIFY IDENTITY TOKEN FIX -->
+    <script>
+        (function () {
+            "use strict";
+
+            var hash = window.location.hash || "";
+            var search = window.location.search || "";
+
+            var hasIdentityToken =
+                hash.indexOf("invite_token=") !== -1 ||
+                hash.indexOf("recovery_token=") !== -1 ||
+                hash.indexOf("confirmation_token=") !== -1 ||
+                hash.indexOf("email_change_token=") !== -1 ||
+                search.indexOf("invite_token=") !== -1 ||
+                search.indexOf("recovery_token=") !== -1 ||
+                search.indexOf("confirmation_token=") !== -1 ||
+                search.indexOf("email_change_token=") !== -1;
+
+            if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
+                var tokenPart = hash || search.replace("?", "#");
+                window.location.replace("/admin/" + tokenPart);
+            }
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap"
+    />
 
     <style>
         :root {
             --primary: #2f7a43;
             --primary-light: #57b26c;
+            --primary-dark: #215732;
             --accent: #b8ff7a;
+            --accent-bright: #95f053;
             --text-main: #0f1b14;
             --text-soft: #5a6b60;
+            --text-muted: #7a8b80;
             --bg-1: #f8fcf8;
             --bg-2: #eef6ef;
+            --bg-3: #e7f0e8;
+            --glass-border: rgba(255, 255, 255, 0.55);
+            --shadow-soft: 0 18px 48px rgba(15, 27, 20, 0.1);
+            --shadow-strong: 0 35px 90px rgba(10, 18, 14, 0.18);
+            --radius-round: 999px;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        * {
+        *,
+        *::before,
+        *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            font-family: Arial, sans-serif;
-            color: var(--text-main);
-            background:
-                    radial-gradient(circle at top left, rgba(87, 178, 108, 0.16), transparent 28%),
-                    radial-gradient(circle at top right, rgba(184, 255, 122, 0.18), transparent 26%),
-                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
 
-        .card {
-            width: min(100%, 720px);
-            padding: 42px 32px;
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background:
+                    radial-gradient(circle at top left, rgba(87, 178, 108, 0.18), transparent 28%),
+                    radial-gradient(circle at top right, rgba(184, 255, 122, 0.18), transparent 28%),
+                    radial-gradient(circle at bottom center, rgba(123, 219, 190, 0.15), transparent 35%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2), var(--bg-3));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        a,
+        button {
+            font: inherit;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+        }
+
+        .skip-link {
+            position: fixed;
+            top: -100px;
+            left: 20px;
+            z-index: 999;
+            padding: 12px 18px;
+            border-radius: 14px;
+            background: var(--primary);
+            color: #ffffff;
+            font-weight: 800;
+            box-shadow: var(--shadow-soft);
+            transition: top 0.35s var(--ease-spring);
+        }
+
+        .skip-link:focus {
+            top: 18px;
+        }
+
+        .ambient {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(70px);
+            pointer-events: none;
+            z-index: -2;
+            animation: ambientFloat 18s ease-in-out infinite;
+        }
+
+        .ambient-1 {
+            width: 320px;
+            height: 320px;
+            top: 90px;
+            left: -80px;
+            background: rgba(87, 178, 108, 0.2);
+        }
+
+        .ambient-2 {
+            width: 340px;
+            height: 340px;
+            right: -70px;
+            bottom: 80px;
+            background: rgba(184, 255, 122, 0.16);
+            animation-delay: -5s;
+            animation-duration: 24s;
+        }
+
+        .grid-layer {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            pointer-events: none;
+            background-image:
+                    linear-gradient(rgba(15, 27, 20, 0.035) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(15, 27, 20, 0.035) 1px, transparent 1px);
+            background-size: 34px 34px;
+            mask-image: radial-gradient(circle at center, black 42%, transparent 88%);
+            -webkit-mask-image: radial-gradient(circle at center, black 42%, transparent 88%);
+            animation: gridDrift 60s linear infinite;
+        }
+
+        @keyframes ambientFloat {
+            0%,
+            100% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate3d(24px, -28px, 0) scale(1.08);
+            }
+        }
+
+        @keyframes gridDrift {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 34px 34px;
+            }
+        }
+
+        .page {
+            width: min(100%, 980px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .error-card {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(30px, 6vw, 58px);
+            border-radius: clamp(28px, 5vw, 42px);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.58));
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-strong);
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
             text-align: center;
-            border-radius: 32px;
-            background: rgba(255, 255, 255, 0.76);
-            border: 1px solid rgba(255, 255, 255, 0.55);
-            box-shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
-            backdrop-filter: blur(18px);
+            animation: cardEnter 0.9s var(--ease-out) both;
+        }
+
+        .error-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background:
+                    linear-gradient(130deg, rgba(255, 255, 255, 0.36), transparent 36%, transparent 62%, rgba(255, 255, 255, 0.18)),
+                    radial-gradient(circle at top center, rgba(184, 255, 122, 0.18), transparent 45%);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-wrap {
+            width: 72px;
+            height: 72px;
+            margin: 0 auto 20px;
+            display: grid;
+            place-items: center;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 14px 32px rgba(47, 122, 67, 0.16);
+            overflow: hidden;
+        }
+
+        .logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             margin-bottom: 18px;
-            padding: 9px 15px;
-            border-radius: 999px;
+            padding: 9px 16px;
+            border-radius: var(--radius-round);
             color: var(--primary);
             background: rgba(87, 178, 108, 0.12);
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
             font-size: 0.78rem;
+            font-weight: 900;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
         }
 
-        h1 {
-            font-size: clamp(3rem, 10vw, 6rem);
-            line-height: 1;
-            margin-bottom: 12px;
-            color: var(--primary);
+        .badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--primary-light);
+            box-shadow: 0 0 14px var(--primary-light);
         }
 
-        h2 {
-            font-size: clamp(1.5rem, 4vw, 2.4rem);
+        .error-code {
+            font-family: "Space Grotesk", "Inter", sans-serif;
+            font-size: clamp(4.8rem, 17vw, 10rem);
+            line-height: 0.9;
             margin-bottom: 14px;
+            font-weight: 700;
+            letter-spacing: -0.08em;
+            background: linear-gradient(120deg, var(--primary-dark), var(--primary), var(--primary-light), var(--accent-bright));
+            background-size: 260% 260%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerText 7s ease-in-out infinite;
         }
 
-        p {
+        .title {
+            font-family: "Space Grotesk", "Inter", sans-serif;
+            font-size: clamp(1.6rem, 4vw, 2.7rem);
+            line-height: 1.12;
+            margin-bottom: 14px;
+            font-weight: 700;
+            letter-spacing: -0.035em;
+        }
+
+        .description {
+            max-width: 680px;
+            margin: 0 auto 28px;
             color: var(--text-soft);
-            font-size: 1rem;
-            line-height: 1.7;
+            font-size: clamp(0.98rem, 2vw, 1.08rem);
+            line-height: 1.75;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
             margin-bottom: 26px;
         }
 
-        a {
-            min-height: 54px;
-            padding: 0 24px;
+        .btn {
+            min-height: 56px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            border-radius: 999px;
-            color: white;
-            background: linear-gradient(135deg, var(--primary), var(--primary-light));
-            text-decoration: none;
-            font-weight: 800;
-            box-shadow: 0 18px 40px rgba(47, 122, 67, 0.25);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            gap: 10px;
+            padding: 0 24px;
+            border-radius: var(--radius-round);
+            font-weight: 900;
+            transition:
+                    transform 0.35s var(--ease-spring),
+                    box-shadow 0.35s var(--ease-out),
+                    background 0.35s var(--ease-out);
         }
 
-        a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 24px 55px rgba(47, 122, 67, 0.34);
+        .btn-primary {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow: 0 18px 42px rgba(47, 122, 67, 0.28);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 24px 58px rgba(47, 122, 67, 0.36);
+        }
+
+        .btn-secondary {
+            color: var(--primary-dark);
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(47, 122, 67, 0.16);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 48px rgba(15, 27, 20, 0.14);
+        }
+
+        .quick-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-top: 4px;
+        }
+
+        .quick-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 42px;
+            padding: 0 14px;
+            border-radius: var(--radius-round);
+            color: var(--text-soft);
+            background: rgba(87, 178, 108, 0.08);
+            border: 1px solid rgba(47, 122, 67, 0.1);
+            font-size: 0.9rem;
+            font-weight: 800;
+            transition:
+                    color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+        .quick-link:hover {
+            color: var(--primary);
+            background: rgba(87, 178, 108, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .language-box {
+            margin-top: 24px;
+            display: inline-flex;
+            gap: 6px;
+            padding: 5px;
+            border-radius: var(--radius-round);
+            background: rgba(87, 178, 108, 0.08);
+            border: 1px solid rgba(47, 122, 67, 0.1);
+        }
+
+        .lang-btn {
+            min-width: 44px;
+            height: 36px;
+            border-radius: var(--radius-round);
+            background: transparent;
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            font-weight: 900;
+            transition:
+                    color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.78);
+            transform: translateY(-1px);
+        }
+
+        .lang-btn.active {
+            color: #ffffff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            box-shadow: 0 8px 18px rgba(47, 122, 67, 0.22);
+        }
+
+        .small-note {
+            margin-top: 18px;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+
+        :focus-visible {
+            outline: 3px solid rgba(87, 178, 108, 0.48);
+            outline-offset: 4px;
+            border-radius: 6px;
+        }
+
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(28px) scale(0.97);
+                filter: blur(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes shimmerText {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 18px;
+            }
+
+            .error-card {
+                padding: 32px 20px;
+            }
+
+            .logo-wrap {
+                width: 62px;
+                height: 62px;
+                border-radius: 18px;
+            }
+
+            .actions {
+                display: grid;
+                grid-template-columns: 1fr;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .quick-links {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .quick-links {
+                grid-template-columns: 1fr;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                letter-spacing: 0.08em;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .ambient,
+            .grid-layer {
+                display: none !important;
+            }
         }
     </style>
 </head>
 
 <body>
-<main class="card">
-    <div class="badge">Upcycling Patterns</div>
+<a href="#mainContent" class="skip-link" id="skipLink">Skip to content</a>
 
-    <h1>404</h1>
+<div class="ambient ambient-1" aria-hidden="true"></div>
+<div class="ambient ambient-2" aria-hidden="true"></div>
+<div class="grid-layer" aria-hidden="true"></div>
 
-    <h2>Page Not Found</h2>
+<main class="page" id="mainContent" role="main">
+    <section class="error-card" aria-labelledby="title">
+        <div class="content">
+            <a href="/" class="logo-wrap" id="logoLink" aria-label="Upcycling Patterns Home">
+                <img
+                        src="/images/logo.jpeg"
+                        alt="Upcycling Patterns logo"
+                        width="72"
+                        height="72"
+                        loading="eager"
+                        decoding="async"
+                />
+            </a>
 
-    <p>
-        The page you are looking for may have been moved, deleted, or the address may be incorrect.
-        You can return to the homepage and continue exploring the project.
-    </p>
+            <div class="badge">Upcycling Patterns</div>
 
-    <a href="/">Back to Homepage</a>
+            <div class="error-code" aria-hidden="true">404</div>
+
+            <h1 class="title" id="title">Page Not Found</h1>
+
+            <p class="description" id="description">
+                The page you are looking for may have been moved, deleted, or the address may be incorrect.
+                You can return to the homepage and continue exploring the project.
+            </p>
+
+            <div class="actions" aria-label="Main actions">
+                <a href="/" class="btn btn-primary" id="backHome">
+                    <span id="backHomeText">Back to Homepage</span>
+                    <span aria-hidden="true">→</span>
+                </a>
+
+                <a href="/#contact" class="btn btn-secondary" id="contactLink">
+                    <span id="contactText">Contact</span>
+                </a>
+            </div>
+
+            <nav class="quick-links" aria-label="Useful links">
+                <a href="/#about" class="quick-link" id="aboutLink">About</a>
+                <a href="/#partners" class="quick-link" id="partnersLink">Partners</a>
+                <a href="/#media" class="quick-link" id="mediaLink">Media</a>
+                <a href="/#faq" class="quick-link" id="faqLink">FAQ</a>
+            </nav>
+
+            <div class="language-box" aria-label="Language Switcher" role="group">
+                <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
+                <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false">TR</button>
+            </div>
+
+            <p class="small-note" id="smallNote">
+                Error 404 means this address does not exist on the website.
+            </p>
+        </div>
+    </section>
 </main>
+
+<script>
+    (function () {
+        "use strict";
+
+        var SUPPORTED = ["en", "tr"];
+        var DEFAULT_LANG = "en";
+        var STORAGE_KEY = "siteLanguage";
+
+        var dictionary = {
+            en: {
+                pageTitle: "404 — Page Not Found | Upcycling Patterns",
+                metaDescription: "The page you are looking for could not be found. Return to the Upcycling Patterns homepage.",
+                skip: "Skip to content",
+                title: "Page Not Found",
+                description: "The page you are looking for may have been moved, deleted, or the address may be incorrect. You can return to the homepage and continue exploring the project.",
+                back: "Back to Homepage",
+                contact: "Contact",
+                about: "About",
+                partners: "Partners",
+                media: "Media",
+                faq: "FAQ",
+                note: "Error 404 means this address does not exist on the website.",
+                homeHref: "/",
+                contactHref: "/#contact",
+                aboutHref: "/#about",
+                partnersHref: "/#partners",
+                mediaHref: "/#media",
+                faqHref: "/#faq"
+            },
+            tr: {
+                pageTitle: "404 — Sayfa Bulunamadı | Upcycling Patterns",
+                metaDescription: "Aradığınız sayfa bulunamadı. Upcycling Patterns ana sayfasına geri dönebilirsiniz.",
+                skip: "İçeriğe geç",
+                title: "Sayfa Bulunamadı",
+                description: "Aradığınız sayfa taşınmış, silinmiş veya adres yanlış olabilir. Ana sayfaya dönerek projeyi keşfetmeye devam edebilirsiniz.",
+                back: "Ana Sayfaya Dön",
+                contact: "İletişim",
+                about: "Hakkında",
+                partners: "Ortaklar",
+                media: "Medya",
+                faq: "SSS",
+                note: "404 hatası, bu adresin web sitesinde bulunmadığı anlamına gelir.",
+                homeHref: "/tr/",
+                contactHref: "/tr/#contact",
+                aboutHref: "/tr/#about",
+                partnersHref: "/tr/#partners",
+                mediaHref: "/tr/#media",
+                faqHref: "/tr/#faq"
+            }
+        };
+
+        function safeGet(key) {
+            try {
+                return localStorage.getItem(key);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function safeSet(key, value) {
+            try {
+                localStorage.setItem(key, value);
+            } catch (e) {}
+        }
+
+        function detectLang() {
+            var path = window.location.pathname.toLowerCase();
+
+            if (path === "/tr" || path.indexOf("/tr/") === 0) {
+                return "tr";
+            }
+
+            try {
+                var urlLang = new URLSearchParams(window.location.search).get("lang");
+                if (SUPPORTED.indexOf(urlLang) !== -1) {
+                    return urlLang;
+                }
+            } catch (e) {}
+
+            var saved = safeGet(STORAGE_KEY);
+            if (SUPPORTED.indexOf(saved) !== -1) {
+                return saved;
+            }
+
+            var nav = (navigator.language || "en").toLowerCase();
+            return nav.indexOf("tr") === 0 ? "tr" : DEFAULT_LANG;
+        }
+
+        function setText(id, value) {
+            var el = document.getElementById(id);
+            if (el && typeof value === "string") {
+                el.textContent = value;
+            }
+        }
+
+        function setHref(id, value) {
+            var el = document.getElementById(id);
+            if (el && typeof value === "string") {
+                el.setAttribute("href", value);
+            }
+        }
+
+        function updateUrl(lang) {
+            if (!window.history || !window.history.replaceState) {
+                return;
+            }
+
+            try {
+                var url = new URL(window.location.href);
+
+                if (url.pathname.toLowerCase().indexOf("/tr/") === 0 || url.pathname.toLowerCase() === "/tr") {
+                    return;
+                }
+
+                if (lang === "tr") {
+                    url.searchParams.set("lang", "tr");
+                } else {
+                    url.searchParams.delete("lang");
+                }
+
+                window.history.replaceState({}, "", url.toString());
+            } catch (e) {}
+        }
+
+        function applyLang(lang, shouldUpdateUrl) {
+            var currentLang = SUPPORTED.indexOf(lang) !== -1 ? lang : DEFAULT_LANG;
+            var d = dictionary[currentLang] || dictionary[DEFAULT_LANG];
+
+            document.documentElement.lang = currentLang;
+            document.documentElement.dir = "ltr";
+
+            document.title = d.pageTitle;
+
+            var titleTag = document.getElementById("pageTitle");
+            if (titleTag) {
+                titleTag.textContent = d.pageTitle;
+            }
+
+            var meta = document.getElementById("metaDescription");
+            if (meta) {
+                meta.setAttribute("content", d.metaDescription);
+            }
+
+            setText("skipLink", d.skip);
+            setText("title", d.title);
+            setText("description", d.description);
+            setText("backHomeText", d.back);
+            setText("contactText", d.contact);
+            setText("aboutLink", d.about);
+            setText("partnersLink", d.partners);
+            setText("mediaLink", d.media);
+            setText("faqLink", d.faq);
+            setText("smallNote", d.note);
+
+            setHref("logoLink", d.homeHref);
+            setHref("backHome", d.homeHref);
+            setHref("contactLink", d.contactHref);
+            setHref("aboutLink", d.aboutHref);
+            setHref("partnersLink", d.partnersHref);
+            setHref("mediaLink", d.mediaHref);
+            setHref("faqLink", d.faqHref);
+
+            var buttons = document.querySelectorAll(".lang-btn");
+            buttons.forEach(function (btn) {
+                var active = btn.getAttribute("data-lang") === currentLang;
+                btn.classList.toggle("active", active);
+                btn.setAttribute("aria-pressed", String(active));
+            });
+
+            safeSet(STORAGE_KEY, currentLang);
+
+            if (shouldUpdateUrl) {
+                updateUrl(currentLang);
+            }
+        }
+
+        function bindLanguageButtons() {
+            var buttons = document.querySelectorAll(".lang-btn");
+
+            buttons.forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    var lang = btn.getAttribute("data-lang");
+                    applyLang(lang, true);
+                });
+            });
+        }
+
+        function bindImageFallback() {
+            var logo = document.querySelector(".logo-wrap img");
+
+            if (!logo) {
+                return;
+            }
+
+            logo.addEventListener("error", function () {
+                logo.style.display = "none";
+            }, { once: true });
+        }
+
+        function init() {
+            applyLang(detectLang(), false);
+            bindLanguageButtons();
+            bindImageFallback();
+        }
+
+        init();
+    })();
+</script>
 </body>
 </html>
