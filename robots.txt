@@ -1,4 +1,146 @@
+# =====================================================================
+# robots.txt — Upcycling Patterns
+# Erasmus+ KA210-SCH Project
+# Website: https://upcyclingpatterns.com/
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# Default rule for all search engines
+# Public website content is allowed.
+# Admin, private, draft and error pages are not meant to be indexed.
+# ---------------------------------------------------------------------
+
 User-agent: *
 Allow: /
+
+# Do not index admin/CMS area
+Disallow: /admin/
+Disallow: /admin
+
+# Do not index error page directly
+Disallow: /404.html
+
+# Do not index private or draft content if these folders are added later
+Disallow: /private/
+Disallow: /drafts/
+Disallow: /content/drafts/
+
+# Allow important public assets
+Allow: /images/
+Allow: /assets/
+Allow: /uploads/
+Allow: /style.css
+Allow: /script.js
+Allow: /manifest.webmanifest
+
+# ---------------------------------------------------------------------
+# Google
+# ---------------------------------------------------------------------
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /404.html
+Disallow: /private/
+Disallow: /drafts/
+Disallow: /content/drafts/
+
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /assets/
+Allow: /uploads/
+
+# ---------------------------------------------------------------------
+# Bing
+# ---------------------------------------------------------------------
+
+User-agent: Bingbot
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /404.html
+Disallow: /private/
+Disallow: /drafts/
+Disallow: /content/drafts/
+
+# ---------------------------------------------------------------------
+# Other major search engines
+# ---------------------------------------------------------------------
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /404.html
+
+User-agent: YandexBot
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /404.html
+
+User-agent: Applebot
+Allow: /
+Disallow: /admin/
+Disallow: /admin
+Disallow: /404.html
+
+# ---------------------------------------------------------------------
+# Block aggressive SEO crawlers and content scrapers
+# ---------------------------------------------------------------------
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: serpstatbot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+# ---------------------------------------------------------------------
+# AI training crawlers
+# Şimdilik kapalı bırakmadım.
+# Eğer ileride sitenin içeriklerinin AI training için kullanılmasını istemezsen
+# aşağıdaki satırların başındaki # işaretlerini kaldırabilirsin.
+# ---------------------------------------------------------------------
+
+# User-agent: GPTBot
+# Disallow: /
+
+# User-agent: ChatGPT-User
+# Disallow: /
+
+# User-agent: CCBot
+# Disallow: /
+
+# User-agent: Google-Extended
+# Disallow: /
+
+# User-agent: anthropic-ai
+# Disallow: /
+
+# User-agent: ClaudeBot
+# Disallow: /
+
+# ---------------------------------------------------------------------
+# Sitemap
+# ---------------------------------------------------------------------
 
 Sitemap: https://upcyclingpatterns.com/sitemap.xml
