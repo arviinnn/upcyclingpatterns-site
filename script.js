@@ -2005,3 +2005,51 @@
         init();
     }
 })();
+/* =========================================================
+   FOOTER LEGAL REAL POSITION FIX
+   Legal bölümünü footer-content içinden çıkarıp footer'ın
+   gerçek en alt sol köşesine taşır.
+   script.js EN ALTINA EKLE
+   ========================================================= */
+
+(function () {
+    "use strict";
+
+    function fixFooterLegalPosition() {
+        var footer = document.querySelector(".site-footer");
+        if (!footer) return;
+
+        var container = footer.querySelector(":scope > .container") || footer.querySelector(".container");
+        if (!container) return;
+
+        var legal = footer.querySelector(".footer-legal");
+        if (!legal) return;
+
+        /* Aynı işlem tekrar tekrar yapılmasın */
+        if (legal.classList.contains("footer-legal-corner")) return;
+
+        /* Reveal animasyonu üstte takılmasın diye etkisini kaldırıyoruz */
+        legal.classList.remove("reveal-item");
+        legal.classList.remove("visible");
+        legal.classList.remove("revealed");
+
+        /* Sağlam yeni sınıf */
+        legal.classList.add("footer-legal-corner");
+
+        /*
+          Legal şu an footer-content içinde.
+          Onu container'ın en sonuna taşıyoruz.
+          Böylece artık Upcycling Patterns başlığının yanında kalamaz.
+        */
+        container.appendChild(legal);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", fixFooterLegalPosition);
+    } else {
+        fixFooterLegalPosition();
+    }
+
+    window.addEventListener("load", fixFooterLegalPosition);
+})();
+
