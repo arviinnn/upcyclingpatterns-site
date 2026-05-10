@@ -370,7 +370,31 @@
                     "Could not send message. Opening your email app as a fallback...",
                 formMissingKey:
                     "The contact form is not fully connected yet. Opening your email app instead...",
-                formDisabledMessage: "This content will be added soon."
+                formDisabledMessage: "This content will be added soon.",
+
+                formConsent:
+                    "I agree that the information I provide will be used to respond to my message.",
+                formConsentRequired:
+                    "Please confirm consent before sending your message.",
+
+                themeToggleLabel: "Toggle dark mode",
+                themeToLight: "Switch to light mode",
+                themeToDark: "Switch to dark mode",
+
+                cookieBannerTitle: "We respect your privacy",
+                cookieBannerText:
+                    "We use only essential local storage to remember your language and theme preferences. No tracking, no analytics.",
+                cookieBannerAccept: "Got it",
+                cookieBannerMore: "Learn more",
+
+                lightboxClose: "Close image viewer",
+                lightboxPrev: "Previous image",
+                lightboxNext: "Next image",
+
+                legalTitle: "Legal",
+                privacyPolicyLink: "Privacy Policy",
+                cookiePolicyLink: "Cookie Policy",
+                adminLink: "Admin"
             },
 
             tr: {
@@ -661,7 +685,31 @@
                     "Mesaj gönderilemedi. Yedek olarak e-posta uygulamanız açılıyor...",
                 formMissingKey:
                     "İletişim formu henüz tam bağlanmamış. Yedek olarak e-posta uygulamanız açılıyor...",
-                formDisabledMessage: "Bu içerik yakında eklenecek."
+                formDisabledMessage: "Bu içerik yakında eklenecek.",
+
+                formConsent:
+                    "Verdiğim bilgilerin yalnızca mesajıma yanıt vermek için kullanılmasını kabul ediyorum.",
+                formConsentRequired:
+                    "Mesajınızı göndermeden önce onay kutusunu işaretleyiniz.",
+
+                themeToggleLabel: "Karanlık modu aç/kapat",
+                themeToLight: "Açık moda geç",
+                themeToDark: "Karanlık moda geç",
+
+                cookieBannerTitle: "Gizliliğinize saygı duyuyoruz",
+                cookieBannerText:
+                    "Yalnızca dil ve tema tercihlerinizi hatırlamak için yerel depolama kullanıyoruz. Hiçbir izleme veya analiz yapılmamaktadır.",
+                cookieBannerAccept: "Anladım",
+                cookieBannerMore: "Daha fazla bilgi",
+
+                lightboxClose: "Görsel görüntüleyiciyi kapat",
+                lightboxPrev: "Önceki görsel",
+                lightboxNext: "Sonraki görsel",
+
+                legalTitle: "Yasal",
+                privacyPolicyLink: "Gizlilik Politikası",
+                cookiePolicyLink: "Çerez Politikası",
+                adminLink: "Yönetim Paneli"
             }
         };
 
@@ -1698,6 +1746,233 @@
             handleScroll();
         }
 
+        /* ============================================================
+           NEW: Theme toggle (light / dark)
+           Pref order: explicit user choice → system → light fallback.
+           Persisted in localStorage under "siteTheme".
+           Inline script in index.html sets the initial theme to avoid FOUC.
+           ============================================================ */
+        function getCurrentTheme() {
+            const root = document.documentElement;
+            const attr = root.getAttribute("data-theme");
+            if (attr === "dark" || attr === "light") return attr;
+            const saved = safeStorageGet("siteTheme");
+            if (saved === "dark" || saved === "light") return saved;
+            return window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+        }
+
+        function applyTheme(theme) {
+            const root = document.documentElement;
+            root.setAttribute("data-theme", theme);
+            try { localStorage.setItem("siteTheme", theme); } catch (e) {}
+
+            // Update meta theme-color so mobile browser chrome adapts
+            const meta = document.querySelector('meta[name="theme-color"]:not([media])');
+            if (meta) {
+                meta.setAttribute("content", theme === "dark" ? "#0f1912" : "#2f7a43");
+            }
+
+            // Update toggle button aria-label
+            const dict = getDictionary(currentLanguage);
+            const btn = document.getElementById("themeToggle");
+            if (btn) {
+                btn.setAttribute(
+                    "aria-label",
+                    theme === "dark" ? dict.themeToLight : dict.themeToDark
+                );
+                btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+            }
+        }
+
+        function bindThemeToggle() {
+            const btn = document.getElementById("themeToggle");
+            if (!btn) return;
+
+            applyTheme(getCurrentTheme());
+
+            btn.addEventListener("click", () => {
+                const current = document.documentElement.getAttribute("data-theme");
+                applyTheme(current === "dark" ? "light" : "dark");
+            });
+
+            // React to OS-level theme changes ONLY if user hasn't explicitly chosen
+            if (window.matchMedia) {
+                const mq = window.matchMedia("(prefers-color-scheme: dark)");
+                const onChange = (event) => {
+                    if (!safeStorageGet("siteTheme")) {
+                        applyTheme(event.matches ? "dark" : "light");
+                    }
+                };
+                if (typeof mq.addEventListener === "function") {
+                    mq.addEventListener("change", onChange);
+                } else if (typeof mq.addListener === "function") {
+                    mq.addListener(onChange);
+                }
+            }
+        }
+
+        /* ============================================================
+           NEW: Cookie consent banner
+           Shown once until dismissed.
+           ============================================================ */
+        function bindCookieBanner() {
+            const banner = document.getElementById("cookieBanner");
+            if (!banner) return;
+
+            const dismissed = safeStorageGet("cookieConsentDismissed");
+            if (dismissed === "true") return;
+
+            // Show banner with a slight delay to avoid clashing with page load
+            window.setTimeout(() => {
+                banner.hidden = false;
+                window.requestAnimationFrame(() => banner.classList.add("is-visible"));
+            }, 1400);
+
+            const acceptBtn = document.getElementById("cookieAccept");
+            if (acceptBtn) {
+                acceptBtn.addEventListener("click", () => {
+                    banner.classList.remove("is-visible");
+                    try { localStorage.setItem("cookieConsentDismissed", "true"); } catch (e) {}
+                    window.setTimeout(() => { banner.hidden = true; }, 600);
+                });
+            }
+        }
+
+        /* ============================================================
+           NEW: Lightbox for the gallery
+           Opens on .gallery-card click, supports keyboard nav.
+           ============================================================ */
+        function bindLightbox() {
+            const lightbox = document.getElementById("lightbox");
+            const lightboxImg = document.getElementById("lightboxImage");
+            const lightboxCaption = document.getElementById("lightboxCaption");
+            const lightboxCounter = document.getElementById("lightboxCounter");
+            const closeBtn = document.getElementById("lightboxClose");
+            const prevBtn = document.getElementById("lightboxPrev");
+            const nextBtn = document.getElementById("lightboxNext");
+            const galleryCards = document.querySelectorAll(
+                '.gallery-card[data-lightbox="true"], .gallery-card'
+            );
+
+            if (!lightbox || !lightboxImg || !galleryCards.length) return;
+
+            const items = Array.from(galleryCards).map((card) => {
+                const img = card.querySelector("img");
+                const cap = card.querySelector("figcaption");
+                return {
+                    src: img ? img.getAttribute("src") : "",
+                    alt: img ? img.getAttribute("alt") || "" : "",
+                    caption: cap ? cap.textContent.trim() : ""
+                };
+            }).filter((item) => item.src);
+
+            if (!items.length) return;
+
+            let currentIndex = 0;
+            let lastActiveElement = null;
+
+            function showItem(index) {
+                if (index < 0) index = items.length - 1;
+                if (index >= items.length) index = 0;
+                currentIndex = index;
+
+                const item = items[index];
+                lightboxImg.setAttribute("src", item.src);
+                lightboxImg.setAttribute("alt", item.alt);
+                if (lightboxCaption) lightboxCaption.textContent = item.caption || "";
+                if (lightboxCounter) {
+                    lightboxCounter.textContent = (index + 1) + " / " + items.length;
+                }
+
+                if (prevBtn) prevBtn.disabled = items.length <= 1;
+                if (nextBtn) nextBtn.disabled = items.length <= 1;
+            }
+
+            function openLightbox(index) {
+                lastActiveElement = document.activeElement;
+                showItem(index);
+                lightbox.hidden = false;
+                window.requestAnimationFrame(() => lightbox.classList.add("is-visible"));
+                document.body.style.overflow = "hidden";
+                if (closeBtn) closeBtn.focus();
+                document.addEventListener("keydown", handleKey);
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove("is-visible");
+                document.body.style.overflow = "";
+                document.removeEventListener("keydown", handleKey);
+                window.setTimeout(() => {
+                    lightbox.hidden = true;
+                    lightboxImg.setAttribute("src", "");
+                    if (lastActiveElement && typeof lastActiveElement.focus === "function") {
+                        lastActiveElement.focus();
+                    }
+                }, 400);
+            }
+
+            function handleKey(event) {
+                switch (event.key) {
+                    case "Escape": closeLightbox(); break;
+                    case "ArrowLeft": showItem(currentIndex - 1); break;
+                    case "ArrowRight": showItem(currentIndex + 1); break;
+                }
+            }
+
+            galleryCards.forEach((card, index) => {
+                card.style.cursor = "zoom-in";
+                card.setAttribute("role", "button");
+                card.setAttribute("tabindex", "0");
+
+                card.addEventListener("click", (event) => {
+                    event.preventDefault();
+                    openLightbox(index);
+                });
+
+                card.addEventListener("keydown", (event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openLightbox(index);
+                    }
+                });
+            });
+
+            if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
+            if (prevBtn) prevBtn.addEventListener("click", () => showItem(currentIndex - 1));
+            if (nextBtn) nextBtn.addEventListener("click", () => showItem(currentIndex + 1));
+
+            lightbox.addEventListener("click", (event) => {
+                if (event.target === lightbox) closeLightbox();
+            });
+        }
+
+        /* ============================================================
+           NEW: Form consent enforcement
+           If the consent checkbox exists and isn't checked, block submit.
+           ============================================================ */
+        function bindFormConsent() {
+            const form = document.getElementById("contactForm");
+            const checkbox = document.getElementById("formConsent");
+            const status = document.getElementById("formStatus");
+            if (!form || !checkbox) return;
+
+            form.addEventListener("submit", (event) => {
+                if (!checkbox.checked) {
+                    event.preventDefault();
+                    event.stopImmediatePropagation();
+                    const dict = getDictionary(currentLanguage);
+                    if (status) {
+                        status.textContent = dict.formConsentRequired;
+                        status.classList.add("error");
+                    }
+                    checkbox.focus();
+                }
+            }, true);
+        }
+
         function init() {
             applyTranslations(currentLanguage, {
                 updateUrl: false,
@@ -1705,6 +1980,7 @@
             });
 
             bindLoader();
+            bindThemeToggle();
             bindLanguageSwitcher();
             bindEmailLinks();
             bindMenuBehavior();
@@ -1713,12 +1989,15 @@
             bindRevealAnimations();
             bindBackToTop();
             bindScrollHandlers();
+            bindFormConsent();
             bindContactForm();
             bindMagneticButtons();
             bindTiltCards();
             bindCursorGlow();
             bindComingSoonActions();
             bindImageFallbacks();
+            bindLightbox();
+            bindCookieBanner();
 
             body.classList.add("is-ready");
         }
