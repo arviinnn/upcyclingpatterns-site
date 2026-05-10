@@ -1,10 +1,19 @@
 {
   "projectName": "Upcycling Patterns",
+  "projectShortName": "UpCyc",
   "projectEmail": "upcyclingpatterns@gmail.com",
+  "coordinator": "MEV Koleji Özel Basınköy Anadolu Lisesi",
+  "coordinatorCity": "Istanbul",
+  "coordinatorCountry": "Türkiye",
+  "startDate": "2025-09-01",
+  "endDate": "2027-08-31",
+  "heroImage": "/images/hero-image.png",
   "social": {
     "instagram": "https://www.instagram.com/upcycling_patterns/",
     "x": "https://x.com/UPatternsKA210",
-    "youtube": "http://www.youtube.com/@upcyclingpatterns",
-    "linkedin": "https://www.linkedin.com/company/upcycling-patterns-ka210/"
-  }
+    "youtube": "https://www.youtube.com/@upcyclingpatterns",
+    "linkedin": "https://www.linkedin.com/company/upcycling-patterns-ka210/",
+    "facebook": ""
+  },
+  "web3formsKey": ""
 }
