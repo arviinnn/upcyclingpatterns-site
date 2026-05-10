@@ -1,13 +1,192 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="robots" content="noindex" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Upcycling Patterns Admin</title>
-</head>
-<body>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="googlebot" content="noindex, nofollow" />
+
+  <title>Content Manager · Upcycling Patterns</title>
+  <meta name="description" content="Content management for the Upcycling Patterns Erasmus+ project." />
+  <meta name="theme-color" content="#2f7a43" />
+
+  <link rel="icon" href="/images/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+
+  <!-- Netlify Identity widget (handles login) -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+
+  <style>
+    :root {
+      --brand: #2f7a43;
+      --brand-deep: #1a4225;
+      --bg: #f4f9f4;
+      --text: #0f1b14;
+      --muted: #5a6b60;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Splash shown while Decap CMS is loading */
+    .cms-splash {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background:
+              radial-gradient(circle at 30% 20%, rgba(87, 178, 108, 0.18), transparent 40%),
+              radial-gradient(circle at 70% 80%, rgba(184, 255, 122, 0.18), transparent 40%),
+              linear-gradient(180deg, #f8fcf8, #eef6ef);
+      z-index: 999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .cms-splash.is-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .cms-splash-card {
+      text-align: center;
+      padding: 36px 44px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      border: 1px solid rgba(47, 122, 67, 0.12);
+      box-shadow: 0 24px 60px rgba(15, 27, 20, 0.1);
+      max-width: 400px;
+      width: calc(100% - 32px);
+    }
+
+    .cms-splash-logo {
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      object-fit: cover;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 20px rgba(47, 122, 67, 0.25);
+    }
+
+    .cms-splash-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--brand-deep);
+      letter-spacing: -0.02em;
+      margin: 0 0 6px;
+    }
+
+    .cms-splash-subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 0 0 22px;
+    }
+
+    .cms-splash-spinner {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto;
+      border: 3px solid rgba(47, 122, 67, 0.15);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: cms-spin 0.9s linear infinite;
+    }
+
+    @keyframes cms-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .cms-splash-back {
+      display: inline-block;
+      margin-top: 22px;
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--brand-deep);
+      text-decoration: none;
+      border: 1.5px solid rgba(47, 122, 67, 0.25);
+      border-radius: 999px;
+      transition: all 0.2s ease;
+    }
+
+    .cms-splash-back:hover {
+      background: var(--brand);
+      color: #fff;
+      border-color: var(--brand);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cms-splash-spinner { animation: none; }
+      .cms-splash { transition: none; }
+    }
+  </style>
+</head>
+
+<body>
+<!-- Loading splash -->
+<div class="cms-splash" id="cmsSplash" aria-live="polite">
+  <div class="cms-splash-card">
+    <img src="/images/logo.jpeg" alt="Upcycling Patterns" class="cms-splash-logo" />
+    <h1 class="cms-splash-title">Content Manager</h1>
+    <p class="cms-splash-subtitle">Loading editor — please wait…</p>
+    <div class="cms-splash-spinner" aria-hidden="true"></div>
+    <a href="/" class="cms-splash-back">← Back to website</a>
+  </div>
+</div>
+
+<!-- Decap CMS (modern fork of Netlify CMS) -->
+<script src="https://unpkg.com/decap-cms@^3.4.0/dist/decap-cms.js"></script>
+
+<script>
+  (function () {
+    'use strict';
+
+    var splash = document.getElementById('cmsSplash');
+
+    // Hide splash once CMS UI mounts
+    function hideSplash() {
+      if (!splash) return;
+      splash.classList.add('is-hidden');
+      setTimeout(function () {
+        if (splash && splash.parentNode) {
+          splash.parentNode.removeChild(splash);
+        }
+      }, 600);
+    }
+
+    // Watch for the CMS root element to be created
+    var splashTimeout = setTimeout(hideSplash, 4000);
+    var observer = new MutationObserver(function () {
+      if (document.getElementById('nc-root') ||
+              document.querySelector('[class*="App"]') ||
+              document.querySelector('.cms-editor-active')) {
+        clearTimeout(splashTimeout);
+        hideSplash();
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Netlify Identity → redirect to admin once logged in
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', function (user) {
+        if (!user) {
+          window.netlifyIdentity.on('login', function () {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  })();
+</script>
 </body>
 </html>
