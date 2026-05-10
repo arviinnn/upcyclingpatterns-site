@@ -11,59 +11,142 @@
     />
 
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#2f7a43" />
+    <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <link rel="canonical" href="https://upcyclingpatterns.com/cookie-policy.html" />
-    <link rel="icon" href="images/favicon.png" type="image/png" />
+    <link rel="icon" href="/images/favicon.png" type="image/png" />
+
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("siteTheme");
+                var theme = saved === "dark" || saved === "light"
+                    ? saved
+                    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {}
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+    />
 
     <style>
         :root {
             --primary: #2f7a43;
             --primary-dark: #215732;
+            --primary-deeper: #1a4225;
+            --accent: #b8ff7a;
+            --accent-bright: #95f053;
             --text-main: #0f1b14;
             --text-soft: #5a6b60;
+            --text-muted: #7a8b80;
             --bg-1: #f8fcf8;
             --bg-2: #eef6ef;
             --card: rgba(255, 255, 255, 0.78);
             --border: rgba(47, 122, 67, 0.12);
             --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
+            --display-font: "Fraunces", Georgia, serif;
+            --body-font: "Inter", system-ui, -apple-system, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root[data-theme="dark"] {
+            --primary: #57b26c;
+            --primary-dark: #95f053;
+            --primary-deeper: #b8ff7a;
+            --text-main: #f0f7f1;
+            --text-soft: #b8c5bb;
+            --text-muted: #8a9b8e;
+            --bg-1: #0a120d;
+            --bg-2: #0f1912;
+            --card: rgba(20, 32, 24, 0.72);
+            --border: rgba(184, 255, 122, 0.10);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             min-height: 100vh;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            font-family: var(--body-font);
             color: var(--text-main);
             line-height: 1.7;
             background:
                     radial-gradient(circle at top left, rgba(87, 178, 108, 0.16), transparent 28%),
                     radial-gradient(circle at bottom right, rgba(184, 255, 122, 0.18), transparent 30%),
                     linear-gradient(180deg, var(--bg-1), var(--bg-2));
-            padding: 32px 18px;
+            padding: 40px 18px 60px;
+            transition: background 0.4s ease, color 0.3s ease;
         }
 
-        .page {
-            width: min(100%, 980px);
-            margin: 0 auto;
+        :root[data-theme="dark"] body {
+            background:
+                    radial-gradient(circle at top left, rgba(87, 178, 108, 0.10), transparent 35%),
+                    radial-gradient(circle at bottom right, rgba(184, 255, 122, 0.06), transparent 35%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        }
+
+        .page { width: min(100%, 980px); margin: 0 auto; }
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
         }
 
         .top-link {
             display: inline-flex;
-            margin-bottom: 24px;
+            align-items: center;
+            gap: 6px;
             color: var(--primary-dark);
-            font-weight: 800;
+            font-weight: 700;
             text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            transition: all 0.25s ease;
         }
 
         .top-link:hover {
-            text-decoration: underline;
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-1px);
         }
+
+        :root[data-theme="dark"] .top-link { color: var(--accent-bright); }
+        :root[data-theme="dark"] .top-link:hover {
+            background: var(--accent-bright);
+            color: #0a120d;
+            border-color: var(--accent-bright);
+        }
+
+        .theme-toggle {
+            width: 42px; height: 42px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            border-radius: 999px;
+            cursor: pointer;
+            color: var(--primary-dark);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover { transform: translateY(-2px); border-color: var(--primary); }
+        :root[data-theme="dark"] .theme-toggle { color: var(--accent-bright); border-color: rgba(184, 255, 122, 0.20); }
+        .theme-toggle svg { width: 18px; height: 18px; }
+        :root[data-theme="dark"] .theme-icon-sun,
+        :root:not([data-theme="dark"]) .theme-icon-moon { display: none; }
 
         .card {
             padding: clamp(28px, 5vw, 56px);
@@ -72,70 +155,109 @@
             background: var(--card);
             box-shadow: var(--shadow);
             backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
         h1 {
+            font-family: var(--display-font);
             margin-bottom: 12px;
-            font-size: clamp(2rem, 5vw, 4rem);
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 700;
             line-height: 1.05;
-            letter-spacing: -0.05em;
-            color: var(--primary-dark);
+            letter-spacing: -0.04em;
+            color: var(--primary-deeper);
         }
 
         .intro {
             margin-bottom: 34px;
             color: var(--text-soft);
             font-size: 1.05rem;
+            max-width: 70ch;
         }
 
         h2 {
-            margin: 30px 0 10px;
+            font-family: var(--display-font);
+            margin: 36px 0 12px;
             font-size: 1.35rem;
+            font-weight: 600;
             color: var(--primary);
+            letter-spacing: -0.01em;
         }
 
-        p {
-            margin-bottom: 14px;
-            color: var(--text-soft);
-        }
-
-        ul {
-            margin: 10px 0 18px 24px;
-            color: var(--text-soft);
-        }
-
-        li {
-            margin-bottom: 8px;
-        }
-
-        strong {
-            color: var(--text-main);
-        }
+        p { margin-bottom: 14px; color: var(--text-soft); }
+        ul { margin: 10px 0 18px 24px; color: var(--text-soft); }
+        li { margin-bottom: 8px; }
+        strong { color: var(--text-main); }
 
         .footer-note {
-            margin-top: 36px;
-            padding-top: 22px;
+            margin-top: 40px;
+            padding-top: 24px;
             border-top: 1px solid var(--border);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .email {
             color: var(--primary-dark);
-            font-weight: 800;
+            font-weight: 700;
             text-decoration: none;
+            border-bottom: 1px dashed var(--primary);
         }
 
-        .email:hover {
-            text-decoration: underline;
+        .email:hover { border-bottom-style: solid; }
+        :root[data-theme="dark"] .email { color: var(--accent-bright); }
+
+        .related-links {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .related-links a {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .related-links a:hover { color: var(--primary); }
+        :root[data-theme="dark"] .related-links a:hover { color: var(--accent-bright); }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
 <main class="page">
-    <a class="top-link" href="/">← Back to Homepage</a>
+    <header class="page-header">
+        <a class="top-link" href="/">
+            <span aria-hidden="true">←</span>
+            <span>Back to Homepage</span>
+        </a>
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </button>
+    </header>
 
-    <section class="card">
+    <article class="card">
         <h1>Cookie Policy</h1>
 
         <p class="intro">
@@ -144,55 +266,92 @@
 
         <h2>1. What Are Cookies?</h2>
         <p>
-            Cookies are small text files stored on your device by websites. They help websites remember basic preferences and improve user experience.
+            Cookies are small text files stored on your device by websites. <strong>Local storage</strong> is a similar technology that stores information directly in your browser without sending it back to the server.
         </p>
 
-        <h2>2. How This Website Uses Cookies</h2>
+        <h2>2. How This Website Uses Storage</h2>
         <p>
-            The Upcycling Patterns website currently uses limited local browser storage for basic website functions such as language preference.
+            The Upcycling Patterns website currently uses only <strong>browser local storage</strong> for two purposes:
         </p>
 
         <ul>
-            <li>Remembering selected language preference</li>
-            <li>Improving website usability</li>
-            <li>Supporting basic website functionality</li>
+            <li><strong>Language preference</strong> — remembering whether you chose English or Turkish</li>
+            <li><strong>Theme preference</strong> — remembering whether you chose the light or dark theme</li>
+            <li><strong>Cookie consent</strong> — remembering that you've dismissed the cookie banner so we don't show it again</li>
         </ul>
 
-        <h2>3. Essential Cookies</h2>
         <p>
-            Essential cookies or local storage may be used to make the website work correctly. These do not collect sensitive personal information.
+            None of this information is sent to any server. It exists only in your browser and can be cleared at any time.
+        </p>
+
+        <h2>3. Essential Storage</h2>
+        <p>
+            The local storage items above are considered <strong>essential</strong> for the website to function correctly. They do not collect any sensitive personal information.
         </p>
 
         <h2>4. Analytics Cookies</h2>
         <p>
-            This website does not currently use advanced analytics cookies. If Google Analytics or another analytics service is added in the future, this policy should be updated.
+            <strong>This website does not currently use analytics cookies or trackers.</strong> If Google Analytics, Plausible, or another analytics service is added in the future, this policy will be updated and a consent prompt will be shown before any tracking begins.
         </p>
 
         <h2>5. Third-Party Services</h2>
         <p>
-            The website may link to external platforms such as Instagram, X, YouTube, LinkedIn, or form services. These platforms may use their own cookies according to their own policies.
+            The website may link to external platforms such as Instagram, X (Twitter), YouTube, LinkedIn, or form services like Web3Forms. These platforms may use their own cookies according to their own policies once you visit them. We have no control over their cookie practices.
         </p>
 
-        <h2>6. Managing Cookies</h2>
+        <h2>6. Embedded Content</h2>
         <p>
-            You can manage or delete cookies through your browser settings. You can also block cookies, but some website features may not work correctly.
+            If the website embeds YouTube videos, those embeds use <code>youtube-nocookie.com</code> wherever possible to minimize tracking. Standard YouTube embeds may still set cookies once you click play.
         </p>
 
-        <h2>7. Updates to This Policy</h2>
+        <h2>7. Managing Cookies and Storage</h2>
         <p>
-            This Cookie Policy may be updated when new website features, analytics tools, or third-party services are added.
+            You can manage or delete cookies and local storage through your browser settings. Most browsers allow you to:
+        </p>
+        <ul>
+            <li>Block all cookies and storage</li>
+            <li>Block only third-party cookies</li>
+            <li>Delete existing cookies and storage on demand</li>
+            <li>Receive a notification before a cookie is set</li>
+        </ul>
+        <p>
+            Note that blocking essential storage may cause the language and theme switchers to forget your choice between visits.
         </p>
 
-        <h2>8. Contact</h2>
+        <h2>8. Updates to This Policy</h2>
+        <p>
+            This Cookie Policy may be updated when new website features, analytics tools, or third-party services are added. The "Last updated" date below indicates the most recent revision.
+        </p>
+
+        <h2>9. Contact</h2>
         <p>
             For questions about this Cookie Policy, please contact:
             <a class="email" href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
         </p>
 
+        <div class="related-links">
+            <a href="/privacy-policy.html">Privacy Policy →</a>
+            <a href="/">Homepage →</a>
+        </div>
+
         <p class="footer-note">
-            Last updated: 09 May 2026
+            <span>Last updated: 10 May 2026</span>
+            <span>© 2025–2027 Upcycling Patterns</span>
         </p>
-    </section>
+    </article>
 </main>
+
+<script>
+    (function () {
+        var btn = document.getElementById("themeToggle");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+            var current = document.documentElement.getAttribute("data-theme");
+            var next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            try { localStorage.setItem("siteTheme", next); } catch (e) {}
+        });
+    })();
+</script>
 </body>
 </html>
