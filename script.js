@@ -390,10 +390,13 @@
                 lightboxClose: "Close image viewer",
                 lightboxPrev: "Previous image",
                 lightboxNext: "Next image",
-
+               
                 legalTitle: "Legal",
                 privacyPolicyLink: "Privacy Policy",
                 cookiePolicyLink: "Cookie Policy",
+                termsLink: "Terms of Use",
+                accessibilityLink: "Accessibility",
+                fundingDisclaimerLink: "Funding Disclaimer",
                 adminLink: "Admin"
             },
 
