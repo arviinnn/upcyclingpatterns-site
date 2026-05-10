@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "country": "Türkiye",
+      "countryCode": "TR",
+      "school": "MEV Koleji Özel Basınköy Anadolu Lisesi",
+      "city": "Istanbul",
+      "role": "Coordinating institution",
+      "logo": "/images/lg1.jpeg",
+      "website": "",
+      "email": "upcyclingpatterns@gmail.com"
+    },
+    {
+      "country": "North Macedonia",
+      "countryCode": "MK",
+      "school": "OEMUC \"SV. NAUM OHRIDSKI\"",
+      "city": "Ohrid",
+      "role": "Project partner",
+      "logo": "/images/lg3.jpeg",
+      "website": "",
+      "email": ""
+    },
+    {
+      "country": "Lithuania",
+      "countryCode": "LT",
+      "school": "Vilniaus automechanikos ir verslo mokykla",
+      "city": "Vilnius",
+      "role": "Project partner",
+      "logo": "/images/lg2.jpeg",
+      "website": "",
+      "email": ""
+    },
+    {
+      "country": "Poland",
+      "countryCode": "PL",
+      "school": "Zespol Szkol Samochodowych im. Tadeusza Tanskiego",
+      "city": "",
+      "role": "Project partner",
+      "logo": "/images/lg4.jpeg",
+      "website": "",
+      "email": ""
+    }
+  ]
+}
