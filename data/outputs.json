@@ -1,22 +1,31 @@
 {
   "items": [
     {
-      "title": "Project Brochure",
-      "description": "A short introduction to the aims, partners, and activities of the project.",
+      "title_en": "Project Brochure",
+      "title_tr": "Proje Broşürü",
+      "description_en": "A short introduction to the aims, partners, and activities of the project.",
+      "description_tr": "Projenin amaçları, ortakları ve etkinliklerine yönelik kısa bir tanıtım.",
       "file": "",
-      "image": ""
+      "image": "",
+      "type": "brochure"
     },
     {
-      "title": "Workshop Guide",
-      "description": "A practical guide containing activity samples and implementation steps.",
+      "title_en": "Workshop Guide",
+      "title_tr": "Atölye Rehberi",
+      "description_en": "A practical guide containing activity samples and implementation steps.",
+      "description_tr": "Etkinlik örnekleri ve uygulama adımları içeren pratik bir rehber.",
       "file": "",
-      "image": ""
+      "image": "",
+      "type": "guide"
     },
     {
-      "title": "Dissemination Report",
-      "description": "A summary of project communication, outreach, and visibility activities.",
+      "title_en": "Dissemination Report",
+      "title_tr": "Yaygınlaştırma Raporu",
+      "description_en": "A summary of project communication, outreach, and visibility activities.",
+      "description_tr": "Proje iletişimi, ulaşım ve görünürlük etkinliklerinin bir özeti.",
       "file": "",
-      "image": ""
+      "image": "",
+      "type": "report"
     }
   ]
 }
