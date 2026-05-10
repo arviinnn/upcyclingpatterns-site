@@ -5,36 +5,37 @@
 # =====================================================================
 
 # ---------------------------------------------------------------------
-# Default rule for all search engines
-# Public website content is allowed.
-# Admin, private, draft and error pages are not meant to be indexed.
+# Default rule for all crawlers
 # ---------------------------------------------------------------------
 
 User-agent: *
 Allow: /
 
-# Do not index admin/CMS area
+# Block admin/CMS area and internal paths
 Disallow: /admin/
 Disallow: /admin
-
-# Do not index error page directly
 Disallow: /404.html
-
-# Do not index private or draft content if these folders are added later
 Disallow: /private/
 Disallow: /drafts/
 Disallow: /content/drafts/
+Disallow: /data/
+Disallow: /api/
+Disallow: /*?*lang=
+Disallow: /*?*utm_
 
-# Allow important public assets
+# Allow public assets explicitly
 Allow: /images/
 Allow: /assets/
-Allow: /uploads/
 Allow: /style.css
 Allow: /script.js
 Allow: /manifest.webmanifest
+Allow: /sitemap.xml
+
+# Slow down aggressive crawlers
+Crawl-delay: 2
 
 # ---------------------------------------------------------------------
-# Google
+# Major search engines
 # ---------------------------------------------------------------------
 
 User-agent: Googlebot
@@ -44,16 +45,11 @@ Disallow: /admin
 Disallow: /404.html
 Disallow: /private/
 Disallow: /drafts/
-Disallow: /content/drafts/
 
 User-agent: Googlebot-Image
 Allow: /images/
-Allow: /assets/
-Allow: /uploads/
-
-# ---------------------------------------------------------------------
-# Bing
-# ---------------------------------------------------------------------
+Disallow: /admin/
+Disallow: /images/uploads/private/
 
 User-agent: Bingbot
 Allow: /
@@ -61,12 +57,6 @@ Disallow: /admin/
 Disallow: /admin
 Disallow: /404.html
 Disallow: /private/
-Disallow: /drafts/
-Disallow: /content/drafts/
-
-# ---------------------------------------------------------------------
-# Other major search engines
-# ---------------------------------------------------------------------
 
 User-agent: DuckDuckBot
 Allow: /
@@ -116,28 +106,39 @@ Disallow: /
 
 # ---------------------------------------------------------------------
 # AI training crawlers
-# Şimdilik kapalı bırakmadım.
-# Eğer ileride sitenin içeriklerinin AI training için kullanılmasını istemezsen
-# aşağıdaki satırların başındaki # işaretlerini kaldırabilirsin.
+# Currently allowed. To opt out, change "Allow: /" to "Disallow: /"
+# for the relevant agent below.
 # ---------------------------------------------------------------------
 
-# User-agent: GPTBot
-# Disallow: /
+User-agent: GPTBot
+Allow: /
 
-# User-agent: ChatGPT-User
-# Disallow: /
+User-agent: ChatGPT-User
+Allow: /
 
-# User-agent: CCBot
-# Disallow: /
+User-agent: OAI-SearchBot
+Allow: /
 
-# User-agent: Google-Extended
-# Disallow: /
+User-agent: CCBot
+Allow: /
 
-# User-agent: anthropic-ai
-# Disallow: /
+User-agent: Google-Extended
+Allow: /
 
-# User-agent: ClaudeBot
-# Disallow: /
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Bytespider
+Disallow: /
 
 # ---------------------------------------------------------------------
 # Sitemap
