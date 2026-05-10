@@ -5,33 +5,77 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#f8fcf8",
   "theme_color": "#2f7a43",
   "orientation": "portrait-primary",
   "lang": "en",
   "dir": "ltr",
-  "categories": [
-    "education",
-    "sustainability"
-  ],
+  "categories": ["education", "sustainability"],
   "icons": [
     {
-      "src": "/images/favicon.png",
-      "sizes": "32x32",
-      "type": "image/png",
-      "purpose": "any"
+      "src": "/favicon.ico",
+      "sizes": "32x32 48x48",
+      "type": "image/x-icon"
     },
     {
-      "src": "/images/apple-touch-icon.png",
+      "src": "/apple-touch-icon.png",
       "sizes": "180x180",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/images/apple-touch-icon.png",
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Project",
+      "short_name": "Project",
+      "description": "Open the Upcycling Patterns project website.",
+      "url": "/#about",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Partners",
+      "short_name": "Partners",
+      "description": "View project partner schools.",
+      "url": "/#partners",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Contact the Upcycling Patterns project team.",
+      "url": "/#contact",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
