@@ -23,7 +23,7 @@ backend:
     deleteMedia: 'Delete "{{path}}"'
 
 # Editorial workflow: drafts → review → publish
-publish_mode: editorial_workflow
+
 
 # Local dev support: run `npx decap-server` locally to test without Netlify
 local_backend: true
