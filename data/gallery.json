@@ -1,34 +1,52 @@
 {
   "items": [
     {
-      "caption": "Workshop Activities",
       "image": "/images/gallery-1.jpg",
-      "alt": "Workshop activities"
+      "caption_en": "Workshop Activities",
+      "caption_tr": "Atölye Etkinlikleri",
+      "alt": "Students working in an upcycling workshop",
+      "category": "workshops",
+      "date": ""
     },
     {
-      "caption": "Student Products",
       "image": "/images/gallery-2.jpg",
-      "alt": "Student products"
+      "caption_en": "Student Products",
+      "caption_tr": "Öğrenci Ürünleri",
+      "alt": "Creative products made from upcycled materials",
+      "category": "products",
+      "date": ""
     },
     {
-      "caption": "Partner Meetings",
       "image": "/images/gallery-3.jpg",
-      "alt": "International project meeting"
+      "caption_en": "Partner Meetings",
+      "caption_tr": "Ortak Toplantıları",
+      "alt": "International partner meeting",
+      "category": "meetings",
+      "date": ""
     },
     {
-      "caption": "Presentations & Events",
       "image": "/images/gallery-4.jpg",
-      "alt": "Sustainability presentation"
+      "caption_en": "Presentations & Events",
+      "caption_tr": "Sunumlar ve Etkinlikler",
+      "alt": "Sustainability presentation event",
+      "category": "events",
+      "date": ""
     },
     {
-      "caption": "Creative Displays",
       "image": "/images/gallery-5.jpg",
-      "alt": "Creative recycling display"
+      "caption_en": "Creative Displays",
+      "caption_tr": "Yaratıcı Sergiler",
+      "alt": "Display of creative recycling work",
+      "category": "events",
+      "date": ""
     },
     {
-      "caption": "Team Collaboration",
-      "image": "/images/uploads/whatsapp-image-2026-04-09-at-10.49.46-1-.jpeg",
-      "alt": "Project team collaboration"
+      "image": "/images/gallery-6.jpg",
+      "caption_en": "Team Collaboration",
+      "caption_tr": "Ekip İş Birliği",
+      "alt": "Team members collaborating on the project",
+      "category": "team",
+      "date": ""
     }
   ]
 }
