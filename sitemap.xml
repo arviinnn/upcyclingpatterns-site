@@ -8,30 +8,18 @@
          Upcycling Patterns — Sitemap
          Erasmus+ KA210-SCH Project
          Website: https://upcyclingpatterns.com/
-         Last updated: 2026-05-09
          ================================================================ -->
 
     <!-- English homepage -->
     <url>
         <loc>https://upcyclingpatterns.com/</loc>
-        <lastmod>2026-05-09</lastmod>
+        <lastmod>2026-05-10</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.00</priority>
 
-        <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://upcyclingpatterns.com/" />
-
-        <xhtml:link
-                rel="alternate"
-                hreflang="tr"
-                href="https://upcyclingpatterns.com/tr/" />
-
-        <xhtml:link
-                rel="alternate"
-                hreflang="x-default"
-                href="https://upcyclingpatterns.com/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/tr/" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/" />
 
         <image:image>
             <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
@@ -49,24 +37,13 @@
     <!-- Turkish homepage -->
     <url>
         <loc>https://upcyclingpatterns.com/tr/</loc>
-        <lastmod>2026-05-09</lastmod>
+        <lastmod>2026-05-10</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.95</priority>
 
-        <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://upcyclingpatterns.com/" />
-
-        <xhtml:link
-                rel="alternate"
-                hreflang="tr"
-                href="https://upcyclingpatterns.com/tr/" />
-
-        <xhtml:link
-                rel="alternate"
-                hreflang="x-default"
-                href="https://upcyclingpatterns.com/" />
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/tr/" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/" />
 
         <image:image>
             <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
@@ -79,6 +56,24 @@
             <image:title>Upcycling Patterns Logosu</image:title>
             <image:caption>Upcycling Patterns Erasmus+ KA210-SCH projesinin resmi logosu.</image:caption>
         </image:image>
+    </url>
+
+    <!-- Privacy Policy -->
+    <url>
+        <loc>https://upcyclingpatterns.com/privacy-policy.html</loc>
+        <lastmod>2026-05-10</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/privacy-policy.html" />
+    </url>
+
+    <!-- Cookie Policy -->
+    <url>
+        <loc>https://upcyclingpatterns.com/cookie-policy.html</loc>
+        <lastmod>2026-05-10</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/cookie-policy.html" />
     </url>
 
 </urlset>
