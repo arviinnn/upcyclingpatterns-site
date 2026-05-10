@@ -75,5 +75,37 @@
         <priority>0.40</priority>
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/cookie-policy.html" />
     </url>
+            <!-- Terms of Use -->
+    <url>
+        <loc>https://upcyclingpatterns.com/terms.html</loc>
+        <lastmod>2026-05-10</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/terms.html" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/terms.html" />
+    </url>
+
+    <!-- Accessibility Statement -->
+    <url>
+        <loc>https://upcyclingpatterns.com/accessibility.html</loc>
+        <lastmod>2026-05-10</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/accessibility.html" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/accessibility.html" />
+    </url>
+
+    <!-- Funding Disclaimer -->
+    <url>
+        <loc>https://upcyclingpatterns.com/funding-disclaimer.html</loc>
+        <lastmod>2026-05-10</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.40</priority>
+
+        <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/funding-disclaimer.html" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/funding-disclaimer.html" />
+    </url>
 
 </urlset>
