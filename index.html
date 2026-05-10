@@ -7,31 +7,6 @@
 
   <title id="pageTitle">Upcycling Patterns | Erasmus+ KA210-SCH</title>
 
-  <!-- NETLIFY IDENTITY TOKEN FIX -->
-  <script>
-    (function () {
-      "use strict";
-
-      var hash = window.location.hash || "";
-      var search = window.location.search || "";
-
-      var hasIdentityToken =
-        hash.indexOf("invite_token=") !== -1 ||
-        hash.indexOf("recovery_token=") !== -1 ||
-        hash.indexOf("confirmation_token=") !== -1 ||
-        hash.indexOf("email_change_token=") !== -1 ||
-        search.indexOf("invite_token=") !== -1 ||
-        search.indexOf("recovery_token=") !== -1 ||
-        search.indexOf("confirmation_token=") !== -1 ||
-        search.indexOf("email_change_token=") !== -1;
-
-      if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
-        var tokenPart = hash || search.replace("?", "#");
-        window.location.replace("/admin/" + tokenPart);
-      }
-    })();
-  </script>
-
   <meta
           id="metaDescription"
           name="description"
@@ -39,7 +14,7 @@
   />
   <meta
           name="keywords"
-          content="Upcycling Patterns, UpCyc, Erasmus+, KA210-SCH, sustainability, upcycling, environment, climate change, school partnership"
+          content="Upcycling Patterns, UpCyc, Erasmus+, KA210-SCH, sustainability, upcycling, environment, climate change, school partnership, MEV Koleji"
   />
   <meta name="author" content="MEV Koleji Özel Basınköy Anadolu Lisesi" />
   <meta name="publisher" content="Upcycling Patterns" />
@@ -50,8 +25,8 @@
   <meta name="bingbot" content="index, follow" />
 
   <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#1a4225" media="(prefers-color-scheme: dark)" />
-  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+  <meta name="color-scheme" content="light dark" />
   <meta name="referrer" content="strict-origin-when-cross-origin" />
   <meta name="format-detection" content="telephone=no, email=no, address=no" />
   <meta name="application-name" content="Upcycling Patterns" />
@@ -62,18 +37,14 @@
 
   <!--
     SECURITY NOTE:
-    Bu CSP meta olarak geçici şekilde çalışır.
-    Sonraki adımda Netlify için _headers dosyası yapınca daha profesyonel hale getireceğiz.
+    Real CSP lives in netlify.toml (per-route, more powerful than meta).
+    These meta-equiv headers only help in non-Netlify previews.
   -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   <meta
           http-equiv="Permissions-Policy"
           content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
-  />
-  <meta
-          http-equiv="Content-Security-Policy"
-          content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'; upgrade-insecure-requests"
   />
 
   <link rel="canonical" href="https://upcyclingpatterns.com/" />
@@ -120,17 +91,19 @@
   <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
   <link rel="mask-icon" href="images/favicon.png" color="#2f7a43" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-  <!-- Early Language Detection -->
+  <!-- Early Language + Theme Detection (no FOUC) -->
   <script>
     (function () {
       try {
         var path = window.location.pathname.toLowerCase();
         var urlLang = new URLSearchParams(window.location.search).get("lang");
-        var savedLang = null;
+        var savedLang = null, savedTheme = null;
 
         try {
           savedLang = localStorage.getItem("siteLanguage");
+          savedTheme = localStorage.getItem("siteTheme");
         } catch (e) {}
 
         var browserLang = (navigator.language || "en").toLowerCase().startsWith("tr") ? "tr" : "en";
@@ -143,7 +116,43 @@
 
         document.documentElement.lang = lang;
         document.documentElement.dir = "ltr";
+
+        // Theme: explicit user pref → system pref → light
+        var theme = savedTheme;
+        if (theme !== "dark" && theme !== "light") {
+          theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+                  ? "dark"
+                  : "light";
+        }
+        document.documentElement.setAttribute("data-theme", theme);
       } catch (e) {}
+    })();
+  </script>
+
+
+
+  <!-- Netlify Identity token redirect for CMS invitations / password recovery -->
+  <script>
+    (function () {
+      "use strict";
+
+      var hash = window.location.hash || "";
+      var search = window.location.search || "";
+
+      var hasIdentityToken =
+              hash.indexOf("invite_token=") !== -1 ||
+              hash.indexOf("recovery_token=") !== -1 ||
+              hash.indexOf("confirmation_token=") !== -1 ||
+              hash.indexOf("email_change_token=") !== -1 ||
+              search.indexOf("invite_token=") !== -1 ||
+              search.indexOf("recovery_token=") !== -1 ||
+              search.indexOf("confirmation_token=") !== -1 ||
+              search.indexOf("email_change_token=") !== -1;
+
+      if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
+        var tokenPart = hash || search.replace("?", "#");
+        window.location.replace("/admin/" + tokenPart);
+      }
     })();
   </script>
 
@@ -156,11 +165,11 @@
   <link
           rel="preload"
           as="style"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
   />
   <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
   />
 
   <link rel="preload" href="style.css" as="style" />
@@ -183,9 +192,7 @@
           "alternateName": "UpCyc",
           "description": "Upcycling Patterns is an Erasmus+ KA210-SCH project focused on sustainability, environmental awareness, climate responsibility, and upcycling through international school collaboration.",
           "inLanguage": ["en", "tr"],
-          "publisher": {
-            "@id": "https://upcyclingpatterns.com/#organization"
-          }
+          "publisher": { "@id": "https://upcyclingpatterns.com/#organization" }
         },
         {
           "@type": "EducationalOrganization",
@@ -228,34 +235,22 @@
             {
               "@type": "EducationalOrganization",
               "name": "MEV Koleji Özel Basınköy Anadolu Lisesi",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "TR"
-              }
+              "address": { "@type": "PostalAddress", "addressCountry": "TR" }
             },
             {
               "@type": "EducationalOrganization",
               "name": "OEMUC SV. NAUM OHRIDSKI",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "MK"
-              }
+              "address": { "@type": "PostalAddress", "addressCountry": "MK" }
             },
             {
               "@type": "EducationalOrganization",
               "name": "Vilniaus automechanikos ir verslo mokykla",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "LT"
-              }
+              "address": { "@type": "PostalAddress", "addressCountry": "LT" }
             },
             {
               "@type": "EducationalOrganization",
               "name": "Zespol Szkol Samochodowych im. Tadeusza Tanskiego",
-              "address": {
-                "@type": "PostalAddress",
-                "addressCountry": "PL"
-              }
+              "address": { "@type": "PostalAddress", "addressCountry": "PL" }
             }
           ]
         },
@@ -368,6 +363,22 @@
       </nav>
 
       <div class="header-actions">
+        <button
+                class="theme-toggle"
+                id="themeToggle"
+                type="button"
+                aria-label="Toggle dark mode"
+                title="Toggle theme"
+        >
+          <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+
         <div class="language-switcher" aria-label="Language Switcher" role="group">
           <button
                   class="lang-btn active"
@@ -375,18 +386,14 @@
                   type="button"
                   aria-label="Switch to English"
                   aria-pressed="true"
-          >
-            EN
-          </button>
+          >EN</button>
           <button
                   class="lang-btn"
                   data-lang="tr"
                   type="button"
                   aria-label="Türkçe diline geç"
                   aria-pressed="false"
-          >
-            TR
-          </button>
+          >TR</button>
         </div>
 
         <button
@@ -424,6 +431,17 @@
     <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
     <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
     <div class="hero-orb hero-orb-3" aria-hidden="true"></div>
+
+    <!-- Decorative animated SVG pattern -->
+    <svg class="hero-pattern" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="leafPattern" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+          <path d="M60 30 Q90 30 90 60 Q90 90 60 90 Q30 90 30 60 Q30 30 60 30 Z" fill="none" stroke="currentColor" stroke-width="0.6" opacity="0.18" />
+          <circle cx="60" cy="60" r="2" fill="currentColor" opacity="0.22" />
+        </pattern>
+      </defs>
+      <rect width="1200" height="800" fill="url(#leafPattern)" />
+    </svg>
 
     <div class="container hero-container">
       <div class="hero-content">
@@ -870,45 +888,51 @@
 
         <div class="tabs-content">
           <div class="tab-panel active" role="tabpanel" id="panel-gallery" aria-labelledby="tab-gallery" tabindex="0">
-            <div class="gallery-grid" data-cms-collection="gallery">
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+            <div class="gallery-grid" id="galleryGrid" data-cms-collection="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-1.jpg" alt="Workshop activities" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption1">Workshop Activities</figcaption>
               </figure>
 
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-2.jpg" alt="Student products" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption2">Student Products</figcaption>
               </figure>
 
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-3.jpg" alt="International project meeting" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption3">Partner Meetings</figcaption>
               </figure>
 
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-4.jpg" alt="Sustainability presentation" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption4">Presentations &amp; Events</figcaption>
               </figure>
 
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-5.jpg" alt="Creative recycling display" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption5">Creative Displays</figcaption>
               </figure>
 
-              <figure class="gallery-card glass-card" data-cms-item="gallery">
+              <figure class="gallery-card glass-card" data-cms-item="gallery" data-lightbox="true">
                 <div class="gallery-img-wrap">
                   <img src="images/gallery-6.jpg" alt="Project team collaboration" loading="lazy" decoding="async" width="600" height="400" />
+                  <span class="gallery-zoom" aria-hidden="true">⊕</span>
                 </div>
                 <figcaption data-i18n="galleryCaption6">Team Collaboration</figcaption>
               </figure>
@@ -982,22 +1006,34 @@
 
       <div class="faq-list" data-cms-collection="faq">
         <details class="faq-item glass-card reveal-item" data-cms-item="faq">
-          <summary data-i18n="faq1Question">What is Upcycling Patterns?</summary>
+          <summary>
+            <span data-i18n="faq1Question">What is Upcycling Patterns?</span>
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </summary>
           <p data-i18n="faq1Answer">It is an Erasmus+ KA210-SCH school partnership project focused on sustainability, climate awareness, and creative reuse.</p>
         </details>
 
         <details class="faq-item glass-card reveal-item" data-cms-item="faq">
-          <summary data-i18n="faq2Question">Who are the project partners?</summary>
+          <summary>
+            <span data-i18n="faq2Question">Who are the project partners?</span>
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </summary>
           <p data-i18n="faq2Answer">The project includes partner schools from Türkiye, North Macedonia, Lithuania, and Poland.</p>
         </details>
 
         <details class="faq-item glass-card reveal-item" data-cms-item="faq">
-          <summary data-i18n="faq3Question">What kinds of activities are included?</summary>
+          <summary>
+            <span data-i18n="faq3Question">What kinds of activities are included?</span>
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </summary>
           <p data-i18n="faq3Answer">Workshops, research, mobility meetings, student production, digital dissemination, and collaborative learning activities.</p>
         </details>
 
         <details class="faq-item glass-card reveal-item" data-cms-item="faq">
-          <summary data-i18n="faq4Question">How long does the project last?</summary>
+          <summary>
+            <span data-i18n="faq4Question">How long does the project last?</span>
+            <span class="faq-chevron" aria-hidden="true">+</span>
+          </summary>
           <p data-i18n="faq4Answer">The project duration is 24 months, from 01 September 2025 to 31 August 2027.</p>
         </details>
       </div>
@@ -1072,20 +1108,30 @@
           </div>
         </div>
 
+        <!--
+          ====================================================================
+          IMPORTANT — Web3Forms setup (5 minutes):
+          1. Go to https://web3forms.com  →  enter project email →  copy key
+          2. Paste the key into BOTH places below:
+             - data-access-key=""
+             - input name="access_key" value=""
+          Until that's done, the form gracefully falls back to opening the
+          user's email client with the message pre-filled.
+          ====================================================================
+        -->
         <form
                 id="contactForm"
                 class="contact-form glass-card reveal-item"
                 action="https://api.web3forms.com/submit"
                 method="POST"
                 data-fallback-email="upcyclingpatterns@gmail.com"
-                data-access-key="YOUR_WEB3FORMS_ACCESS_KEY"
+                data-access-key=""
                 novalidate
                 aria-describedby="formNote formStatus"
         >
           <h3 data-i18n="contactFormTitle">Send a Message</h3>
 
-          <!-- Web3Forms key script.js güncellenince buraya gerçek key yazılacak. -->
-          <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+          <input type="hidden" name="access_key" value="" />
           <input type="hidden" name="subject" value="New message from Upcycling Patterns website" />
           <input type="hidden" name="from_name" value="Upcycling Patterns Website" />
           <input type="hidden" name="redirect" value="false" />
@@ -1103,6 +1149,7 @@
                       maxlength="80"
                       required
                       autocomplete="name"
+                      autocapitalize="words"
                       data-i18n-placeholder="formNamePlaceholder"
                       placeholder="Your full name"
               />
@@ -1160,9 +1207,19 @@
                     minlength="10"
                     maxlength="2000"
                     required
+                    spellcheck="true"
                     data-i18n-placeholder="formMessagePlaceholder"
                     placeholder="Write your message here..."
             ></textarea>
+          </div>
+
+          <div class="form-group form-consent">
+            <label class="consent-label">
+              <input type="checkbox" id="formConsent" name="consent" value="accepted" required />
+              <span class="consent-text" data-i18n="formConsent">
+                I agree that the information I provide will be used to respond to my message.
+              </span>
+            </label>
           </div>
 
           <button type="submit" class="btn btn-primary magnetic" id="submitBtn">
@@ -1228,6 +1285,15 @@
           </a>
         </p>
       </div>
+
+      <div class="footer-legal reveal-item">
+        <h4 data-i18n="legalTitle">Legal</h4>
+        <ul class="footer-legal-list">
+          <li><a href="/privacy-policy.html" data-i18n="privacyPolicyLink">Privacy Policy</a></li>
+          <li><a href="/cookie-policy.html" data-i18n="cookiePolicyLink">Cookie Policy</a></li>
+          <li><a href="/admin/" rel="nofollow" data-i18n="adminLink">Admin</a></li>
+        </ul>
+      </div>
     </div>
 
     <div class="footer-logos-section reveal-item">
@@ -1255,9 +1321,6 @@
     </div>
 
     <div class="designed-by">Designed by Arvin Hakimi</div>
-    <p class="footer-admin-link">
-      <a href="/admin/" rel="nofollow">Admin Panel</a>
-    </p>
   </div>
 </footer>
 
@@ -1266,6 +1329,49 @@
     <path d="m18 15-6-6-6 6" />
   </svg>
 </button>
+
+<!-- Cookie Consent Banner -->
+<div class="cookie-banner" id="cookieBanner" role="dialog" aria-labelledby="cookieBannerTitle" aria-describedby="cookieBannerText" hidden>
+  <div class="cookie-banner-card glass-card">
+    <div class="cookie-banner-content">
+      <div class="cookie-banner-icon" aria-hidden="true">🍪</div>
+      <div class="cookie-banner-text-wrap">
+        <h3 id="cookieBannerTitle" data-i18n="cookieBannerTitle">We respect your privacy</h3>
+        <p id="cookieBannerText" data-i18n="cookieBannerText">
+          We use only essential local storage to remember your language preference. No tracking, no analytics.
+        </p>
+      </div>
+    </div>
+    <div class="cookie-banner-actions">
+      <a href="/cookie-policy.html" class="cookie-banner-link" data-i18n="cookieBannerMore">Learn more</a>
+      <button type="button" class="btn btn-primary btn-small" id="cookieAccept" data-i18n="cookieBannerAccept">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox (for gallery) -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button type="button" class="lightbox-close" id="lightboxClose" aria-label="Close image viewer">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+      <path d="M18 6 6 18M6 6l12 12" />
+    </svg>
+  </button>
+  <button type="button" class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m15 18-6-6 6-6" />
+    </svg>
+  </button>
+  <button type="button" class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m9 18 6-6-6-6" />
+    </svg>
+  </button>
+  <figure class="lightbox-figure">
+    <img class="lightbox-image" id="lightboxImage" alt="" />
+    <figcaption class="lightbox-caption" id="lightboxCaption"></figcaption>
+  </figure>
+  <div class="lightbox-counter" id="lightboxCounter" aria-hidden="true"></div>
+</div>
 
 <script src="script.js" defer></script>
 </body>
