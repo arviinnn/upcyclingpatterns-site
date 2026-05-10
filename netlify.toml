@@ -1,77 +1,216 @@
-# =========================================================
-# Netlify Settings — Upcycling Patterns
-# =========================================================
+# =====================================================================
+# Netlify Configuration — Upcycling Patterns
+# Erasmus+ KA210-SCH Project
+# =====================================================================
 
 [build]
   publish = "."
 
-# -------------------------
-# General Security Headers
-# -------------------------
+# =====================================================================
+# Environment / build defaults
+# =====================================================================
+[build.environment]
+  NODE_VERSION = "20"
+
+# =====================================================================
+# Pretty URLs (no trailing /index.html)
+# =====================================================================
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true
+
+# =====================================================================
+# GLOBAL SECURITY HEADERS
+# These apply to every page on the site.
+# =====================================================================
 [[headers]]
   for = "/*"
   [headers.values]
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
+    X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=()"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https://api.web3forms.com https://api.netlify.com https://identity.netlify.com; frame-src 'self' https://identity.netlify.com https://www.youtube.com https://www.youtube-nocookie.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; object-src 'none'; upgrade-insecure-requests"
+    Cross-Origin-Opener-Policy = "same-origin"
+    X-XSS-Protection = "1; mode=block"
+    # Public site CSP — allows fonts, images, Web3Forms API, YouTube embeds
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline';
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      font-src 'self' https://fonts.gstatic.com data:;
+      img-src 'self' data: blob: https:;
+      media-src 'self' https:;
+      connect-src 'self' https://api.web3forms.com;
+      frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com;
+      frame-ancestors 'self';
+      base-uri 'self';
+      form-action 'self' https://api.web3forms.com;
+      object-src 'none';
+      manifest-src 'self';
+      upgrade-insecure-requests
+    """
 
-# -------------------------
-# HTML files should update fast
-# -------------------------
+# =====================================================================
+# ADMIN PANEL (Decap CMS) — Permissive CSP
+# Decap loads from unpkg, talks to Netlify Identity, GitHub, Cloudinary.
+# The admin is /admin/* only — never the public site.
+# =====================================================================
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Content-Security-Policy = """
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com https://unpkg.com https://cdn.jsdelivr.net;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com https://cdn.jsdelivr.net;
+      font-src 'self' https://fonts.gstatic.com data:;
+      img-src 'self' data: blob: https:;
+      media-src 'self' https: blob:;
+      connect-src 'self' https://identity.netlify.com https://api.netlify.com https://api.github.com https://github.com https://api.cloudinary.com https://res.cloudinary.com https://unpkg.com;
+      frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://identity.netlify.com;
+      frame-ancestors 'self';
+      base-uri 'self';
+      form-action 'self' https://api.netlify.com https://identity.netlify.com;
+      object-src 'none';
+      worker-src 'self' blob:;
+      manifest-src 'self';
+      upgrade-insecure-requests
+    """
+
+# =====================================================================
+# CACHE — HTML must always re-validate
+# =====================================================================
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# -------------------------
-# CSS and JS cache
-# -------------------------
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# =====================================================================
+# CACHE — CSS, JS (1 week, public)
+# =====================================================================
 [[headers]]
   for = "/*.css"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 
 [[headers]]
   for = "/*.js"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 
-# -------------------------
-# Images cache
-# -------------------------
+# =====================================================================
+# CACHE — Images (30 days, immutable-ish)
+# =====================================================================
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=604800"
+    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
 
-# -------------------------
-# Admin files should not be cached
-# -------------------------
+# =====================================================================
+# CACHE — Fonts (1 year)
+# =====================================================================
 [[headers]]
-  for = "/admin/*"
+  for = "/fonts/*"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# -------------------------
-# Data files should update fast
-# -------------------------
+# =====================================================================
+# CACHE — JSON data (CMS-edited)
+# Short cache, since editors update these
+# =====================================================================
 [[headers]]
-  for = "/data/*"
+  for = "/data/*.json"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
+    Content-Type = "application/json; charset=utf-8"
 
-# -------------------------
-# Sitemap and robots
-# -------------------------
+# =====================================================================
+# Sitemap, robots, manifest
+# =====================================================================
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
     Cache-Control = "public, max-age=3600"
+    Content-Type = "application/xml; charset=utf-8"
 
 [[headers]]
   for = "/robots.txt"
   [headers.values]
     Cache-Control = "public, max-age=3600"
+    Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+    Content-Type = "application/manifest+json; charset=utf-8"
+
+# =====================================================================
+# Service worker — never cache (must update fast)
+# =====================================================================
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+# =====================================================================
+# REDIRECTS
+# =====================================================================
+
+# Force HTTPS + canonical (apex) — Netlify handles auto-HTTPS,
+# this is just a defensive top-up.
+[[redirects]]
+  from = "http://upcyclingpatterns.com/*"
+  to = "https://upcyclingpatterns.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.upcyclingpatterns.com/*"
+  to = "https://upcyclingpatterns.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.upcyclingpatterns.com/*"
+  to = "https://upcyclingpatterns.com/:splat"
+  status = 301
+  force = true
+
+# Turkish path — same SPA, language detected client-side
+[[redirects]]
+  from = "/tr"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tr/"
+  to = "/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/tr/*"
+  to = "/index.html"
+  status = 200
+
+# Admin: ensure /admin always lands on /admin/
+[[redirects]]
+  from = "/admin"
+  to = "/admin/"
+  status = 301
+
+# Custom 404 catch-all (must be last)
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
