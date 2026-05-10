@@ -11,42 +11,87 @@
     />
 
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#2f7a43" />
+    <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <link rel="canonical" href="https://upcyclingpatterns.com/privacy-policy.html" />
-    <link rel="icon" href="images/favicon.png" type="image/png" />
+    <link rel="icon" href="/images/favicon.png" type="image/png" />
+
+    <!-- Early theme detection (no FOUC) -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("siteTheme");
+                var theme = saved === "dark" || saved === "light"
+                    ? saved
+                    : (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {}
+        })();
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:opsz,wght@9..144,500;9..144,700&display=swap"
+    />
 
     <style>
         :root {
             --primary: #2f7a43;
             --primary-dark: #215732;
+            --primary-deeper: #1a4225;
             --accent: #b8ff7a;
+            --accent-bright: #95f053;
             --text-main: #0f1b14;
             --text-soft: #5a6b60;
+            --text-muted: #7a8b80;
             --bg-1: #f8fcf8;
             --bg-2: #eef6ef;
             --card: rgba(255, 255, 255, 0.78);
             --border: rgba(47, 122, 67, 0.12);
             --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
+            --display-font: "Fraunces", Georgia, serif;
+            --body-font: "Inter", system-ui, -apple-system, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root[data-theme="dark"] {
+            --primary: #57b26c;
+            --primary-dark: #95f053;
+            --primary-deeper: #b8ff7a;
+            --text-main: #f0f7f1;
+            --text-soft: #b8c5bb;
+            --text-muted: #8a9b8e;
+            --bg-1: #0a120d;
+            --bg-2: #0f1912;
+            --card: rgba(20, 32, 24, 0.72);
+            --border: rgba(184, 255, 122, 0.10);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
         }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             min-height: 100vh;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+            font-family: var(--body-font);
             color: var(--text-main);
             line-height: 1.7;
             background:
                     radial-gradient(circle at top left, rgba(87, 178, 108, 0.16), transparent 28%),
                     radial-gradient(circle at bottom right, rgba(184, 255, 122, 0.18), transparent 30%),
                     linear-gradient(180deg, var(--bg-1), var(--bg-2));
-            padding: 32px 18px;
+            padding: 40px 18px 60px;
+            transition: background 0.4s ease, color 0.3s ease;
+        }
+
+        :root[data-theme="dark"] body {
+            background:
+                    radial-gradient(circle at top left, rgba(87, 178, 108, 0.10), transparent 35%),
+                    radial-gradient(circle at bottom right, rgba(184, 255, 122, 0.06), transparent 35%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
         }
 
         .page {
@@ -54,17 +99,77 @@
             margin: 0 auto;
         }
 
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
         .top-link {
             display: inline-flex;
             align-items: center;
-            margin-bottom: 24px;
+            gap: 6px;
             color: var(--primary-dark);
-            font-weight: 800;
+            font-weight: 700;
             text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            transition: all 0.25s ease;
         }
 
         .top-link:hover {
-            text-decoration: underline;
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        :root[data-theme="dark"] .top-link {
+            color: var(--accent-bright);
+        }
+
+        :root[data-theme="dark"] .top-link:hover {
+            background: var(--accent-bright);
+            color: #0a120d;
+            border-color: var(--accent-bright);
+        }
+
+        .theme-toggle {
+            width: 42px;
+            height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            background: var(--card);
+            border-radius: 999px;
+            cursor: pointer;
+            color: var(--primary-dark);
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        :root[data-theme="dark"] .theme-toggle {
+            color: var(--accent-bright);
+            border-color: rgba(184, 255, 122, 0.20);
+        }
+
+        .theme-toggle svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        :root[data-theme="dark"] .theme-icon-sun,
+        :root:not([data-theme="dark"]) .theme-icon-moon {
+            display: none;
         }
 
         .card {
@@ -74,26 +179,33 @@
             background: var(--card);
             box-shadow: var(--shadow);
             backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
         }
 
         h1 {
+            font-family: var(--display-font);
             margin-bottom: 12px;
-            font-size: clamp(2rem, 5vw, 4rem);
+            font-size: clamp(2.2rem, 5vw, 3.6rem);
+            font-weight: 700;
             line-height: 1.05;
-            letter-spacing: -0.05em;
-            color: var(--primary-dark);
+            letter-spacing: -0.04em;
+            color: var(--primary-deeper);
         }
 
         .intro {
             margin-bottom: 34px;
             color: var(--text-soft);
             font-size: 1.05rem;
+            max-width: 70ch;
         }
 
         h2 {
-            margin: 30px 0 10px;
+            font-family: var(--display-font);
+            margin: 36px 0 12px;
             font-size: 1.35rem;
+            font-weight: 600;
             color: var(--primary);
+            letter-spacing: -0.01em;
         }
 
         p {
@@ -115,29 +227,84 @@
         }
 
         .footer-note {
-            margin-top: 36px;
-            padding-top: 22px;
+            margin-top: 40px;
+            padding-top: 24px;
             border-top: 1px solid var(--border);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
         }
 
         .email {
             color: var(--primary-dark);
-            font-weight: 800;
+            font-weight: 700;
             text-decoration: none;
+            border-bottom: 1px dashed var(--primary);
         }
 
         .email:hover {
-            text-decoration: underline;
+            border-bottom-style: solid;
+        }
+
+        :root[data-theme="dark"] .email {
+            color: var(--accent-bright);
+        }
+
+        .related-links {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .related-links a {
+            font-size: 0.9rem;
+            color: var(--text-soft);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .related-links a:hover {
+            color: var(--primary);
+        }
+
+        :root[data-theme="dark"] .related-links a:hover {
+            color: var(--accent-bright);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
 
 <body>
 <main class="page">
-    <a class="top-link" href="/">← Back to Homepage</a>
+    <header class="page-header">
+        <a class="top-link" href="/">
+            <span aria-hidden="true">←</span>
+            <span>Back to Homepage</span>
+        </a>
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Toggle theme">
+            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+        </button>
+    </header>
 
-    <section class="card">
+    <article class="card">
         <h1>Privacy Policy</h1>
 
         <p class="intro">
@@ -159,31 +326,32 @@
             <li>Email address</li>
             <li>Message subject</li>
             <li>Message content</li>
+            <li>Selected language and theme preferences (stored locally in your browser only)</li>
         </ul>
 
         <h2>3. How We Use Information</h2>
         <p>
-            Information sent through the contact form is used only to respond to messages, project-related questions, or partnership communication.
+            Information sent through the contact form is used only to respond to messages, project-related questions, or partnership communication. It is never sold, shared with advertisers, or used for any commercial purpose.
         </p>
 
         <h2>4. Contact Form</h2>
         <p>
-            The contact form may use a third-party form service to deliver messages to the project email address. Submitted information is not used for advertising or commercial purposes.
+            The contact form uses a third-party form delivery service (Web3Forms) to securely route messages to the project email address. Submitted information is transmitted over HTTPS and is not used for advertising.
         </p>
 
-        <h2>5. Cookies and Analytics</h2>
+        <h2>5. Local Storage</h2>
         <p>
-            This website may use basic cookies or analytics tools in the future to understand website traffic and improve user experience. If analytics tools are added, this policy may be updated.
+            The website stores your language preference and chosen theme (light or dark) in your browser's local storage. This data never leaves your device. No tracking cookies or analytics services are currently in use.
         </p>
 
         <h2>6. Photos and Project Media</h2>
         <p>
-            Project photos, videos, and visual materials may be published for Erasmus+ dissemination and visibility purposes. Personal data and student images should be used according to school permissions and applicable data protection rules.
+            Project photos, videos, and visual materials may be published for Erasmus+ dissemination and visibility purposes. Personal data and student images are used only with appropriate school permissions and in line with applicable data protection rules.
         </p>
 
         <h2>7. Data Protection</h2>
         <p>
-            We aim to respect GDPR and KVKK principles by collecting only necessary information and using it only for project communication and dissemination purposes.
+            We aim to respect <strong>GDPR</strong> and <strong>KVKK</strong> principles by collecting only necessary information and using it only for project communication and dissemination purposes. You may request the deletion of any personal data we hold by contacting us.
         </p>
 
         <h2>8. External Links</h2>
@@ -191,16 +359,40 @@
             This website may include links to social media platforms or partner institutions. We are not responsible for the privacy practices of external websites.
         </p>
 
-        <h2>9. Contact</h2>
+        <h2>9. Your Rights</h2>
         <p>
-            For privacy-related questions, you can contact us at:
+            You have the right to request access to, correction of, or deletion of any personal data we hold about you. To exercise these rights, please contact us at the address below.
+        </p>
+
+        <h2>10. Contact</h2>
+        <p>
+            For privacy-related questions or data requests, you can contact us at:
             <a class="email" href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
         </p>
 
+        <div class="related-links">
+            <a href="/cookie-policy.html">Cookie Policy →</a>
+            <a href="/">Homepage →</a>
+        </div>
+
         <p class="footer-note">
-            Last updated: 09 May 2026
+            <span>Last updated: 10 May 2026</span>
+            <span>© 2025–2027 Upcycling Patterns</span>
         </p>
-    </section>
+    </article>
 </main>
+
+<script>
+    (function () {
+        var btn = document.getElementById("themeToggle");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+            var current = document.documentElement.getAttribute("data-theme");
+            var next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            try { localStorage.setItem("siteTheme", next); } catch (e) {}
+        });
+    })();
+</script>
 </body>
 </html>
