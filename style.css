@@ -4254,3 +4254,1416 @@ img[data-missing="true"] {
 img[data-missing="true"]::after {
     content: "Image unavailable";
 }
+/* FOOTER LOGO FIX - white background removed */
+.footer-logo {
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    filter: none !important;
+}
+
+.footer-logo:hover {
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Dark mode fix */
+:root[data-theme="dark"] .footer-logo {
+    background: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+}
+/* =====================================================
+   FOOTER LOGO FIX
+   Removes white logo cards and fixes partner logo sizes
+   ===================================================== */
+
+.footer-logos {
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.footer-logo {
+    display: block !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    object-fit: contain !important;
+    filter: none !important;
+}
+
+.footer-logo:hover {
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Official Project & Funding logos */
+.official-logo {
+    width: auto !important;
+    height: 62px !important;
+    max-width: 150px !important;
+}
+
+.official-logo-wide {
+    width: auto !important;
+    height: 66px !important;
+    max-width: 190px !important;
+}
+
+/* Partner Schools logos */
+.partner-logo {
+    width: auto !important;
+    height: 78px !important;
+    max-width: 260px !important;
+}
+
+.partner-logo-square {
+    width: 95px !important;
+    height: 82px !important;
+    object-fit: contain !important;
+}
+
+.partner-logo-wide {
+    width: 240px !important;
+    height: 82px !important;
+    object-fit: contain !important;
+}
+
+/* Specifically fix first partner logo: lg1 */
+.partner-logos .partner-logo-square:first-child {
+    width: 95px !important;
+    height: 95px !important;
+    object-fit: contain !important;
+}
+
+/* Mobile fix */
+@media (max-width: 760px) {
+    .official-logo,
+    .official-logo-wide {
+        height: 52px !important;
+        max-width: 150px !important;
+    }
+
+    .partner-logo,
+    .partner-logo-square,
+    .partner-logo-wide {
+        height: 66px !important;
+        max-width: 220px !important;
+    }
+}
+/* =====================================================
+   PREMIUM FOOTER DESIGN + MOBILE LOGOS SIDE BY SIDE
+   Add this at the VERY END of style.css
+   ===================================================== */
+
+.site-footer {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 78px 0 42px !important;
+    background:
+            radial-gradient(circle at 20% 10%, rgba(87, 178, 108, 0.28), transparent 28%),
+            radial-gradient(circle at 80% 35%, rgba(184, 255, 122, 0.16), transparent 30%),
+            radial-gradient(circle at 50% 100%, rgba(47, 122, 67, 0.22), transparent 34%),
+            linear-gradient(180deg, #07110b 0%, #0b160f 45%, #050b07 100%) !important;
+    color: rgba(248, 255, 249, 0.94) !important;
+    border-top: 1px solid rgba(184, 255, 122, 0.18) !important;
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.05),
+            0 -30px 90px rgba(47, 122, 67, 0.16) !important;
+}
+
+.site-footer::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 0 !important;
+    pointer-events: none !important;
+    background:
+            linear-gradient(rgba(184, 255, 122, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(184, 255, 122, 0.035) 1px, transparent 1px),
+            linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.08) 45%, transparent 70%) !important;
+    background-size: 42px 42px, 42px 42px, 260% 100% !important;
+    animation: footerPremiumSweep 12s linear infinite !important;
+    opacity: 1 !important;
+}
+
+.site-footer::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: -120px !important;
+    width: min(900px, 90vw) !important;
+    height: 260px !important;
+    pointer-events: none !important;
+    transform: translateX(-50%) !important;
+    background: radial-gradient(circle, rgba(87, 178, 108, 0.24), transparent 68%) !important;
+    filter: blur(18px) !important;
+}
+
+@keyframes footerPremiumSweep {
+    0% {
+        background-position: 0 0, 0 0, -130% 0;
+    }
+
+    100% {
+        background-position: 42px 42px, 42px 42px, 130% 0;
+    }
+}
+
+.footer-content,
+.footer-logos-section,
+.footer-partners-section,
+.footer-bottom {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+.footer-content {
+    padding: 28px !important;
+    border: 1px solid rgba(184, 255, 122, 0.11) !important;
+    border-radius: 34px !important;
+    background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.018)) !important;
+    backdrop-filter: blur(14px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(145%) !important;
+    box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.26),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+}
+
+.footer-brand h3 {
+    font-size: clamp(1.45rem, 2vw, 2rem) !important;
+    background: linear-gradient(135deg, #ffffff, #b8ff7a, #57b26c) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    text-shadow: 0 0 34px rgba(184, 255, 122, 0.12) !important;
+}
+
+.footer-contact strong,
+.footer-contact a,
+.footer-links a,
+.footer-bottom a {
+    color: rgba(184, 255, 122, 0.9) !important;
+}
+
+.footer-links a {
+    display: inline-flex !important;
+    padding: 6px 0 !important;
+    transition:
+            color 0.3s ease,
+            transform 0.3s ease,
+            text-shadow 0.3s ease !important;
+}
+
+.footer-links a:hover {
+    color: #ffffff !important;
+    transform: translateX(5px) !important;
+    text-shadow: 0 0 18px rgba(184, 255, 122, 0.35) !important;
+}
+
+/* Logo sections look cleaner and more premium */
+.footer-logos-section,
+.footer-partners-section {
+    margin-top: 34px !important;
+    padding: 34px 22px 30px !important;
+    border: 1px solid rgba(184, 255, 122, 0.10) !important;
+    border-radius: 32px !important;
+    background:
+            radial-gradient(circle at 50% 0%, rgba(87, 178, 108, 0.16), transparent 55%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015)) !important;
+    box-shadow:
+            0 18px 60px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.055) !important;
+}
+
+.footer-logos-title {
+    position: relative !important;
+    width: fit-content !important;
+    margin: 0 auto 26px !important;
+    padding: 9px 18px !important;
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.06) !important;
+    color: rgba(248, 255, 249, 0.9) !important;
+    font-size: 0.9rem !important;
+    letter-spacing: 0.12em !important;
+    text-shadow: 0 0 18px rgba(184, 255, 122, 0.22) !important;
+}
+
+/* Logos */
+.footer-logos {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 24px !important;
+}
+
+.footer-logo {
+    display: block !important;
+    object-fit: contain !important;
+    background: rgba(255, 255, 255, 0.035) !important;
+    border: 1px solid rgba(184, 255, 122, 0.10) !important;
+    border-radius: 22px !important;
+    padding: 12px !important;
+    box-shadow:
+            0 16px 34px rgba(0, 0, 0, 0.24),
+            inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    filter: drop-shadow(0 0 10px rgba(184, 255, 122, 0.08)) saturate(1.04) !important;
+    transition:
+            transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+            box-shadow 0.35s ease,
+            border-color 0.35s ease,
+            filter 0.35s ease !important;
+}
+
+.footer-logo:hover {
+    transform: translateY(-8px) scale(1.06) !important;
+    border-color: rgba(184, 255, 122, 0.35) !important;
+    box-shadow:
+            0 24px 48px rgba(0, 0, 0, 0.34),
+            0 0 34px rgba(87, 178, 108, 0.24),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    filter: drop-shadow(0 0 16px rgba(184, 255, 122, 0.18)) saturate(1.15) !important;
+}
+
+/* Desktop logo sizes */
+.official-logo {
+    width: auto !important;
+    height: 68px !important;
+    max-width: 160px !important;
+}
+
+.official-logo-wide {
+    width: auto !important;
+    height: 72px !important;
+    max-width: 205px !important;
+}
+
+.partner-logo {
+    width: auto !important;
+    height: 86px !important;
+    max-width: 270px !important;
+}
+
+.partner-logo-square {
+    width: 105px !important;
+    height: 96px !important;
+}
+
+.partner-logo-wide {
+    width: 260px !important;
+    height: 96px !important;
+}
+
+/* First partner logo looks more balanced */
+.partner-logos .partner-logo-square:first-child {
+    width: 110px !important;
+    height: 110px !important;
+}
+
+/* Footer bottom */
+.footer-bottom {
+    margin-top: 30px !important;
+    padding-top: 24px !important;
+    border-top: 1px solid rgba(184, 255, 122, 0.10) !important;
+    text-align: center !important;
+}
+
+.footer-bottom p {
+    color: rgba(248, 255, 249, 0.72) !important;
+}
+
+/* =====================================================
+   MOBILE FIX: logos stay side by side, not vertical
+   ===================================================== */
+
+@media (max-width: 760px) {
+    .site-footer {
+        padding: 58px 0 32px !important;
+    }
+
+    .footer-content {
+        padding: 22px 18px !important;
+        border-radius: 26px !important;
+        text-align: center !important;
+    }
+
+    .footer-logos-section,
+    .footer-partners-section {
+        margin-top: 24px !important;
+        padding: 24px 14px 22px !important;
+        border-radius: 26px !important;
+    }
+
+    .footer-logos-title {
+        margin-bottom: 18px !important;
+        font-size: 0.76rem !important;
+        letter-spacing: 0.09em !important;
+        white-space: nowrap !important;
+    }
+
+    .footer-logos {
+        justify-content: flex-start !important;
+        flex-wrap: nowrap !important;
+        gap: 12px !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        padding: 6px 4px 12px !important;
+        scroll-snap-type: x mandatory !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    .footer-logos::-webkit-scrollbar {
+        height: 6px !important;
+    }
+
+    .footer-logos::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.06) !important;
+        border-radius: 999px !important;
+    }
+
+    .footer-logos::-webkit-scrollbar-thumb {
+        background: linear-gradient(90deg, #2f7a43, #57b26c, #b8ff7a) !important;
+        border-radius: 999px !important;
+        border: none !important;
+    }
+
+    .footer-logo {
+        flex: 0 0 auto !important;
+        scroll-snap-align: center !important;
+        padding: 8px !important;
+        border-radius: 16px !important;
+    }
+
+    .official-logo {
+        width: 82px !important;
+        height: 52px !important;
+        max-width: 82px !important;
+    }
+
+    .official-logo-wide {
+        width: 118px !important;
+        height: 52px !important;
+        max-width: 118px !important;
+    }
+
+    .partner-logo {
+        width: 96px !important;
+        height: 62px !important;
+        max-width: 96px !important;
+    }
+
+    .partner-logo-square {
+        width: 72px !important;
+        height: 66px !important;
+        max-width: 72px !important;
+    }
+
+    .partner-logo-wide {
+        width: 145px !important;
+        height: 66px !important;
+        max-width: 145px !important;
+    }
+
+    .partner-logos .partner-logo-square:first-child {
+        width: 74px !important;
+        height: 74px !important;
+        max-width: 74px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .footer-logos {
+        gap: 10px !important;
+    }
+
+    .official-logo {
+        width: 74px !important;
+        height: 48px !important;
+        max-width: 74px !important;
+    }
+
+    .official-logo-wide {
+        width: 106px !important;
+        height: 48px !important;
+        max-width: 106px !important;
+    }
+
+    .partner-logo-square {
+        width: 64px !important;
+        height: 60px !important;
+        max-width: 64px !important;
+    }
+
+    .partner-logo-wide {
+        width: 128px !important;
+        height: 60px !important;
+        max-width: 128px !important;
+    }
+
+    .partner-logos .partner-logo-square:first-child {
+        width: 66px !important;
+        height: 66px !important;
+        max-width: 66px !important;
+    }
+}
+/* =====================================================
+   DARKER + MORE PREMIUM FOOTER LOGO AREA
+   Put this at the VERY END of style.css
+   ===================================================== */
+
+.site-footer {
+    background:
+            radial-gradient(circle at 18% 12%, rgba(87, 178, 108, 0.20), transparent 26%),
+            radial-gradient(circle at 82% 25%, rgba(184, 255, 122, 0.10), transparent 28%),
+            radial-gradient(circle at 50% 100%, rgba(47, 122, 67, 0.16), transparent 36%),
+            linear-gradient(180deg, #020604 0%, #06100a 42%, #020403 100%) !important;
+    border-top: 1px solid rgba(184, 255, 122, 0.24) !important;
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.04),
+            0 -36px 100px rgba(0, 0, 0, 0.55) !important;
+}
+
+.site-footer::before {
+    opacity: 0.55 !important;
+    background:
+            linear-gradient(rgba(184, 255, 122, 0.025) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(184, 255, 122, 0.025) 1px, transparent 1px),
+            radial-gradient(circle at 50% 30%, rgba(87, 178, 108, 0.10), transparent 48%) !important;
+    background-size: 44px 44px, 44px 44px, 100% 100% !important;
+}
+
+.footer-content,
+.footer-logos-section,
+.footer-partners-section {
+    background:
+            linear-gradient(135deg, rgba(12, 34, 20, 0.78), rgba(4, 11, 7, 0.88)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+    box-shadow:
+            0 26px 90px rgba(0, 0, 0, 0.42),
+            inset 0 1px 0 rgba(255, 255, 255, 0.055),
+            inset 0 0 55px rgba(87, 178, 108, 0.08) !important;
+}
+
+.footer-logos-section,
+.footer-partners-section {
+    backdrop-filter: blur(16px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+}
+
+/* Başlıkları daha parlak yapar */
+.footer-logos-title {
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.15), rgba(87, 178, 108, 0.08)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.32) !important;
+    color: #f5fff0 !important;
+    box-shadow:
+            0 0 28px rgba(87, 178, 108, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.10) !important;
+    text-shadow: 0 0 18px rgba(184, 255, 122, 0.38) !important;
+}
+
+/* Logo kutularını koyu ama logoyu net gösteren premium kart yapar */
+.footer-logo {
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.045)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.24) !important;
+    box-shadow:
+            0 18px 42px rgba(0, 0, 0, 0.48),
+            0 0 22px rgba(87, 178, 108, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.13),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.25) !important;
+    filter:
+            brightness(1.35)
+            contrast(1.18)
+            saturate(1.20)
+            drop-shadow(0 0 12px rgba(184, 255, 122, 0.16)) !important;
+}
+
+/* Logonun arkasında hafif ışık efekti */
+.footer-logo::before {
+    content: "" !important;
+    position: absolute !important;
+    inset: 8px !important;
+    border-radius: inherit !important;
+    background: radial-gradient(circle, rgba(184, 255, 122, 0.16), transparent 68%) !important;
+    opacity: 0.55 !important;
+    pointer-events: none !important;
+}
+
+/* Hover daha canlı */
+.footer-logo:hover {
+    transform: translateY(-9px) scale(1.08) !important;
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(87, 178, 108, 0.07)) !important;
+    border-color: rgba(184, 255, 122, 0.52) !important;
+    box-shadow:
+            0 28px 58px rgba(0, 0, 0, 0.58),
+            0 0 42px rgba(87, 178, 108, 0.32),
+            0 0 18px rgba(184, 255, 122, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    filter:
+            brightness(1.55)
+            contrast(1.25)
+            saturate(1.32)
+            drop-shadow(0 0 18px rgba(184, 255, 122, 0.25)) !important;
+}
+
+/* Yazılar daha okunaklı */
+.footer-brand h3 {
+    background: linear-gradient(135deg, #ffffff, #c8ff91, #57b26c) !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+.footer-brand p,
+.footer-contact p,
+.footer-links a,
+.footer-bottom p {
+    color: rgba(245, 255, 247, 0.76) !important;
+}
+
+.footer-contact strong {
+    color: #b8ff7a !important;
+}
+
+.footer-contact a {
+    color: #a9ff66 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 14px rgba(184, 255, 122, 0.25) !important;
+}
+
+/* Official logolar biraz büyüsün */
+.official-logo {
+    height: 74px !important;
+    max-width: 175px !important;
+}
+
+.official-logo-wide {
+    height: 78px !important;
+    max-width: 220px !important;
+}
+
+/* Partner logolar daha belirgin */
+.partner-logo {
+    height: 96px !important;
+    max-width: 290px !important;
+}
+
+.partner-logo-square {
+    width: 118px !important;
+    height: 108px !important;
+}
+
+.partner-logo-wide {
+    width: 285px !important;
+    height: 108px !important;
+}
+
+.partner-logos .partner-logo-square:first-child {
+    width: 122px !important;
+    height: 122px !important;
+}
+
+/* Mobilde yine yan yana kalsın, ama daha net görünsün */
+@media (max-width: 760px) {
+    .footer-logos-section,
+    .footer-partners-section {
+        background:
+                linear-gradient(135deg, rgba(9, 25, 15, 0.92), rgba(2, 7, 4, 0.95)) !important;
+    }
+
+    .footer-logo {
+        background:
+                linear-gradient(145deg, rgba(255, 255, 255, 0.17), rgba(255, 255, 255, 0.055)) !important;
+        border-color: rgba(184, 255, 122, 0.30) !important;
+        filter:
+                brightness(1.45)
+                contrast(1.22)
+                saturate(1.25)
+                drop-shadow(0 0 10px rgba(184, 255, 122, 0.18)) !important;
+    }
+
+    .official-logo {
+        width: 92px !important;
+        height: 58px !important;
+        max-width: 92px !important;
+    }
+
+    .official-logo-wide {
+        width: 130px !important;
+        height: 58px !important;
+        max-width: 130px !important;
+    }
+
+    .partner-logo-square {
+        width: 78px !important;
+        height: 72px !important;
+        max-width: 78px !important;
+    }
+
+    .partner-logo-wide {
+        width: 158px !important;
+        height: 72px !important;
+        max-width: 158px !important;
+    }
+
+    .partner-logos .partner-logo-square:first-child {
+        width: 80px !important;
+        height: 80px !important;
+        max-width: 80px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .official-logo {
+        width: 82px !important;
+        height: 54px !important;
+        max-width: 82px !important;
+    }
+
+    .official-logo-wide {
+        width: 116px !important;
+        height: 54px !important;
+        max-width: 116px !important;
+    }
+
+    .partner-logo-square {
+        width: 70px !important;
+        height: 66px !important;
+        max-width: 70px !important;
+    }
+
+    .partner-logo-wide {
+        width: 140px !important;
+        height: 66px !important;
+        max-width: 140px !important;
+    }
+
+    .partner-logos .partner-logo-square:first-child {
+        width: 72px !important;
+        height: 72px !important;
+        max-width: 72px !important;
+    }
+}
+/* =====================================================
+   PARTNER COUNTRY FLAGS — PREMIUM / SHARP VERSION
+   Add this at the VERY END of style.css
+   ===================================================== */
+
+.partner-flag {
+    width: 82px !important;
+    height: 58px !important;
+    margin-bottom: 22px !important;
+    padding: 6px !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(240, 250, 243, 0.72)) !important;
+    border: 1px solid rgba(47, 122, 67, 0.12) !important;
+    box-shadow:
+            0 18px 38px rgba(15, 27, 20, 0.14),
+            0 0 26px rgba(87, 178, 108, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    transition:
+            transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+            box-shadow 0.35s ease,
+            border-color 0.35s ease !important;
+}
+
+.partner-flag::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: 6px !important;
+    z-index: 3 !important;
+    border-radius: 15px !important;
+    pointer-events: none !important;
+    background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 38%),
+            linear-gradient(180deg, transparent 58%, rgba(0, 0, 0, 0.10)) !important;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22) !important;
+}
+
+.partner-card:hover .partner-flag {
+    transform: translateY(-5px) scale(1.08) rotate(-2deg) !important;
+    border-color: rgba(87, 178, 108, 0.28) !important;
+    box-shadow:
+            0 26px 52px rgba(15, 27, 20, 0.20),
+            0 0 36px rgba(87, 178, 108, 0.20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Eski CSS ile çizilen bayrak detaylarını kapatır */
+.flag-tr::before,
+.flag-tr::after,
+.flag-mk::before,
+.flag-mk::after,
+.flag-lt::before,
+.flag-lt::after,
+.flag-pl::before,
+.flag-pl::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Ortak bayrak görsel ayarı */
+.flag-tr,
+.flag-mk,
+.flag-lt,
+.flag-pl {
+    position: relative !important;
+    z-index: 2 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 15px !important;
+    overflow: hidden !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    box-shadow:
+            0 8px 18px rgba(0, 0, 0, 0.16),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.18) !important;
+    filter: saturate(1.12) contrast(1.08) brightness(1.04) !important;
+}
+
+/* Türkiye */
+.flag-tr {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect width='900' height='600' fill='%23e30a17'/%3E%3Ccircle cx='330' cy='300' r='150' fill='white'/%3E%3Ccircle cx='375' cy='300' r='120' fill='%23e30a17'/%3E%3Cpolygon fill='white' points='560,228 577.6,275.7 628.5,277.8 588.5,309.3 602.3,358.2 560,330 517.7,358.2 531.5,309.3 491.5,277.8 542.4,275.7'/%3E%3C/svg%3E") !important;
+}
+
+/* North Macedonia */
+.flag-mk {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect width='900' height='600' fill='%23d20000'/%3E%3Cpath fill='%23ffe600' d='M450 300 L0 0 L120 0 Z M450 300 L900 0 L780 0 Z M450 300 L0 600 L120 600 Z M450 300 L900 600 L780 600 Z M450 300 L0 245 L0 355 Z M450 300 L900 245 L900 355 Z M450 300 L395 0 L505 0 Z M450 300 L395 600 L505 600 Z'/%3E%3Ccircle cx='450' cy='300' r='72' fill='%23ffe600' stroke='%23d20000' stroke-width='18'/%3E%3C/svg%3E") !important;
+}
+
+/* Lithuania */
+.flag-lt {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect width='900' height='200' y='0' fill='%23fdb913'/%3E%3Crect width='900' height='200' y='200' fill='%23006a44'/%3E%3Crect width='900' height='200' y='400' fill='%23c1272d'/%3E%3C/svg%3E") !important;
+}
+
+/* Poland */
+.flag-pl {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 600'%3E%3Crect width='900' height='300' y='0' fill='%23ffffff'/%3E%3Crect width='900' height='300' y='300' fill='%23dc143c'/%3E%3C/svg%3E") !important;
+}
+
+/* Partner kartındaki ülke ismini bayrakla daha uyumlu yapar */
+.partner-card h3 {
+    margin-top: 4px !important;
+    font-size: 1.35rem !important;
+}
+
+/* Mobilde de düzgün kalsın */
+@media (max-width: 760px) {
+    .partner-flag {
+        width: 74px !important;
+        height: 52px !important;
+        padding: 5px !important;
+        border-radius: 18px !important;
+        margin-bottom: 18px !important;
+    }
+
+    .partner-flag::after {
+        inset: 5px !important;
+        border-radius: 13px !important;
+    }
+
+    .flag-tr,
+    .flag-mk,
+    .flag-lt,
+    .flag-pl {
+        border-radius: 13px !important;
+    }
+
+    .partner-card h3 {
+        font-size: 1.22rem !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .partner-flag {
+        width: 68px !important;
+        height: 48px !important;
+    }
+}
+/* =====================================================
+   DARK MODE NAVBAR FIX — TEXT VISIBILITY
+   Add this at the VERY END of style.css
+   ===================================================== */
+
+:root[data-theme="dark"] .site-header {
+    background: transparent !important;
+}
+
+:root[data-theme="dark"] .navbar {
+    background:
+            linear-gradient(135deg, rgba(8, 22, 13, 0.88), rgba(5, 12, 8, 0.82)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.22) !important;
+    box-shadow:
+            0 22px 70px rgba(0, 0, 0, 0.42),
+            0 0 42px rgba(87, 178, 108, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(22px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
+}
+
+:root[data-theme="dark"] .site-header.scrolled .navbar {
+    background:
+            linear-gradient(135deg, rgba(6, 18, 10, 0.94), rgba(3, 9, 5, 0.90)) !important;
+    box-shadow:
+            0 24px 80px rgba(0, 0, 0, 0.50),
+            0 0 50px rgba(87, 178, 108, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Logo yazısı */
+:root[data-theme="dark"] .logo-text {
+    color: #f5fff4 !important;
+    -webkit-text-fill-color: #f5fff4 !important;
+    text-shadow: 0 0 14px rgba(184, 255, 122, 0.22) !important;
+}
+
+:root[data-theme="dark"] .logo:hover .logo-text {
+    color: #b8ff7a !important;
+    -webkit-text-fill-color: #b8ff7a !important;
+}
+
+/* Menü yazıları */
+:root[data-theme="dark"] .nav-link,
+:root[data-theme="dark"] .nav-menu-desktop .nav-link {
+    color: rgba(245, 255, 247, 0.82) !important;
+    -webkit-text-fill-color: rgba(245, 255, 247, 0.82) !important;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.35) !important;
+}
+
+:root[data-theme="dark"] .nav-link:hover {
+    color: #b8ff7a !important;
+    -webkit-text-fill-color: #b8ff7a !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+}
+
+/* Aktif sayfa butonu */
+:root[data-theme="dark"] .nav-link.active,
+:root[data-theme="dark"] .nav-link[aria-current="page"] {
+    color: #07110b !important;
+    -webkit-text-fill-color: #07110b !important;
+    background:
+            linear-gradient(135deg, #b8ff7a, #7ef04f) !important;
+    box-shadow:
+            0 10px 24px rgba(184, 255, 122, 0.25),
+            inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    text-shadow: none !important;
+}
+
+:root[data-theme="dark"] .nav-link.active::after,
+:root[data-theme="dark"] .nav-link[aria-current="page"]::after {
+    background: rgba(7, 17, 11, 0.42) !important;
+    box-shadow: none !important;
+}
+
+/* Dil seçici */
+:root[data-theme="dark"] .language-switcher {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+}
+
+:root[data-theme="dark"] .lang-btn {
+    color: rgba(245, 255, 247, 0.78) !important;
+    -webkit-text-fill-color: rgba(245, 255, 247, 0.78) !important;
+}
+
+:root[data-theme="dark"] .lang-btn:hover {
+    color: #b8ff7a !important;
+    -webkit-text-fill-color: #b8ff7a !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+}
+
+:root[data-theme="dark"] .lang-btn.active,
+:root[data-theme="dark"] .lang-btn[aria-pressed="true"] {
+    color: #07110b !important;
+    -webkit-text-fill-color: #07110b !important;
+    background: linear-gradient(135deg, #b8ff7a, #7ef04f) !important;
+}
+
+/* Tema butonu ve hamburger */
+:root[data-theme="dark"] .theme-toggle,
+:root[data-theme="dark"] .desktop-toggle {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(184, 255, 122, 0.22) !important;
+    color: #b8ff7a !important;
+    box-shadow:
+            0 10px 24px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+:root[data-theme="dark"] .theme-toggle svg,
+:root[data-theme="dark"] .theme-toggle i {
+    color: #b8ff7a !important;
+    stroke: #b8ff7a !important;
+}
+
+:root[data-theme="dark"] .desktop-toggle span {
+    background: #f5fff4 !important;
+}
+
+/* Açılır menü de dark mode'da okunaklı olsun */
+:root[data-theme="dark"] .nav-menu-dropdown {
+    background:
+            linear-gradient(135deg, rgba(8, 22, 13, 0.96), rgba(4, 10, 6, 0.96)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.20) !important;
+    box-shadow:
+            0 28px 80px rgba(0, 0, 0, 0.55),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+:root[data-theme="dark"] .nav-menu-dropdown .nav-link {
+    color: rgba(245, 255, 247, 0.86) !important;
+    -webkit-text-fill-color: rgba(245, 255, 247, 0.86) !important;
+}
+
+:root[data-theme="dark"] .nav-menu-dropdown .nav-link:hover {
+    color: #b8ff7a !important;
+    -webkit-text-fill-color: #b8ff7a !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+}
+/* =========================================================
+   FIXED APPLE / iOS LIQUID GLASS HEADER
+   Önceki dev beyaz oval sorununu düzeltir.
+   Sadece üst çubuğun görünüşünü değiştirir.
+   style.css EN ALTINA EKLE
+   ========================================================= */
+
+/* Önceki hatalı büyük cam katmanlarını tamamen kapat */
+.navbar::before,
+.navbar::after,
+html[data-theme="dark"] .navbar::before,
+html[data-theme="dark"] .navbar::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Header kendi arka planını göstermesin */
+.site-header,
+html[data-theme="dark"] .site-header {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Ana navbar: sadece mevcut çubuğu glass yapar, boyut/yer değiştirmez */
+.navbar {
+    position: relative !important;
+    overflow: visible !important;
+
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.74),
+                    rgba(255, 255, 255, 0.44)
+            ) !important;
+
+    backdrop-filter: blur(22px) saturate(180%) brightness(1.06) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%) brightness(1.06) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.72) !important;
+
+    box-shadow:
+            0 16px 45px rgba(47, 122, 67, 0.10),
+            0 4px 16px rgba(0, 0, 0, 0.045),
+            inset 0 1px 0 rgba(255, 255, 255, 0.88),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+/* Dark mode'da da beyaz glass kalsın */
+html[data-theme="dark"] .navbar {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.70),
+                    rgba(255, 255, 255, 0.40)
+            ) !important;
+
+    backdrop-filter: blur(24px) saturate(185%) brightness(1.05) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(185%) brightness(1.05) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.62) !important;
+
+    box-shadow:
+            0 18px 48px rgba(0, 0, 0, 0.22),
+            0 4px 18px rgba(0, 0, 0, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.78),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.24) !important;
+}
+
+/* Navbar yazıları cam üstünde net kalsın */
+.logo-text,
+.navbar .nav-link,
+html[data-theme="dark"] .logo-text,
+html[data-theme="dark"] .navbar .nav-link {
+    color: rgba(17, 34, 23, 0.86) !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Hover ve aktif menü */
+.navbar .nav-link:hover,
+.navbar .nav-link.active,
+html[data-theme="dark"] .navbar .nav-link:hover,
+html[data-theme="dark"] .navbar .nav-link.active {
+    color: #2f7a43 !important;
+}
+
+/* Home aktif butonu: küçük glass pill, yer değiştirmez */
+.navbar .nav-link.active,
+html[data-theme="dark"] .navbar .nav-link.active {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(184, 255, 122, 0.38),
+                    rgba(255, 255, 255, 0.48)
+            ) !important;
+
+    box-shadow:
+            0 8px 18px rgba(47, 122, 67, 0.13),
+            inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+/* Logo kutusu cam gibi dursun */
+.logo-mark,
+.logo-image-wrap,
+html[data-theme="dark"] .logo-mark,
+html[data-theme="dark"] .logo-image-wrap {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.82),
+                    rgba(255, 255, 255, 0.48)
+            ) !important;
+
+    backdrop-filter: blur(16px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(170%) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.72) !important;
+
+    box-shadow:
+            0 8px 20px rgba(47, 122, 67, 0.10),
+            inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+}
+
+/* Sağdaki butonlar: tema, dil, hamburger */
+.theme-toggle,
+.language-switcher,
+.menu-toggle,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .language-switcher,
+html[data-theme="dark"] .menu-toggle {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.76),
+                    rgba(255, 255, 255, 0.44)
+            ) !important;
+
+    backdrop-filter: blur(18px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.68) !important;
+
+    box-shadow:
+            0 9px 22px rgba(47, 122, 67, 0.09),
+            inset 0 1px 0 rgba(255, 255, 255, 0.82) !important;
+}
+
+/* Sağdaki ikon/yazılar net kalsın */
+.theme-toggle,
+.menu-toggle,
+.language-switcher,
+.lang-btn,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .menu-toggle,
+html[data-theme="dark"] .language-switcher,
+html[data-theme="dark"] .lang-btn {
+    color: rgba(17, 34, 23, 0.88) !important;
+}
+
+/* Aktif EN/TR butonu */
+.lang-btn.active,
+html[data-theme="dark"] .lang-btn.active {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(47, 122, 67, 0.96),
+                    rgba(87, 178, 108, 0.92)
+            ) !important;
+
+    color: #ffffff !important;
+
+    box-shadow:
+            0 8px 18px rgba(47, 122, 67, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.34) !important;
+}
+
+/* Hamburger çizgileri */
+.menu-toggle span,
+html[data-theme="dark"] .menu-toggle span {
+    background: rgba(17, 34, 23, 0.88) !important;
+}
+
+/* Açılır menü de aynı glass kalsın ama büyüyüp sayfayı kaplamasın */
+.nav-menu-dropdown,
+html[data-theme="dark"] .nav-menu-dropdown {
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.36),
+                    rgba(255, 255, 255, 0.22)
+            ) !important;
+
+    backdrop-filter: blur(22px) saturate(180%) brightness(1.05) !important;
+    -webkit-backdrop-filter: blur(22px) saturate(180%) brightness(1.05) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.68) !important;
+
+    box-shadow:
+            0 20px 55px rgba(0, 0, 0, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.80) !important;
+}
+
+/* Tarayıcı backdrop-filter desteklemezse temiz fallback */
+@supports not ((backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px))) {
+    .navbar,
+    .nav-menu-dropdown,
+    .theme-toggle,
+    .language-switcher,
+    .menu-toggle,
+    html[data-theme="dark"] .navbar,
+    html[data-theme="dark"] .nav-menu-dropdown,
+    html[data-theme="dark"] .theme-toggle,
+    html[data-theme="dark"] .language-switcher,
+    html[data-theme="dark"] .menu-toggle {
+        background: rgba(255, 255, 255, 0.88) !important;
+    }
+}
+/* =========================================================
+   FAQ DOUBLE PLUS FIX
+   FAQ kısmında iki tane + görünmesini engeller
+   style.css EN ALTINA EKLE
+   ========================================================= */
+
+/* Tarayıcının varsayılan details okunu kapat */
+.faq-item summary {
+    list-style: none !important;
+}
+
+.faq-item summary::-webkit-details-marker {
+    display: none !important;
+}
+
+/* CSS ile sonradan eklenen ikinci + / ikon varsa kapat */
+.faq-item summary::before,
+.faq-item summary::after {
+    content: none !important;
+    display: none !important;
+}
+
+/* Sadece HTML'deki gerçek faq-chevron görünsün */
+.faq-chevron {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: 28px !important;
+    height: 28px !important;
+
+    flex: 0 0 28px !important;
+
+    border-radius: 999px !important;
+
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(184, 255, 122, 0.32),
+                    rgba(255, 255, 255, 0.38)
+            ) !important;
+
+    color: #2f7a43 !important;
+
+    font-size: 18px !important;
+    line-height: 1 !important;
+    font-weight: 900 !important;
+
+    box-shadow:
+            0 8px 18px rgba(47, 122, 67, 0.12),
+            inset 0 1px 0 rgba(255, 255, 255, 0.65) !important;
+
+    transition:
+            transform 0.25s ease,
+            background 0.25s ease,
+            color 0.25s ease !important;
+}
+
+/* Açılınca + dönsün, tek ikon olarak kalsın */
+.faq-item[open] .faq-chevron {
+    transform: rotate(45deg) !important;
+    background:
+            linear-gradient(
+                    135deg,
+                    rgba(47, 122, 67, 0.92),
+                    rgba(87, 178, 108, 0.82)
+            ) !important;
+
+    color: #ffffff !important;
+}
+
+/* Mobilde biraz küçült */
+@media (max-width: 600px) {
+    .faq-chevron {
+        width: 24px !important;
+        height: 24px !important;
+        flex-basis: 24px !important;
+
+        font-size: 16px !important;
+    }
+}
+/* =====================================================
+   FINAL FOOTER LOGO POLISH
+   Üst sıra logolar daha büyük + logo çevresi daha premium
+   BUNU style.css DOSYASININ EN ALTINA EKLE
+   ===================================================== */
+
+/* Üst ve alt logo bölümlerindeki genel kart görünümü */
+.footer-logos-section .footer-logo,
+.footer-partners-section .footer-logo {
+    display: block !important;
+    object-fit: contain !important;
+
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.145), rgba(255, 255, 255, 0.035)) !important;
+
+    border: 1px solid rgba(255, 255, 255, 0.24) !important;
+    border-radius: 18px !important;
+
+    padding: 10px 13px !important;
+
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.22),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+            0 14px 34px rgba(0, 0, 0, 0.32),
+            0 0 18px rgba(184, 255, 122, 0.08) !important;
+
+    filter:
+            brightness(1.22)
+            contrast(1.15)
+            saturate(1.12)
+            drop-shadow(0 0 8px rgba(255, 255, 255, 0.08)) !important;
+
+    transition:
+            transform 0.35s ease,
+            box-shadow 0.35s ease,
+            border-color 0.35s ease,
+            filter 0.35s ease !important;
+}
+
+/* Hover olunca daha şık dursun */
+.footer-logos-section .footer-logo:hover,
+.footer-partners-section .footer-logo:hover {
+    transform: translateY(-4px) scale(1.045) !important;
+
+    border-color: rgba(255, 255, 255, 0.38) !important;
+
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.30),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+            0 20px 45px rgba(0, 0, 0, 0.42),
+            0 0 26px rgba(184, 255, 122, 0.16) !important;
+
+    filter:
+            brightness(1.35)
+            contrast(1.2)
+            saturate(1.2)
+            drop-shadow(0 0 10px rgba(184, 255, 122, 0.14)) !important;
+}
+
+/* ÜST SATIR: Official Project & Funding logoları daha büyük ve belirgin */
+.footer-logos-section .official-logo {
+    width: 118px !important;
+    height: 80px !important;
+    max-width: 118px !important;
+}
+
+.footer-logos-section .official-logo-wide {
+    width: 150px !important;
+    height: 80px !important;
+    max-width: 150px !important;
+}
+
+/* Alt satır: Partner logolarının çerçevesi daha temiz kalsın */
+.footer-partners-section .partner-logo,
+.footer-partners-section .partner-logo-square,
+.footer-partners-section .partner-logo-wide {
+    border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Üst ve alt bölüm başlıklarının biraz daha premium görünmesi */
+.footer-logos-title {
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.14), rgba(255, 255, 255, 0.045)) !important;
+    border: 1px solid rgba(184, 255, 122, 0.30) !important;
+    box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.16),
+            0 0 22px rgba(184, 255, 122, 0.10) !important;
+}
+
+/* Mobil uyum */
+@media (max-width: 760px) {
+    .footer-logos {
+        gap: 12px !important;
+    }
+
+    .footer-logos-section .official-logo {
+        width: 94px !important;
+        height: 64px !important;
+        max-width: 94px !important;
+        padding: 8px 10px !important;
+        border-radius: 15px !important;
+    }
+
+    .footer-logos-section .official-logo-wide {
+        width: 122px !important;
+        height: 64px !important;
+        max-width: 122px !important;
+        padding: 8px 10px !important;
+        border-radius: 15px !important;
+    }
+
+    .footer-partners-section .footer-logo {
+        border-radius: 15px !important;
+        padding: 8px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .footer-logos-section .official-logo {
+        width: 84px !important;
+        height: 58px !important;
+        max-width: 84px !important;
+    }
+
+    .footer-logos-section .official-logo-wide {
+        width: 110px !important;
+        height: 58px !important;
+        max-width: 110px !important;
+    }
+
+    .footer-logos-section .footer-logo,
+    .footer-partners-section .footer-logo {
+        border-radius: 14px !important;
+    }
+}
+
+
