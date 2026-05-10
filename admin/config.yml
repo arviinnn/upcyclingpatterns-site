@@ -1,86 +1,254 @@
+# =====================================================================
+# Decap CMS Configuration — Upcycling Patterns
+# Erasmus+ KA210-SCH Project
+# =====================================================================
+# This config powers the /admin/ panel.
+# Decap is the modern, maintained fork of Netlify CMS.
+#
+# Setup checklist (one-time, on Netlify dashboard):
+#  1. Site settings → Identity → enable
+#  2. Identity → Registration → Invite-only (recommended for school project)
+#  3. Identity → Services → Git Gateway → enable
+#  4. Site settings → Identity → invite editors via email
+# =====================================================================
+
 backend:
   name: git-gateway
   branch: main
+  commit_messages:
+    create: 'Create {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
 
+# Editorial workflow: drafts → review → publish
+publish_mode: editorial_workflow
+
+# Local dev support: run `npx decap-server` locally to test without Netlify
+local_backend: true
+
+# Media handling
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
+# Site identity
 site_url: "https://upcyclingpatterns.com"
 display_url: "https://upcyclingpatterns.com"
 logo_url: "/images/logo.jpeg"
 
+# Multi-language support (i18n)
+i18n:
+  structure: single_file
+  locales: [en, tr]
+  default_locale: en
+
+# Show preview pane (off by default since live preview needs setup)
 editor:
   preview: false
 
+# =====================================================================
+# COLLECTIONS
+# =====================================================================
 collections:
+
+  # -------------------------------------------------------------------
+  # 1. Site Settings (global)
+  # -------------------------------------------------------------------
   - name: "site_settings"
-    label: "Site Settings"
+    label: "⚙️  Site Settings"
+    description: "Global site information, contact details, and social links."
     files:
       - name: "general"
         label: "General Information"
         file: "data/site.json"
         format: "json"
         fields:
-          - { label: "Project Name", name: "projectName", widget: "string" }
-          - { label: "Project Email", name: "projectEmail", widget: "string" }
+          - { label: "Project Name", name: "projectName", widget: "string", default: "Upcycling Patterns" }
+          - { label: "Project Short Name", name: "projectShortName", widget: "string", default: "UpCyc" }
+          - { label: "Project Email", name: "projectEmail", widget: "string", pattern: ['^[^\s@]+@[^\s@]+\.[^\s@]+$', "Must be a valid email address"] }
+          - { label: "Coordinator Institution", name: "coordinator", widget: "string" }
+          - { label: "Coordinator City", name: "coordinatorCity", widget: "string" }
+          - { label: "Coordinator Country", name: "coordinatorCountry", widget: "string" }
+          - { label: "Project Start Date", name: "startDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+          - { label: "Project End Date", name: "endDate", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+          - label: "Hero Image"
+            name: "heroImage"
+            widget: "image"
+            required: false
+            hint: "Main visual on the homepage hero. Recommended: 1200×900 PNG/JPG."
           - label: "Social Media"
             name: "social"
             widget: "object"
+            collapsed: true
             fields:
-              - { label: "Instagram URL", name: "instagram", widget: "string" }
-              - { label: "X URL", name: "x", widget: "string" }
-              - { label: "YouTube URL", name: "youtube", widget: "string" }
-              - { label: "LinkedIn URL", name: "linkedin", widget: "string" }
+              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
+              - { label: "X (Twitter) URL", name: "x", widget: "string", required: false }
+              - { label: "YouTube URL", name: "youtube", widget: "string", required: false }
+              - { label: "LinkedIn URL", name: "linkedin", widget: "string", required: false }
+              - { label: "Facebook URL", name: "facebook", widget: "string", required: false }
+          - label: "Web3Forms Access Key"
+            name: "web3formsKey"
+            widget: "string"
+            required: false
+            hint: "Get this from web3forms.com — paste here, then paste it into index.html too."
 
+  # -------------------------------------------------------------------
+  # 2. News
+  # -------------------------------------------------------------------
   - name: "news"
-    label: "News"
+    label: "📰  News"
+    description: "Project news and announcements."
     files:
       - name: "news_items"
         label: "News Items"
         file: "data/news.json"
         format: "json"
         fields:
-          - label: "News"
+          - label: "News Items"
             name: "items"
             widget: "list"
-            summary: "{{fields.title}}"
+            summary: "{{fields.title_en}} ({{fields.year}})"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Year", name: "year", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "Image", name: "image", widget: "image", required: false }
+              - { label: "Year / Date Tag", name: "year", widget: "string", hint: "e.g. 2025, March 2026" }
+              - { label: "Title (English)", name: "title_en", widget: "string" }
+              - { label: "Title (Turkish)", name: "title_tr", widget: "string", required: false }
+              - { label: "Summary (English)", name: "summary_en", widget: "text" }
+              - { label: "Summary (Turkish)", name: "summary_tr", widget: "text", required: false }
+              - label: "Full Content (English)"
+                name: "content_en"
+                widget: "markdown"
+                required: false
+              - label: "Full Content (Turkish)"
+                name: "content_tr"
+                widget: "markdown"
+                required: false
+              - { label: "Cover Image", name: "image", widget: "image", required: false }
+              - { label: "Image Alt Text", name: "alt", widget: "string", required: false }
+              - { label: "Featured", name: "featured", widget: "boolean", default: false, required: false }
+              - { label: "External Link", name: "url", widget: "string", required: false, hint: "Optional — link to a partner page or article" }
 
+  # -------------------------------------------------------------------
+  # 3. Gallery
+  # -------------------------------------------------------------------
   - name: "gallery"
-    label: "Gallery"
+    label: "🖼️  Gallery"
+    description: "Photos from workshops, mobility meetings, and events."
     files:
       - name: "gallery_items"
         label: "Gallery Items"
         file: "data/gallery.json"
         format: "json"
         fields:
-          - label: "Gallery"
+          - label: "Gallery Items"
             name: "items"
             widget: "list"
-            summary: "{{fields.caption}}"
+            summary: "{{fields.caption_en}}"
             fields:
-              - { label: "Caption", name: "caption", widget: "string" }
               - { label: "Image", name: "image", widget: "image" }
-              - { label: "Alt Text", name: "alt", widget: "string" }
+              - { label: "Caption (English)", name: "caption_en", widget: "string" }
+              - { label: "Caption (Turkish)", name: "caption_tr", widget: "string", required: false }
+              - { label: "Alt Text", name: "alt", widget: "string", hint: "Description for screen readers" }
+              - label: "Category"
+                name: "category"
+                widget: "select"
+                options: ["workshops", "products", "meetings", "events", "team", "other"]
+                default: "workshops"
+                required: false
+              - { label: "Date Taken", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD", required: false }
 
+  # -------------------------------------------------------------------
+  # 4. Outputs / Downloads
+  # -------------------------------------------------------------------
   - name: "outputs"
-    label: "Outputs / Downloads"
+    label: "📥  Downloads"
+    description: "Brochures, guides, reports — downloadable project outputs."
     files:
       - name: "output_items"
-        label: "Output Items"
+        label: "Download Items"
         file: "data/outputs.json"
         format: "json"
         fields:
-          - label: "Outputs"
+          - label: "Download Items"
             name: "items"
             widget: "list"
-            summary: "{{fields.title}}"
+            summary: "{{fields.title_en}}"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Description", name: "description", widget: "text" }
-              - { label: "File", name: "file", widget: "file", required: false }
+              - { label: "Title (English)", name: "title_en", widget: "string" }
+              - { label: "Title (Turkish)", name: "title_tr", widget: "string", required: false }
+              - { label: "Description (English)", name: "description_en", widget: "text" }
+              - { label: "Description (Turkish)", name: "description_tr", widget: "text", required: false }
+              - label: "File"
+                name: "file"
+                widget: "file"
+                required: false
+                hint: "PDF, DOCX, or ZIP. Max ~25 MB."
               - { label: "Cover Image", name: "image", widget: "image", required: false }
+              - label: "Type"
+                name: "type"
+                widget: "select"
+                options: ["brochure", "guide", "report", "presentation", "other"]
+                default: "guide"
+                required: false
+
+  # -------------------------------------------------------------------
+  # 5. Partners
+  # -------------------------------------------------------------------
+  - name: "partners"
+    label: "🤝  Partners"
+    description: "Partner schools and institutions."
+    files:
+      - name: "partner_items"
+        label: "Partner Schools"
+        file: "data/partners.json"
+        format: "json"
+        fields:
+          - label: "Partners"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.country}} — {{fields.school}}"
+            fields:
+              - { label: "Country", name: "country", widget: "string" }
+              - label: "Country Code"
+                name: "countryCode"
+                widget: "select"
+                options: ["TR", "MK", "LT", "PL", "RO", "GR", "BG", "ES", "PT", "IT", "DE", "FR", "NL", "BE", "AT", "CZ", "SK", "HU", "HR", "SI", "EE", "LV", "FI", "SE", "DK", "NO", "IS", "IE", "MT", "CY", "LU"]
+                hint: "ISO country code for flag display"
+              - { label: "School Name", name: "school", widget: "string" }
+              - { label: "City", name: "city", widget: "string", required: false }
+              - label: "Role"
+                name: "role"
+                widget: "select"
+                options: ["Coordinating institution", "Project partner", "Associated partner"]
+                default: "Project partner"
+              - { label: "Logo", name: "logo", widget: "image", required: false }
+              - { label: "Website URL", name: "website", widget: "string", required: false }
+              - { label: "Contact Email", name: "email", widget: "string", required: false }
+
+  # -------------------------------------------------------------------
+  # 6. FAQ
+  # -------------------------------------------------------------------
+  - name: "faq"
+    label: "❓  FAQ"
+    description: "Frequently asked questions."
+    files:
+      - name: "faq_items"
+        label: "FAQ Items"
+        file: "data/faq.json"
+        format: "json"
+        fields:
+          - label: "FAQ Items"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.question_en}}"
+            fields:
+              - { label: "Question (English)", name: "question_en", widget: "string" }
+              - { label: "Question (Turkish)", name: "question_tr", widget: "string", required: false }
+              - { label: "Answer (English)", name: "answer_en", widget: "text" }
+              - { label: "Answer (Turkish)", name: "answer_tr", widget: "text", required: false }
+              - label: "Category"
+                name: "category"
+                widget: "select"
+                options: ["general", "students", "teachers", "partners", "technical"]
+                default: "general"
+                required: false
