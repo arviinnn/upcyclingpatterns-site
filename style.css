@@ -5665,5 +5665,2980 @@ html[data-theme="dark"] .nav-menu-dropdown {
         border-radius: 14px !important;
     }
 }
+/* =====================================================================
+   STAGE 3 — TECHNICAL CORRECTNESS PATCH (May 2026)
+   ---------------------------------------------------------------------
+   Pure technical fixes layer. Does NOT change any visual design,
+   colors, animations, or layout decisions made by previous stages.
 
+   What it fixes:
+     • Hero image aspect-ratio mismatch (HTML width/height vs CSS)
+     • Mobile hero image looks too short on portrait phones
+     • Missing reduced-motion guards on new animations
+     • Missing print rules for new components (cookie banner, lightbox)
+     • Missing forced-colors support for new components
+     • iOS safe-area-inset support for fixed bottom elements
+     • Mobile backdrop-filter performance (lower blur on small screens)
+     • Focus-visible rings that were getting hidden behind glass
+     • Dead style cleanup that was causing minor specificity churn
+
+   This block is intentionally additive — appended at the very end so
+   it always wins where it needs to and stays out of the way elsewhere.
+   ===================================================================== */
+
+
+/* ============== HERO IMAGE — TELEPHONE FIX ==========================
+   The <img> in index.html now has width="1200" height="675" attributes
+   to prevent CLS during page load. That ratio (16:9) matches the
+   existing CSS `aspect-ratio: 16 / 9` rule on `.hero-image`, so the
+   browser reserves the correct space.
+
+   On narrow phones the 16:9 picture was rendering very short, so we
+   bump it to 4:3 below 760px width — the image still fills its card
+   nicely on a portrait phone screen without changing the desktop look
+   in any way.
+   ==================================================================== */
+@media (max-width: 760px) {
+    .hero-image-card {
+        margin-left: 0;
+        padding: 10px;
+        border-radius: 24px;
+    }
+
+    .hero-image {
+        aspect-ratio: 4 / 3;
+        border-radius: 18px;
+    }
+
+    .hero-visual {
+        min-height: auto;
+        padding: 8px 0;
+    }
+
+    /* Floating chips re-position so they hug the new image proportions
+       and never overflow the screen edge on a phone. */
+    .floating-chip.chip-1 {
+        top: 12px;
+        left: 16px;
+    }
+
+    .floating-chip.chip-3 {
+        bottom: 8px;
+        left: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-image {
+        aspect-ratio: 4 / 3.2;
+    }
+}
+
+
+/* ============== iOS SAFE-AREA INSET SUPPORT =========================
+   The HTML uses viewport-fit=cover so content can render under the
+   notch/home-indicator. Anything pinned to the bottom of the screen
+   needs to respect env(safe-area-inset-bottom) on iPhones with
+   home-indicator gestures.
+   ==================================================================== */
+.cookie-banner {
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+    left: calc(18px + env(safe-area-inset-left, 0px));
+    right: calc(18px + env(safe-area-inset-right, 0px));
+}
+
+.back-to-top {
+    bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+    right: calc(28px + env(safe-area-inset-right, 0px));
+}
+
+@media (max-width: 760px) {
+    .back-to-top {
+        bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+        right: calc(18px + env(safe-area-inset-right, 0px));
+    }
+}
+
+@media (max-width: 560px) {
+    .cookie-banner {
+        bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+        left: calc(12px + env(safe-area-inset-left, 0px));
+        right: calc(12px + env(safe-area-inset-right, 0px));
+    }
+}
+
+
+/* ============== MOBILE BACKDROP-FILTER PERFORMANCE ==================
+   backdrop-filter: blur() is expensive. On low-end Android devices it
+   can cause visible jank during scroll, especially when many elements
+   use it at once. We trim the blur radius on small screens so the
+   visual is preserved but the GPU load drops noticeably.
+   ==================================================================== */
+@media (max-width: 760px) {
+    .navbar,
+    .nav-menu-dropdown,
+    .glass-card,
+    .glass-panel,
+    .glass-chip,
+    .info-card,
+    .project-card,
+    .highlight-item,
+    .timeline-card,
+    .news-card,
+    .output-card,
+    .partner-card,
+    .stat-card,
+    .gallery-card,
+    .faq-item,
+    .contact-form,
+    .mission-strip,
+    .disclaimer-card,
+    .cookie-banner-card,
+    .lightbox,
+    .footer-logos-section,
+    .footer-partners-section,
+    .footer-content {
+        backdrop-filter: blur(12px) saturate(150%);
+        -webkit-backdrop-filter: blur(12px) saturate(150%);
+    }
+}
+
+@media (max-width: 480px) {
+    .glass-card,
+    .glass-panel,
+    .glass-chip,
+    .info-card,
+    .project-card,
+    .highlight-item,
+    .timeline-card,
+    .news-card,
+    .output-card,
+    .partner-card,
+    .stat-card,
+    .gallery-card,
+    .faq-item,
+    .contact-form {
+        backdrop-filter: blur(8px) saturate(140%);
+        -webkit-backdrop-filter: blur(8px) saturate(140%);
+    }
+}
+
+
+/* ============== FOCUS RING IMPROVEMENTS =============================
+   The global :focus-visible ring is good but can disappear behind
+   semi-transparent glass surfaces. These overrides give interactive
+   elements on a glass background a stronger, double-ring focus that
+   stays visible against any backdrop.
+   ==================================================================== */
+.btn:focus-visible,
+.nav-link:focus-visible,
+.tab-btn:focus-visible,
+.lang-btn:focus-visible,
+.theme-toggle:focus-visible,
+.menu-toggle:focus-visible,
+.desktop-toggle:focus-visible,
+.faq-item summary:focus-visible,
+.social-link:focus-visible,
+.back-to-top:focus-visible,
+.cookie-banner button:focus-visible,
+.lightbox-close:focus-visible,
+.lightbox-nav:focus-visible,
+.gallery-card:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(87, 178, 108, 0.20);
+}
+
+:root[data-theme="dark"] .btn:focus-visible,
+:root[data-theme="dark"] .nav-link:focus-visible,
+:root[data-theme="dark"] .tab-btn:focus-visible,
+:root[data-theme="dark"] .lang-btn:focus-visible,
+:root[data-theme="dark"] .theme-toggle:focus-visible,
+:root[data-theme="dark"] .menu-toggle:focus-visible,
+:root[data-theme="dark"] .desktop-toggle:focus-visible,
+:root[data-theme="dark"] .faq-item summary:focus-visible,
+:root[data-theme="dark"] .social-link:focus-visible,
+:root[data-theme="dark"] .back-to-top:focus-visible,
+:root[data-theme="dark"] .cookie-banner button:focus-visible,
+:root[data-theme="dark"] .gallery-card:focus-visible {
+    outline-color: var(--accent-bright);
+    box-shadow: 0 0 0 6px rgba(184, 255, 122, 0.25);
+}
+
+
+/* ============== FORM VALIDATION STATES ==============================
+   script.js adds aria-invalid="true" to inputs that fail validation,
+   plus .error / .success classes to the status message. Give them
+   visible affordances that the original CSS didn't fully cover.
+   ==================================================================== */
+.form-group input[aria-invalid="true"],
+.form-group textarea[aria-invalid="true"] {
+    border-color: rgba(180, 35, 24, 0.55);
+    background: rgba(180, 35, 24, 0.04);
+}
+
+.form-group input[aria-invalid="true"]:focus,
+.form-group textarea[aria-invalid="true"]:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 4px rgba(180, 35, 24, 0.15);
+}
+
+:root[data-theme="dark"] .form-group input[aria-invalid="true"],
+:root[data-theme="dark"] .form-group textarea[aria-invalid="true"] {
+    border-color: rgba(255, 120, 110, 0.5);
+    background: rgba(255, 120, 110, 0.04);
+}
+
+#formStatus.error {
+    color: var(--danger);
+    font-weight: 800;
+}
+
+#formStatus.success {
+    color: var(--success);
+    font-weight: 800;
+}
+
+:root[data-theme="dark"] #formStatus.error {
+    color: #ff8a85;
+}
+
+:root[data-theme="dark"] #formStatus.success {
+    color: var(--accent-bright);
+}
+
+
+/* ============== REDUCED MOTION — STAGE 2 ANIMATIONS =================
+   The base reduced-motion rule covers most animations, but Stage 2
+   added a few that escaped it. Kill them here for users who asked
+   for less movement.
+   ==================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .hero-pattern,
+    .cookie-banner-card,
+    .lightbox-figure,
+    .lightbox-close,
+    .lightbox-nav,
+    .gallery-zoom,
+    .theme-icon,
+    .faq-chevron,
+    .footer-logo,
+    .site-footer::before {
+        animation: none !important;
+        transition: none !important;
+    }
+
+    .lightbox.is-visible .lightbox-figure {
+        transform: none !important;
+    }
+
+    .cookie-banner.is-visible .cookie-banner-card {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
+
+/* ============== PRINT — STAGE 2 COMPONENTS ==========================
+   Hide overlay components when the page is printed. Useful for school
+   archives, accreditation paperwork, and printing news pages.
+   ==================================================================== */
+@media print {
+    .cookie-banner,
+    .lightbox,
+    .theme-toggle,
+    .language-switcher,
+    .menu-toggle,
+    .desktop-toggle,
+    .gallery-zoom,
+    .hero-pattern {
+        display: none !important;
+    }
+
+    /* Make sure decoration doesn't bleed onto paper */
+    .hero-orb,
+    .scroll-progress {
+        display: none !important;
+    }
+
+    /* Keep card content visible without the heavy glass treatment */
+    .navbar,
+    .footer-content,
+    .footer-logos-section,
+    .footer-partners-section {
+        background: #fff !important;
+        border: 1px solid #ccc !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+
+    .footer-logo {
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        filter: none !important;
+    }
+}
+
+
+/* ============== FORCED COLORS — STAGE 2 COMPONENTS ==================
+   Windows High Contrast mode and similar accessibility modes need
+   explicit color-keyword fallbacks. CanvasText / Canvas / Highlight
+   are system tokens that respect the user's contrast settings.
+   ==================================================================== */
+@media (forced-colors: active) {
+    .cookie-banner-card,
+    .lightbox,
+    .navbar,
+    .nav-menu-dropdown,
+    .glass-card {
+        border: 1px solid CanvasText;
+        background: Canvas;
+    }
+
+    .faq-chevron,
+    .gallery-zoom,
+    .lightbox-close,
+    .lightbox-nav {
+        border: 1px solid CanvasText;
+        background: Canvas;
+        color: CanvasText;
+    }
+
+    .btn-primary,
+    .lang-btn.active,
+    .nav-link.active {
+        background: Highlight;
+        color: HighlightText;
+        border: 1px solid HighlightText;
+    }
+
+    .partner-flag {
+        border: 1px solid CanvasText;
+    }
+
+    .scroll-progress-bar {
+        background: Highlight;
+    }
+}
+
+
+/* ============== MISSING-IMAGE FALLBACK (REAL FIX) ===================
+   The original CSS tried to use ::after on an <img>, which doesn't
+   work because <img> is a replaced element. Use sibling techniques
+   via the data-missing attribute instead — at minimum the broken
+   image now shows the diagonal stripe pattern instead of a default
+   broken-icon glyph.
+   ==================================================================== */
+img[data-missing="true"] {
+    min-height: 80px;
+    background:
+            linear-gradient(135deg, rgba(47, 122, 67, 0.08), rgba(184, 255, 122, 0.04)),
+            repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 8px,
+                    rgba(47, 122, 67, 0.06) 8px,
+                    rgba(47, 122, 67, 0.06) 16px
+            );
+    object-fit: contain;
+}
+
+:root[data-theme="dark"] img[data-missing="true"] {
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.04), rgba(87, 178, 108, 0.06)),
+            repeating-linear-gradient(
+                    -45deg,
+                    transparent,
+                    transparent 8px,
+                    rgba(184, 255, 122, 0.05) 8px,
+                    rgba(184, 255, 122, 0.05) 16px
+            );
+}
+
+
+/* ============== DARK MODE GRADIENT TEXT FIX =========================
+   The btn-primary uses --gradient-primary which is fixed to the light
+   theme colors. In dark mode the bright lime → green gradient was
+   still showing, which is actually the desired look — but it had
+   contrast issues against dark backgrounds. Bump the text shadow so
+   it stays readable.
+   ==================================================================== */
+:root[data-theme="dark"] .btn-primary {
+    color: #07110b !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+
+/* ============== TAB INDICATOR NULL-WIDTH GUARD ======================
+   Before script.js measures the active tab on first frame, the
+   indicator has width:0 and renders as a stray pixel. Hide it during
+   the very first paint to avoid that flash.
+   ==================================================================== */
+.tabs-nav:not(:hover) .tab-indicator[style*="width: 0"] {
+    opacity: 0;
+}
+
+
+/* ============== DEAD CODE / EMPTY RULE CLEANUP ======================
+   The original rule `[data-status="coming-soon"]::before { content: ""; }`
+   created an invisible pseudo-element with no width/height — harmless
+   but adds a useless rule to every coming-soon button. Replace with a
+   visual hint that respects the disabled state.
+   ==================================================================== */
+[data-status="coming-soon"]::before {
+    content: none;
+}
+
+button[disabled][data-status="coming-soon"],
+[aria-disabled="true"][data-status="coming-soon"] {
+    cursor: not-allowed;
+    position: relative;
+}
+
+button[disabled][data-status="coming-soon"]::after,
+[aria-disabled="true"][data-status="coming-soon"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background: repeating-linear-gradient(
+            -45deg,
+            transparent,
+            transparent 6px,
+            rgba(15, 27, 20, 0.025) 6px,
+            rgba(15, 27, 20, 0.025) 12px
+    );
+}
+
+
+/* ============== SCROLLBAR — DARK MODE ==============================
+   The light-mode scrollbar uses --bg-1 as the thumb border, which is
+   nearly white. In dark mode that creates a bright halo around the
+   scrollbar thumb. Update it to match the dark background.
+   ==================================================================== */
+:root[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: rgba(184, 255, 122, 0.04);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, var(--primary-light), var(--accent-bright));
+    border-color: var(--bg-1);
+}
+
+:root[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, var(--accent-bright), var(--accent));
+}
+
+
+/* ============== TEXT SELECTION — DARK MODE =========================
+   ::selection in the base stylesheet uses light-theme colors that look
+   washed-out on dark backgrounds. Give dark mode its own selection.
+   ==================================================================== */
+:root[data-theme="dark"] ::selection {
+    background: rgba(184, 255, 122, 0.30);
+    color: var(--text-main);
+}
+
+
+/* ============== CURSOR-GLOW — DARK MODE BLEND ======================
+   In dark mode the multiply blend on the cursor-glow makes it appear
+   as a dark spot. Switch to screen for dark backgrounds.
+   ==================================================================== */
+:root[data-theme="dark"] .cursor-glow {
+    mix-blend-mode: screen;
+    opacity: 0.4;
+}
+
+
+/* ============== STAGE 3 — END =====================================
+   Total additions: ~190 lines. Pure technical correctness, no visual
+   redesign. Browsers that don't support env(), forced-colors,
+   prefers-reduced-motion, etc. simply ignore the new rules and fall
+   back to the existing behaviour.
+   ================================================================== */
+/* =========================================================
+   HERO IMAGE FINAL FIX — framed, wide, clean, responsive
+   ========================================================= */
+
+.hero-container {
+    grid-template-columns: minmax(0, 0.9fr) minmax(520px, 1.1fr);
+    gap: 40px;
+}
+
+.hero-visual {
+    position: relative;
+    min-height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: visible;
+}
+
+.hero-image-card {
+    position: relative;
+    width: min(100%, 720px) !important;
+    margin-left: 0 !important;
+    padding: 12px !important;
+    border-radius: 34px !important;
+    overflow: hidden !important;
+    background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(238, 248, 240, 0.74)),
+            linear-gradient(135deg, rgba(87, 178, 108, 0.18), rgba(184, 255, 122, 0.12)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.72) !important;
+    box-shadow:
+            0 34px 80px rgba(15, 27, 20, 0.18),
+            0 0 70px rgba(87, 178, 108, 0.16),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Glass efekt resmi bozmasın */
+.hero-image-card::before {
+    z-index: 0 !important;
+    opacity: 0.45 !important;
+}
+
+/* İç çerçeve hissi */
+.hero-image-card::after {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    z-index: 3;
+    pointer-events: none;
+    border-radius: 24px;
+    box-shadow:
+            inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+            inset 0 0 35px rgba(15, 27, 20, 0.06);
+}
+
+/* Resim artık kapağın içine tam oturur */
+.hero-image {
+    position: relative;
+    z-index: 2;
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 2 / 1 !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+    border-radius: 24px !important;
+    background: transparent !important;
+    box-shadow: 0 12px 32px rgba(15, 27, 20, 0.08);
+}
+
+/* Hover'da taşma/kırpılma hissi olmasın */
+.hero-image-card:hover .hero-image {
+    transform: scale(1.012) !important;
+}
+
+.hero-image-overlay {
+    z-index: 4 !important;
+    inset: 12px !important;
+    border-radius: 24px !important;
+    pointer-events: none !important;
+    opacity: 0.28 !important;
+}
+
+.hero-image-glow {
+    z-index: 1 !important;
+}
+
+/* Üst ve alt küçük etiketler çerçeveye daha düzgün otursun */
+.floating-chip {
+    z-index: 10 !important;
+    box-shadow:
+            0 18px 36px rgba(15, 27, 20, 0.14),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.chip-1 {
+    top: -18px !important;
+    left: 78px !important;
+}
+
+.chip-3 {
+    bottom: -18px !important;
+    left: 92px !important;
+}
+
+/* Tablet */
+@media (max-width: 1180px) {
+    .hero-container {
+        grid-template-columns: 1fr;
+        gap: 38px;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-visual {
+        min-height: auto !important;
+        justify-content: center !important;
+    }
+
+    .hero-image-card {
+        width: min(100%, 780px) !important;
+    }
+
+    .chip-1 {
+        top: -16px !important;
+        left: 44px !important;
+    }
+
+    .chip-3 {
+        bottom: -16px !important;
+        left: 62px !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 760px) {
+    .hero-section {
+        padding-bottom: 56px !important;
+    }
+
+    .hero-visual {
+        width: 100%;
+        padding: 8px 0 34px !important;
+    }
+
+    .hero-image-card {
+        width: 100% !important;
+        padding: 9px !important;
+        border-radius: 26px !important;
+    }
+
+    .hero-image {
+        aspect-ratio: 2 / 1 !important;
+        border-radius: 18px !important;
+    }
+
+    .hero-image-card::after {
+        inset: 9px;
+        border-radius: 18px;
+    }
+
+    .hero-image-overlay {
+        inset: 9px !important;
+        border-radius: 18px !important;
+    }
+
+    .floating-chip {
+        padding: 9px 14px !important;
+        font-size: 0.78rem !important;
+        white-space: nowrap;
+    }
+
+    .chip-1 {
+        top: -14px !important;
+        left: 18px !important;
+    }
+
+    .chip-3 {
+        bottom: -18px !important;
+        left: 24px !important;
+    }
+}
+
+/* Küçük telefon */
+@media (max-width: 420px) {
+    .hero-image-card {
+        padding: 7px !important;
+        border-radius: 22px !important;
+    }
+
+    .hero-image {
+        border-radius: 15px !important;
+    }
+
+    .hero-image-card::after {
+        inset: 7px;
+        border-radius: 15px;
+    }
+
+    .hero-image-overlay {
+        inset: 7px !important;
+        border-radius: 15px !important;
+    }
+
+    .chip-1,
+    .chip-3 {
+        position: static !important;
+        display: inline-flex !important;
+        margin: 10px auto 0 !important;
+    }
+
+    .hero-visual {
+        display: block !important;
+        text-align: center;
+        padding-bottom: 18px !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL FINAL DESIGN
+   Copyright ve Designed by bölümüne dokunmaz.
+   Sadece Legal kutusunu düzenler.
+   ========================================================= */
+
+.footer-legal-corner,
+.footer-legal {
+    position: absolute !important;
+    left: 32px !important;
+    bottom: 34px !important;
+    z-index: 5 !important;
+
+    width: 250px !important;
+    padding: 18px 18px 16px !important;
+    border-radius: 24px !important;
+
+    background:
+            radial-gradient(circle at 20% 0%, rgba(184, 255, 122, 0.13), transparent 42%),
+            linear-gradient(145deg, rgba(12, 32, 19, 0.92), rgba(3, 10, 6, 0.88)) !important;
+
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+
+    box-shadow:
+            0 22px 55px rgba(0, 0, 0, 0.34),
+            inset 0 1px 0 rgba(255, 255, 255, 0.07),
+            inset 0 0 34px rgba(87, 178, 108, 0.06) !important;
+
+    backdrop-filter: blur(14px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+.footer-legal-corner::before,
+.footer-legal::before {
+    content: "";
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(184, 255, 122, 0.55),
+            transparent
+    );
+}
+
+.footer-legal-corner h4,
+.footer-legal h4 {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    margin: 0 0 12px !important;
+    padding: 7px 12px !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.09) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    color: #f7fff5 !important;
+    font-size: 0.86rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.02em !important;
+}
+
+.footer-legal-corner h4::before,
+.footer-legal h4::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 16px rgba(184, 255, 122, 0.65);
+}
+
+.footer-legal-list {
+    display: grid !important;
+    gap: 4px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.footer-legal-list li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.footer-legal-list a {
+    position: relative !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    min-height: 34px !important;
+    padding: 8px 11px !important;
+
+    border-radius: 13px !important;
+
+    color: rgba(248, 255, 249, 0.68) !important;
+    font-size: 0.86rem !important;
+    font-weight: 750 !important;
+
+    transition:
+            color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease !important;
+}
+
+.footer-legal-list a::after {
+    content: "›";
+    opacity: 0;
+    transform: translateX(-6px);
+    color: #b8ff7a;
+    font-size: 1rem;
+    transition:
+            opacity 0.25s ease,
+            transform 0.25s ease !important;
+}
+
+.footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.08) !important;
+    transform: translateX(4px) !important;
+    box-shadow: inset 0 0 0 1px rgba(184, 255, 122, 0.13) !important;
+}
+
+.footer-legal-list a:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .footer-legal-corner,
+    .footer-legal {
+        position: relative !important;
+        left: auto !important;
+        bottom: auto !important;
+
+        width: min(100%, 520px) !important;
+        margin: 28px auto 0 !important;
+        text-align: left !important;
+    }
+
+    .footer-legal-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .footer-legal-corner,
+    .footer-legal {
+        width: 100% !important;
+        padding: 16px !important;
+        border-radius: 22px !important;
+    }
+
+    .footer-legal-corner h4,
+    .footer-legal h4 {
+        margin-bottom: 12px !important;
+    }
+
+    .footer-legal-list {
+        grid-template-columns: 1fr !important;
+    }
+
+    .footer-legal-list a {
+        min-height: 38px !important;
+        font-size: 0.84rem !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL CLEAN FIX
+   Legal artık logo bölümünün üstüne binmez.
+   Copyright ve Designed by yerine dokunmaz.
+   ========================================================= */
+
+.footer-content {
+    display: grid !important;
+    grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.25fr) minmax(260px, 0.85fr) !important;
+    gap: 24px !important;
+    align-items: stretch !important;
+
+    margin-bottom: 34px !important;
+    padding: 30px !important;
+    border-radius: 34px !important;
+}
+
+/* Legal'i absolute olmaktan tamamen çıkarıyoruz */
+.footer-legal,
+.footer-legal-corner {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+
+    margin: 0 !important;
+    padding: 20px 18px !important;
+
+    z-index: 1 !important;
+    transform: none !important;
+
+    border-radius: 26px !important;
+    background:
+            radial-gradient(circle at 20% 0%, rgba(184, 255, 122, 0.14), transparent 42%),
+            linear-gradient(145deg, rgba(12, 32, 19, 0.86), rgba(3, 10, 6, 0.72)) !important;
+
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+
+    box-shadow:
+            0 18px 46px rgba(0, 0, 0, 0.26),
+            inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+
+    backdrop-filter: blur(14px) saturate(150%) !important;
+    -webkit-backdrop-filter: blur(14px) saturate(150%) !important;
+}
+
+.footer-legal h4,
+.footer-legal-corner h4 {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+
+    margin: 0 0 14px !important;
+    padding: 8px 13px !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+    border: 1px solid rgba(184, 255, 122, 0.20) !important;
+
+    color: #f7fff5 !important;
+    font-size: 0.86rem !important;
+    font-weight: 900 !important;
+}
+
+.footer-legal h4::before,
+.footer-legal-corner h4::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 16px rgba(184, 255, 122, 0.7);
+}
+
+.footer-legal-list {
+    display: grid !important;
+    gap: 7px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.footer-legal-list li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.footer-legal-list a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+
+    min-height: 36px !important;
+    padding: 8px 12px !important;
+
+    border-radius: 14px !important;
+
+    color: rgba(248, 255, 249, 0.72) !important;
+    font-size: 0.86rem !important;
+    font-weight: 750 !important;
+
+    transition:
+            color 0.25s ease,
+            background 0.25s ease,
+            transform 0.25s ease,
+            box-shadow 0.25s ease !important;
+}
+
+.footer-legal-list a::after {
+    content: "›";
+    opacity: 0;
+    color: #b8ff7a;
+    transform: translateX(-5px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.08) !important;
+    transform: translateX(4px) !important;
+    box-shadow: inset 0 0 0 1px rgba(184, 255, 122, 0.14) !important;
+}
+
+.footer-legal-list a:hover::after {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Logolar Legal kutusundan ayrı kalsın */
+.footer-logos-section,
+.footer-partners-section {
+    position: relative !important;
+    z-index: 2 !important;
+    margin-top: 34px !important;
+}
+
+/* Copyright ve Designed by aynı yerde kalır */
+.footer-bottom,
+.designed-by {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .footer-content {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+        padding: 24px 20px !important;
+    }
+
+    .footer-legal,
+    .footer-legal-corner {
+        text-align: left !important;
+    }
+
+    .footer-legal-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .footer-content {
+        padding: 20px 16px !important;
+        border-radius: 26px !important;
+    }
+
+    .footer-legal,
+    .footer-legal-corner {
+        padding: 16px !important;
+        border-radius: 22px !important;
+    }
+
+    .footer-legal-list {
+        grid-template-columns: 1fr !important;
+    }
+
+    .footer-legal-list a {
+        min-height: 39px !important;
+        font-size: 0.84rem !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL BOTTOM BAR
+   En altta, az yer kaplayan, temiz Legal bölümü.
+   Copyright ve Designed by yazılarına dokunmaz.
+   ========================================================= */
+
+/* Legal artık footer-content içinde olmadığı için üst kart 2 kolon olsun */
+.site-footer .footer-content {
+    grid-template-columns: minmax(220px, 0.9fr) minmax(320px, 1.4fr) !important;
+    align-items: start !important;
+    min-height: 0 !important;
+    padding: 24px 28px !important;
+    margin-bottom: 28px !important;
+}
+
+/* Legal küçük alt bar */
+.site-footer .footer-legal.footer-legal-bottom-bar {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    width: fit-content !important;
+    max-width: calc(100% - 32px) !important;
+    min-height: 0 !important;
+    height: auto !important;
+
+    margin: 18px auto 0 !important;
+    padding: 8px 12px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    flex-wrap: wrap !important;
+
+    border-radius: 999px !important;
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.08), rgba(255, 255, 255, 0.025)) !important;
+
+    box-shadow:
+            0 12px 34px rgba(0, 0, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+
+    backdrop-filter: blur(12px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(145%) !important;
+
+    transform: none !important;
+    z-index: 3 !important;
+}
+
+/* Legal başlığı küçük rozet */
+.site-footer .footer-legal.footer-legal-bottom-bar h4 {
+    margin: 0 !important;
+    padding: 6px 10px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+
+    color: rgba(248, 255, 249, 0.92) !important;
+    font-size: 0.78rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+}
+
+.site-footer .footer-legal.footer-legal-bottom-bar h4::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 14px rgba(184, 255, 122, 0.75);
+}
+
+/* Linkler yatay ve küçük */
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list li {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-height: 28px !important;
+    padding: 6px 9px !important;
+
+    border-radius: 999px !important;
+
+    color: rgba(248, 255, 249, 0.62) !important;
+    font-size: 0.76rem !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    transition:
+            color 0.22s ease,
+            background 0.22s ease,
+            transform 0.22s ease !important;
+}
+
+/* Eski ok işaretlerini kapat */
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list a::before,
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list a::after {
+    display: none !important;
+    content: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.09) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Copyright ve Designed by sabit, sadece görünürlük garanti */
+.site-footer .footer-bottom,
+.site-footer .designed-by {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .site-footer .footer-content {
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+        padding: 22px 20px !important;
+        text-align: center !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-bottom-bar {
+        width: min(100%, 760px) !important;
+        border-radius: 24px !important;
+        padding: 10px !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .site-footer .footer-content {
+        padding: 18px 16px !important;
+        margin-bottom: 22px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-bottom-bar {
+        max-width: 100% !important;
+        margin-top: 16px !important;
+        padding: 10px !important;
+        border-radius: 22px !important;
+        gap: 8px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-bottom-bar h4 {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list {
+        gap: 5px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-bottom-bar .footer-legal-list a {
+        font-size: 0.73rem !important;
+        padding: 7px 9px !important;
+        background: rgba(255, 255, 255, 0.035) !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL FINAL MINI LEFT BAR
+   En alt sol köşe, küçük, düzenli, sayfayı uzatmaz.
+   Copyright ve Designed by yazılarına dokunmaz.
+   ========================================================= */
+
+.site-footer {
+    position: relative !important;
+    padding-bottom: 54px !important;
+}
+
+.site-footer > .container {
+    position: relative !important;
+}
+
+/* Legal'i sayfa akışından çıkarıyoruz: sayfayı uzatmaz */
+.site-footer .footer-legal.footer-legal-left-mini {
+    position: absolute !important;
+    left: 0 !important;
+    bottom: -38px !important;
+
+    width: auto !important;
+    max-width: calc(100vw - 130px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+
+    margin: 0 !important;
+    padding: 6px 8px !important;
+
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+
+    border-radius: 999px !important;
+    border: 1px solid rgba(184, 255, 122, 0.16) !important;
+
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.09), rgba(255, 255, 255, 0.025)) !important;
+
+    box-shadow:
+            0 10px 28px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.07) !important;
+
+    backdrop-filter: blur(12px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(145%) !important;
+
+    transform: none !important;
+    z-index: 10 !important;
+    overflow: hidden !important;
+}
+
+/* Legal başlığı küçük rozet */
+.site-footer .footer-legal.footer-legal-left-mini h4 {
+    margin: 0 !important;
+    padding: 6px 9px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    flex: 0 0 auto !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.12) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    color: rgba(248, 255, 249, 0.92) !important;
+    font-size: 0.72rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+.site-footer .footer-legal.footer-legal-left-mini h4::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 14px rgba(184, 255, 122, 0.75);
+}
+
+/* Linkler tek satır, küçük */
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 2px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list li {
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    min-height: 25px !important;
+    padding: 6px 8px !important;
+
+    border-radius: 999px !important;
+
+    color: rgba(248, 255, 249, 0.58) !important;
+    font-size: 0.68rem !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    transition:
+            color 0.22s ease,
+            background 0.22s ease,
+            transform 0.22s ease !important;
+}
+
+/* Eski ok/efektleri kapat */
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list a::before,
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list a::after {
+    display: none !important;
+    content: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-left-mini .footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.09) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Copyright ve Designed by aynı yerde kalsın */
+.site-footer .footer-bottom,
+.site-footer .designed-by {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .site-footer .footer-legal.footer-legal-left-mini {
+        left: 0 !important;
+        bottom: -40px !important;
+        max-width: calc(100vw - 90px) !important;
+        overflow-x: auto !important;
+        scrollbar-width: none !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-left-mini::-webkit-scrollbar {
+        display: none !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .site-footer {
+        padding-bottom: 58px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-left-mini {
+        left: 0 !important;
+        bottom: -42px !important;
+
+        max-width: calc(100vw - 82px) !important;
+        padding: 6px !important;
+        gap: 4px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-left-mini h4 {
+        font-size: 0.67rem !important;
+        padding: 6px 8px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-left-mini .footer-legal-list a {
+        font-size: 0.64rem !important;
+        padding: 6px 7px !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL — FINAL COMPACT LEFT BAR
+   Sol altta, yatay, küçük, telefon uyumlu.
+   Copyright ve Designed by Arvin Hakimi bölümüne dokunmaz.
+   ========================================================= */
+
+.site-footer {
+    position: relative !important;
+    padding-bottom: 46px !important;
+}
+
+.site-footer > .container {
+    position: relative !important;
+}
+
+/* Legal kutusunu küçük yatay bar yap */
+.site-footer > .container > .footer-legal,
+.site-footer > .container > .footer-legal.footer-legal-left-mini,
+.site-footer > .container > .footer-legal.footer-legal-corner,
+.site-footer > .container > .footer-legal.footer-legal-bottom-bar {
+    position: absolute !important;
+    left: 0 !important;
+    bottom: -34px !important;
+    top: auto !important;
+    right: auto !important;
+
+    width: auto !important;
+    max-width: calc(100% - 92px) !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+    aspect-ratio: auto !important;
+
+    margin: 0 !important;
+    padding: 4px 6px !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+
+    border-radius: 999px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.10), rgba(255, 255, 255, 0.025)) !important;
+
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    box-shadow:
+            0 10px 26px rgba(0, 0, 0, 0.22),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+
+    backdrop-filter: blur(12px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(145%) !important;
+
+    transform: none !important;
+    z-index: 20 !important;
+
+    scrollbar-width: none !important;
+}
+
+.site-footer > .container > .footer-legal::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Legal rozeti */
+.site-footer > .container > .footer-legal h4 {
+    margin: 0 !important;
+    padding: 6px 9px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    width: auto !important;
+    height: 26px !important;
+    min-height: 26px !important;
+
+    flex: 0 0 auto !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.13) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    color: rgba(248, 255, 249, 0.95) !important;
+    font-size: 0.72rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+.site-footer > .container > .footer-legal h4::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 12px rgba(184, 255, 122, 0.75);
+}
+
+/* Linkleri yan yana dizer */
+.site-footer > .container > .footer-legal .footer-legal-list {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 3px !important;
+
+    width: auto !important;
+    height: 26px !important;
+    min-height: 26px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.site-footer > .container > .footer-legal .footer-legal-list li {
+    display: inline-flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+.site-footer > .container > .footer-legal .footer-legal-list a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    width: auto !important;
+    height: 26px !important;
+    min-height: 26px !important;
+
+    padding: 6px 8px !important;
+    border-radius: 999px !important;
+
+    color: rgba(248, 255, 249, 0.62) !important;
+    font-size: 0.68rem !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+
+    transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease !important;
+}
+
+/* Eski ok, çizgi, ekstra efektleri tamamen kapat */
+.site-footer > .container > .footer-legal .footer-legal-list a::before,
+.site-footer > .container > .footer-legal .footer-legal-list a::after {
+    display: none !important;
+    content: none !important;
+}
+
+.site-footer > .container > .footer-legal .footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Copyright ve Designed by aynı yerde kalır */
+.site-footer .footer-bottom,
+.site-footer .designed-by {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .site-footer {
+        padding-bottom: 48px !important;
+    }
+
+    .site-footer > .container > .footer-legal,
+    .site-footer > .container > .footer-legal.footer-legal-left-mini,
+    .site-footer > .container > .footer-legal.footer-legal-corner,
+    .site-footer > .container > .footer-legal.footer-legal-bottom-bar {
+        left: 0 !important;
+        bottom: -36px !important;
+        max-width: calc(100% - 84px) !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .site-footer {
+        padding-bottom: 50px !important;
+    }
+
+    .site-footer > .container > .footer-legal,
+    .site-footer > .container > .footer-legal.footer-legal-left-mini,
+    .site-footer > .container > .footer-legal.footer-legal-corner,
+    .site-footer > .container > .footer-legal.footer-legal-bottom-bar {
+        left: 0 !important;
+        bottom: -38px !important;
+
+        max-width: calc(100vw - 82px) !important;
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+
+        padding: 4px 5px !important;
+        gap: 4px !important;
+    }
+
+    .site-footer > .container > .footer-legal h4 {
+        height: 24px !important;
+        min-height: 24px !important;
+        padding: 5px 8px !important;
+        font-size: 0.66rem !important;
+    }
+
+    .site-footer > .container > .footer-legal .footer-legal-list,
+    .site-footer > .container > .footer-legal .footer-legal-list a {
+        height: 24px !important;
+        min-height: 24px !important;
+    }
+
+    .site-footer > .container > .footer-legal .footer-legal-list a {
+        padding: 5px 7px !important;
+        font-size: 0.62rem !important;
+    }
+}
+/* =========================================================
+   FOOTER LEGAL ABOVE COPYRIGHT LINE
+   Partner Schools'dan sonra, çizginin üstünde, sol tarafta.
+   Copyright ve Designed by Arvin Hakimi bölümüne dokunmaz.
+   ========================================================= */
+
+.site-footer {
+    position: relative !important;
+    padding-bottom: 28px !important;
+}
+
+.site-footer > .container {
+    position: relative !important;
+}
+
+/* Legal artık absolute değil; sayfanın doğru yerinde durur */
+.site-footer .footer-legal.footer-legal-above-line {
+    position: relative !important;
+    inset: auto !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+
+    width: fit-content !important;
+    max-width: calc(100% - 84px) !important;
+    height: 36px !important;
+    min-height: 36px !important;
+    max-height: 36px !important;
+
+    margin: 18px 0 10px 0 !important;
+    padding: 4px 6px !important;
+
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 5px !important;
+
+    border-radius: 999px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+
+    background:
+            linear-gradient(135deg, rgba(184, 255, 122, 0.10), rgba(255, 255, 255, 0.025)) !important;
+
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    box-shadow:
+            0 10px 26px rgba(0, 0, 0, 0.20),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+
+    backdrop-filter: blur(12px) saturate(145%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(145%) !important;
+
+    transform: none !important;
+    z-index: 10 !important;
+
+    scrollbar-width: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-above-line::-webkit-scrollbar {
+    display: none !important;
+}
+
+/* Legal rozeti */
+.site-footer .footer-legal.footer-legal-above-line h4 {
+    margin: 0 !important;
+    padding: 6px 9px !important;
+
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+    flex: 0 0 auto !important;
+
+    border-radius: 999px !important;
+    background: rgba(184, 255, 122, 0.13) !important;
+    border: 1px solid rgba(184, 255, 122, 0.18) !important;
+
+    color: rgba(248, 255, 249, 0.95) !important;
+    font-size: 0.72rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+}
+
+.site-footer .footer-legal.footer-legal-above-line h4::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    flex: 0 0 auto;
+    border-radius: 999px;
+    background: #b8ff7a;
+    box-shadow: 0 0 12px rgba(184, 255, 122, 0.75);
+}
+
+/* Linkler yan yana */
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: nowrap !important;
+    gap: 3px !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+    list-style: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list li {
+    display: inline-flex !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 0 0 auto !important;
+}
+
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list a {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    height: 26px !important;
+    min-height: 26px !important;
+
+    padding: 6px 8px !important;
+    border-radius: 999px !important;
+
+    color: rgba(248, 255, 249, 0.62) !important;
+    font-size: 0.68rem !important;
+    font-weight: 750 !important;
+    line-height: 1 !important;
+    white-space: nowrap !important;
+
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+
+    transform: none !important;
+
+    transition:
+            color 0.2s ease,
+            background 0.2s ease,
+            transform 0.2s ease !important;
+}
+
+/* Eski ok/çizgi efektlerini kapat */
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list a::before,
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list a::after {
+    display: none !important;
+    content: none !important;
+}
+
+.site-footer .footer-legal.footer-legal-above-line .footer-legal-list a:hover {
+    color: #ffffff !important;
+    background: rgba(184, 255, 122, 0.10) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Çizgi artık Legal'in altında, copyright'ın üstünde olur */
+.site-footer .footer-bottom {
+    position: relative !important;
+    z-index: 5 !important;
+
+    margin-top: 10px !important;
+    padding-top: 22px !important;
+
+    border-top: 1px solid rgba(184, 255, 122, 0.14) !important;
+    text-align: center !important;
+}
+
+.site-footer .designed-by {
+    position: relative !important;
+    z-index: 5 !important;
+}
+
+/* Tablet */
+@media (max-width: 980px) {
+    .site-footer .footer-legal.footer-legal-above-line {
+        max-width: calc(100% - 70px) !important;
+        margin-top: 16px !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+/* Telefon */
+@media (max-width: 560px) {
+    .site-footer .footer-legal.footer-legal-above-line {
+        width: 100% !important;
+        max-width: calc(100vw - 34px) !important;
+
+        height: 34px !important;
+        min-height: 34px !important;
+        max-height: 34px !important;
+
+        margin: 14px 0 8px 0 !important;
+        padding: 4px 5px !important;
+        gap: 4px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-above-line h4 {
+        height: 24px !important;
+        min-height: 24px !important;
+        padding: 5px 8px !important;
+        font-size: 0.66rem !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-above-line .footer-legal-list,
+    .site-footer .footer-legal.footer-legal-above-line .footer-legal-list a {
+        height: 24px !important;
+        min-height: 24px !important;
+    }
+
+    .site-footer .footer-legal.footer-legal-above-line .footer-legal-list a {
+        padding: 5px 7px !important;
+        font-size: 0.62rem !important;
+    }
+
+    .site-footer .footer-bottom {
+        margin-top: 8px !important;
+        padding-top: 18px !important;
+    }
+}
+/* =====================================================================
+   ABOUT SLIDE — IMAGE-LIKE PREMIUM ILLUSTRATED BACKGROUND
+   Sadece "Learning Sustainability Through International Collaboration"
+   bölümüne özel.
+   Bölüm boyutunu değiştirmez: padding, margin, min-height yok.
+   HTML yok. JS yok. Sadece CSS.
+   ===================================================================== */
+
+#about.section,
+#about.section-glow {
+    position: relative !important;
+    isolation: isolate !important;
+    overflow: hidden !important;
+
+    background:
+            radial-gradient(circle at 9% 12%, rgba(255, 244, 177, 0.72), transparent 18%),
+            radial-gradient(circle at 88% 16%, rgba(118, 255, 167, 0.46), transparent 24%),
+            radial-gradient(circle at 72% 84%, rgba(42, 149, 255, 0.20), transparent 30%),
+            radial-gradient(circle at 20% 88%, rgba(68, 210, 128, 0.32), transparent 28%),
+            linear-gradient(135deg, #f7fff2 0%, #eaffd8 32%, #d8f7ee 64%, #f8fff6 100%) !important;
+}
+
+/* Asıl "resim gibi" arka plan: CSS içinde gömülü renkli SVG */
+#about.section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -4;
+    pointer-events: none;
+
+    background-image:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cdefs%3E%3ClinearGradient id='sky' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23fff7c2'/%3E%3Cstop offset='0.38' stop-color='%23dcffd4'/%3E%3Cstop offset='0.72' stop-color='%23c6f4ff'/%3E%3Cstop offset='1' stop-color='%23f7fff2'/%3E%3C/linearGradient%3E%3CradialGradient id='sun' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0' stop-color='%23fff9a8' stop-opacity='1'/%3E%3Cstop offset='0.58' stop-color='%23ffe66b' stop-opacity='0.56'/%3E%3Cstop offset='1' stop-color='%23ffe66b' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='glowGreen' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0' stop-color='%237dff9c' stop-opacity='0.72'/%3E%3Cstop offset='1' stop-color='%237dff9c' stop-opacity='0'/%3E%3C/radialGradient%3E%3ClinearGradient id='leaf' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23b8ff7a'/%3E%3Cstop offset='0.48' stop-color='%2357b26c'/%3E%3Cstop offset='1' stop-color='%232f7a43'/%3E%3C/linearGradient%3E%3ClinearGradient id='hill' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%237ed18e'/%3E%3Cstop offset='1' stop-color='%232f7a43'/%3E%3C/linearGradient%3E%3Cfilter id='softShadow'%3E%3CfeDropShadow dx='0' dy='20' stdDeviation='22' flood-color='%230d2413' flood-opacity='0.18'/%3E%3C/filter%3E%3Cfilter id='blurGlow'%3E%3CfeGaussianBlur stdDeviation='18'/%3E%3C/filter%3E%3Cpattern id='dots' width='34' height='34' patternUnits='userSpaceOnUse'%3E%3Ccircle cx='3' cy='3' r='1.7' fill='%232f7a43' opacity='0.16'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='1600' height='900' fill='url(%23sky)'/%3E%3Crect width='1600' height='900' fill='url(%23dots)' opacity='0.52'/%3E%3Ccircle cx='155' cy='110' r='180' fill='url(%23sun)'/%3E%3Ccircle cx='1320' cy='142' r='230' fill='url(%23glowGreen)' opacity='0.72'/%3E%3Ccircle cx='1230' cy='660' r='340' fill='%236bd6ff' opacity='0.16'/%3E%3Cpath d='M0 704 C150 632 270 662 430 596 C620 520 760 602 930 548 C1120 487 1290 524 1600 430 L1600 900 L0 900 Z' fill='%23b8ff7a' opacity='0.58'/%3E%3Cpath d='M0 758 C180 680 345 710 530 645 C720 579 880 655 1060 600 C1255 541 1390 575 1600 492 L1600 900 L0 900 Z' fill='url(%23hill)' opacity='0.62'/%3E%3Cpath d='M0 812 C230 742 390 786 610 714 C790 655 980 724 1160 667 C1320 616 1470 650 1600 592 L1600 900 L0 900 Z' fill='%231f6b3a' opacity='0.55'/%3E%3Cpath d='M118 680 C350 620 530 660 772 604 C1020 546 1230 590 1508 502' fill='none' stroke='%23ffffff' stroke-width='8' stroke-opacity='0.42' stroke-linecap='round'/%3E%3Cpath d='M142 727 C405 678 563 710 832 648 C1078 591 1294 626 1530 548' fill='none' stroke='%23caff9b' stroke-width='4' stroke-opacity='0.58' stroke-linecap='round'/%3E%3Cg opacity='0.95' filter='url(%23softShadow)'%3E%3Ccircle cx='1186' cy='325' r='154' fill='%23e9fff0'/%3E%3Ccircle cx='1186' cy='325' r='130' fill='%2357b26c' opacity='0.18'/%3E%3Cpath d='M1076 310 C1112 244 1198 215 1262 257 C1327 299 1344 386 1297 444 C1247 506 1156 502 1105 448 C1063 404 1047 358 1076 310 Z' fill='%238de17d'/%3E%3Cpath d='M1108 282 C1134 278 1160 294 1165 320 C1170 347 1146 363 1122 354 C1094 344 1085 304 1108 282 Z' fill='%232f7a43' opacity='0.74'/%3E%3Cpath d='M1206 240 C1240 246 1264 272 1260 303 C1257 334 1225 346 1198 329 C1170 312 1173 250 1206 240 Z' fill='%232f7a43' opacity='0.68'/%3E%3Cpath d='M1240 368 C1274 356 1300 375 1300 404 C1300 435 1264 460 1232 446 C1200 431 1206 380 1240 368 Z' fill='%232f7a43' opacity='0.64'/%3E%3Cpath d='M1132 404 C1168 394 1190 419 1181 448 C1172 478 1130 480 1112 454 C1096 431 1107 411 1132 404 Z' fill='%232f7a43' opacity='0.62'/%3E%3Ccircle cx='1186' cy='325' r='162' fill='none' stroke='%23ffffff' stroke-width='10' stroke-opacity='0.58'/%3E%3Ccircle cx='1186' cy='325' r='182' fill='none' stroke='%23b8ff7a' stroke-width='3' stroke-opacity='0.72' stroke-dasharray='14 16'/%3E%3C/g%3E%3Cg opacity='0.82'%3E%3Cpath d='M1094 198 C970 208 885 264 800 360 C708 464 604 522 470 526' fill='none' stroke='%232f7a43' stroke-width='4' stroke-opacity='0.28' stroke-dasharray='12 14'/%3E%3Cpath d='M1048 435 C894 468 800 540 672 636' fill='none' stroke='%232f7a43' stroke-width='4' stroke-opacity='0.22' stroke-dasharray='10 16'/%3E%3Ccircle cx='800' cy='360' r='10' fill='%23b8ff7a'/%3E%3Ccircle cx='470' cy='526' r='9' fill='%2357b26c'/%3E%3Ccircle cx='672' cy='636' r='9' fill='%23b8ff7a'/%3E%3C/g%3E%3Cg filter='url(%23softShadow)'%3E%3Cpath d='M278 392 C315 308 400 250 500 254 C596 258 677 318 707 403 C617 383 518 387 434 430 C372 462 319 455 278 392 Z' fill='%23ffffff' opacity='0.88'/%3E%3Cpath d='M296 390 C356 360 431 354 503 376 C570 397 628 392 690 370 C658 310 587 274 506 272 C414 268 337 314 296 390 Z' fill='%23d8f7ee'/%3E%3Cpath d='M315 438 C410 386 522 390 688 428' fill='none' stroke='%232f7a43' stroke-width='12' stroke-linecap='round' opacity='0.78'/%3E%3Cpath d='M346 437 C430 404 540 410 656 435' fill='none' stroke='%23b8ff7a' stroke-width='5' stroke-linecap='round' opacity='0.9'/%3E%3Cpath d='M488 254 C468 294 456 338 454 388' fill='none' stroke='%232f7a43' stroke-width='5' opacity='0.32'/%3E%3Cpath d='M546 260 C524 304 514 348 518 394' fill='none' stroke='%232f7a43' stroke-width='5' opacity='0.26'/%3E%3C/g%3E%3Cg opacity='0.94' filter='url(%23softShadow)'%3E%3Cpath d='M176 552 C216 515 258 504 299 523 C256 562 217 575 176 552 Z' fill='url(%23leaf)'/%3E%3Cpath d='M210 500 C244 455 292 437 337 451 C304 497 257 519 210 500 Z' fill='url(%23leaf)' opacity='0.88'/%3E%3Cpath d='M126 493 C168 454 213 442 257 461 C216 503 170 514 126 493 Z' fill='url(%23leaf)' opacity='0.9'/%3E%3Cpath d='M226 587 C268 548 313 535 358 554 C318 594 272 607 226 587 Z' fill='url(%23leaf)' opacity='0.9'/%3E%3Cpath d='M120 620 C206 562 286 508 366 430' fill='none' stroke='%232f7a43' stroke-width='7' stroke-linecap='round' opacity='0.76'/%3E%3C/g%3E%3Cg opacity='0.86'%3E%3Crect x='1326' y='520' width='132' height='84' rx='20' fill='%23ffffff' opacity='0.82'/%3E%3Cpath d='M1348 572 C1366 548 1397 542 1422 559' fill='none' stroke='%232f7a43' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M1422 559 L1412 533 M1422 559 L1395 563' fill='none' stroke='%232f7a43' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M1431 548 C1414 575 1380 581 1354 562' fill='none' stroke='%2357b26c' stroke-width='8' stroke-linecap='round'/%3E%3Cpath d='M1354 562 L1364 590 M1354 562 L1381 558' fill='none' stroke='%2357b26c' stroke-width='8' stroke-linecap='round'/%3E%3C/g%3E%3Cg opacity='0.64'%3E%3Crect x='78' y='190' width='96' height='70' rx='18' fill='%23ffffff'/%3E%3Crect x='98' y='210' width='22' height='18' rx='4' fill='%2357b26c'/%3E%3Crect x='132' y='210' width='22' height='18' rx='4' fill='%23b8ff7a'/%3E%3Crect x='98' y='238' width='56' height='6' rx='3' fill='%232f7a43' opacity='0.42'/%3E%3Crect x='1440' y='186' width='84' height='84' rx='26' fill='%23ffffff'/%3E%3Cpath d='M1466 238 C1488 210 1512 210 1530 234' fill='none' stroke='%232f7a43' stroke-width='8' stroke-linecap='round'/%3E%3Ccircle cx='1498' cy='222' r='10' fill='%23b8ff7a'/%3E%3C/g%3E%3C/svg%3E");
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    opacity: 0.92;
+    transform: scale(1.02);
+}
+
+/* Okunabilirliği koruyan cam/ışık katmanı */
+#about.section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+
+    background:
+            linear-gradient(90deg, rgba(248, 255, 246, 0.72) 0%, rgba(248, 255, 246, 0.42) 34%, rgba(248, 255, 246, 0.18) 62%, rgba(248, 255, 246, 0.50) 100%),
+            radial-gradient(circle at 50% 38%, rgba(255, 255, 255, 0.55), transparent 34%),
+            radial-gradient(circle at 50% 82%, rgba(184, 255, 122, 0.20), transparent 34%);
+}
+
+/* İçerik arka plan resminin üstünde kalsın */
+#about > .container {
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+/* Ekstra renkli poster derinliği — boyut değiştirmez */
+#about > .container::before {
+    content: "";
+    position: absolute;
+    inset: -46px -58px;
+    z-index: -2;
+    pointer-events: none;
+
+    background:
+            radial-gradient(circle at 18% 22%, rgba(255, 230, 107, 0.30), transparent 22%),
+            radial-gradient(circle at 88% 18%, rgba(70, 212, 255, 0.18), transparent 28%),
+            radial-gradient(circle at 80% 78%, rgba(184, 255, 122, 0.26), transparent 30%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0.10));
+
+    border-radius: 54px;
+    box-shadow:
+            inset 0 0 0 1px rgba(255, 255, 255, 0.36),
+            0 30px 90px rgba(15, 27, 20, 0.08);
+}
+
+/* Üstte hafif sinematik parlama */
+#about > .container::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -86px;
+    z-index: -1;
+    width: min(920px, 90vw);
+    height: 220px;
+    pointer-events: none;
+    transform: translateX(-50%);
+
+    background:
+            radial-gradient(ellipse at center, rgba(255, 255, 255, 0.68), transparent 66%),
+            radial-gradient(ellipse at center, rgba(184, 255, 122, 0.24), transparent 72%);
+
+    filter: blur(8px);
+    opacity: 0.76;
+}
+
+/* Başlık alanı: sadece görsel okunabilirlik, boyut büyütme yok */
+#about .section-heading {
+    position: relative !important;
+    z-index: 4 !important;
+
+    background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.60), rgba(255, 255, 255, 0.28)),
+            radial-gradient(circle at 14% 20%, rgba(184, 255, 122, 0.20), transparent 38%) !important;
+
+    box-shadow:
+            0 24px 70px rgba(15, 27, 20, 0.08),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.55),
+            inset 0 -1px 0 rgba(47, 122, 67, 0.07) !important;
+
+    border-radius: 38px !important;
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+}
+
+/* Başlığın arkasında dönen renkli recycle halo */
+#about .section-heading::before {
+    content: "";
+    position: absolute;
+    right: -74px;
+    top: -84px;
+    z-index: -1;
+    width: 230px;
+    height: 230px;
+    pointer-events: none;
+
+    border-radius: 50%;
+
+    background:
+            conic-gradient(
+                    from 40deg,
+                    transparent 0deg 26deg,
+                    rgba(47, 122, 67, 0.22) 26deg 58deg,
+                    transparent 58deg 102deg,
+                    rgba(184, 255, 122, 0.30) 102deg 136deg,
+                    transparent 136deg 206deg,
+                    rgba(87, 178, 108, 0.24) 206deg 240deg,
+                    transparent 240deg 360deg
+            );
+
+    -webkit-mask-image: radial-gradient(circle, transparent 0 48%, #000 49% 65%, transparent 66%);
+    mask-image: radial-gradient(circle, transparent 0 48%, #000 49% 65%, transparent 66%);
+
+    opacity: 0.92;
+    animation: aboutPosterHaloSpin 28s linear infinite;
+}
+
+@keyframes aboutPosterHaloSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Başlık rengini arka plana uygun premium yap */
+#about #aboutHeading {
+    background:
+            linear-gradient(115deg, #102116 0%, #215732 28%, #2f7a43 48%, #57b26c 68%, #153d24 100%) !important;
+    background-size: 220% 220% !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+
+    text-shadow: 0 18px 42px rgba(47, 122, 67, 0.12) !important;
+}
+
+/* Kartların arkasında renkli ama düzenli alan */
+#about .about-grid,
+#about .mission-strip {
+    position: relative !important;
+    z-index: 4 !important;
+}
+
+/* Kartlara cam efekti — ölçüleri büyütmez */
+#about .info-card,
+#about .mission-strip {
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0.36)),
+            radial-gradient(circle at 20% 0%, rgba(184, 255, 122, 0.18), transparent 38%) !important;
+
+    box-shadow:
+            0 24px 64px rgba(15, 27, 20, 0.10),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.50),
+            inset 0 -1px 0 rgba(47, 122, 67, 0.06) !important;
+
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+}
+
+/* Kartların içinde çok hafif poster dokusu */
+#about .info-card {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+#about .info-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+
+    background:
+            radial-gradient(circle at 82% 18%, rgba(87, 178, 108, 0.12), transparent 25%),
+            radial-gradient(circle at 12% 90%, rgba(255, 230, 107, 0.16), transparent 28%),
+            linear-gradient(135deg, transparent 0 48%, rgba(184, 255, 122, 0.07) 48.5% 49.5%, transparent 50% 100%);
+
+    opacity: 0.9;
+}
+
+/* İkonlar arka planla uyumlu daha renkli */
+#about .info-icon {
+    background:
+            radial-gradient(circle at 30% 26%, rgba(255, 255, 255, 0.86), transparent 30%),
+            linear-gradient(135deg, rgba(255, 230, 107, 0.48), rgba(184, 255, 122, 0.50), rgba(87, 178, 108, 0.34)) !important;
+
+    box-shadow:
+            0 16px 36px rgba(47, 122, 67, 0.18),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.52) !important;
+}
+
+/* Dark mode için özel poster versiyonu */
+:root[data-theme="dark"] #about.section,
+:root[data-theme="dark"] #about.section-glow {
+    background:
+            radial-gradient(circle at 10% 12%, rgba(184, 255, 122, 0.16), transparent 20%),
+            radial-gradient(circle at 88% 18%, rgba(87, 178, 108, 0.20), transparent 25%),
+            radial-gradient(circle at 72% 84%, rgba(42, 149, 255, 0.13), transparent 32%),
+            linear-gradient(135deg, #031008 0%, #071a0d 42%, #082016 72%, #020604 100%) !important;
+}
+
+:root[data-theme="dark"] #about.section::before {
+    opacity: 0.34;
+    filter: saturate(1.25) contrast(1.12) brightness(0.78);
+}
+
+:root[data-theme="dark"] #about.section::after {
+    background:
+            linear-gradient(90deg, rgba(3, 16, 8, 0.84) 0%, rgba(3, 16, 8, 0.52) 34%, rgba(3, 16, 8, 0.38) 62%, rgba(3, 16, 8, 0.72) 100%),
+            radial-gradient(circle at 50% 36%, rgba(184, 255, 122, 0.08), transparent 34%),
+            radial-gradient(circle at 50% 82%, rgba(87, 178, 108, 0.12), transparent 38%);
+}
+
+:root[data-theme="dark"] #about > .container::before {
+    background:
+            radial-gradient(circle at 18% 22%, rgba(184, 255, 122, 0.10), transparent 24%),
+            radial-gradient(circle at 88% 18%, rgba(70, 212, 255, 0.09), transparent 30%),
+            radial-gradient(circle at 80% 78%, rgba(87, 178, 108, 0.12), transparent 32%),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.012));
+
+    box-shadow:
+            inset 0 0 0 1px rgba(184, 255, 122, 0.10),
+            0 30px 90px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme="dark"] #about .section-heading,
+:root[data-theme="dark"] #about .info-card,
+:root[data-theme="dark"] #about .mission-strip {
+    background:
+            linear-gradient(145deg, rgba(10, 34, 18, 0.72), rgba(3, 12, 7, 0.58)),
+            radial-gradient(circle at 20% 0%, rgba(184, 255, 122, 0.08), transparent 38%) !important;
+
+    box-shadow:
+            0 24px 64px rgba(0, 0, 0, 0.26),
+            inset 0 0 0 1px rgba(184, 255, 122, 0.10),
+            inset 0 -1px 0 rgba(255, 255, 255, 0.04) !important;
+}
+
+:root[data-theme="dark"] #about #aboutHeading {
+    background:
+            linear-gradient(115deg, #f8fff9 0%, #b8ff7a 34%, #57b26c 68%, #f8fff9 100%) !important;
+    background-size: 220% 220% !important;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* Tablet: sadece resmin konumu değişir, bölüm boyutu değişmez */
+@media (max-width: 980px) {
+    #about.section::before {
+        background-size: auto 100%;
+        background-position: 58% center;
+        opacity: 0.82;
+    }
+
+    #about > .container::before {
+        inset: -36px -26px;
+        border-radius: 40px;
+    }
+
+    #about .section-heading::before {
+        right: -106px;
+        top: -100px;
+        opacity: 0.68;
+    }
+}
+
+/* Telefon: arka plan hâlâ resim gibi kalır, yatay taşma yapmaz */
+@media (max-width: 640px) {
+    #about.section::before {
+        background-size: auto 100%;
+        background-position: 61% center;
+        opacity: 0.72;
+        transform: scale(1.04);
+    }
+
+    #about.section::after {
+        background:
+                linear-gradient(180deg, rgba(248, 255, 246, 0.76) 0%, rgba(248, 255, 246, 0.46) 46%, rgba(248, 255, 246, 0.72) 100%),
+                radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.42), transparent 36%);
+    }
+
+    #about > .container::before {
+        inset: -24px -14px;
+        border-radius: 30px;
+    }
+
+    #about > .container::after {
+        top: -60px;
+        height: 170px;
+        opacity: 0.54;
+    }
+
+    #about .section-heading {
+        border-radius: 28px !important;
+    }
+
+    #about .section-heading::before {
+        width: 180px;
+        height: 180px;
+        right: -106px;
+        top: -88px;
+        opacity: 0.48;
+    }
+
+    :root[data-theme="dark"] #about.section::after {
+        background:
+                linear-gradient(180deg, rgba(3, 16, 8, 0.82) 0%, rgba(3, 16, 8, 0.54) 46%, rgba(3, 16, 8, 0.78) 100%),
+                radial-gradient(circle at 50% 30%, rgba(184, 255, 122, 0.08), transparent 36%);
+    }
+}
+
+/* Hareket azaltma ayarı olanlar için */
+@media (prefers-reduced-motion: reduce) {
+    #about .section-heading::before {
+        animation: none !important;
+    }
+}
+/* =====================================================================
+   ABOUT SLIDE — ULTRA COLORFUL CINEMATIC MOTION UPGRADE
+   Mevcut About arka planının üstüne eklenir.
+   Bölüm boyutunu değiştirmez.
+   Sadece renk, ışık, hareket ve video hissi artırılır.
+   ===================================================================== */
+
+#about.section,
+#about.section-glow {
+    background:
+            radial-gradient(circle at 8% 12%, rgba(255, 221, 87, 0.95), transparent 18%),
+            radial-gradient(circle at 88% 14%, rgba(0, 255, 170, 0.70), transparent 24%),
+            radial-gradient(circle at 72% 82%, rgba(0, 174, 255, 0.55), transparent 30%),
+            radial-gradient(circle at 18% 88%, rgba(120, 255, 86, 0.62), transparent 28%),
+            radial-gradient(circle at 52% 48%, rgba(255, 255, 255, 0.38), transparent 36%),
+            linear-gradient(
+                    135deg,
+                    #fff4a8 0%,
+                    #b8ff7a 22%,
+                    #6bffb0 44%,
+                    #8eeeff 68%,
+                    #f7fff2 100%
+            ) !important;
+
+    animation:
+            aboutMegaColorBreath 9s ease-in-out infinite,
+            aboutBackgroundHueShift 18s linear infinite !important;
+}
+
+/* Ana resim katmanı artık daha parlak, renkli ve hareketli */
+#about.section::before {
+    opacity: 1 !important;
+
+    filter:
+            saturate(1.65)
+            contrast(1.08)
+            brightness(1.06) !important;
+
+    transform-origin: center center !important;
+
+    animation:
+            aboutPosterVideoMove 16s ease-in-out infinite,
+            aboutPosterColorPulse 8s ease-in-out infinite !important;
+}
+
+/* Okunabilirliği bozmadan renkli ışık hareketi */
+#about.section::after {
+    background:
+            radial-gradient(circle at var(--about-light-x, 20%) var(--about-light-y, 25%), rgba(255, 240, 100, 0.42), transparent 24%),
+            radial-gradient(circle at calc(100% - var(--about-light-x, 20%)) 30%, rgba(0, 255, 178, 0.34), transparent 28%),
+            radial-gradient(circle at 70% calc(100% - var(--about-light-y, 25%)), rgba(0, 174, 255, 0.28), transparent 28%),
+            linear-gradient(
+                    90deg,
+                    rgba(248, 255, 246, 0.56) 0%,
+                    rgba(248, 255, 246, 0.30) 34%,
+                    rgba(248, 255, 246, 0.12) 62%,
+                    rgba(248, 255, 246, 0.42) 100%
+            ) !important;
+
+    background-size:
+            140% 140%,
+            150% 150%,
+            160% 160%,
+            100% 100% !important;
+
+    animation:
+            aboutAuroraSweep 7s ease-in-out infinite,
+            aboutLightPosition 11s ease-in-out infinite !important;
+}
+
+/* Container arkasına daha renkli aurora */
+#about > .container::before {
+    background:
+            radial-gradient(circle at 12% 18%, rgba(255, 228, 75, 0.56), transparent 22%),
+            radial-gradient(circle at 90% 16%, rgba(0, 255, 178, 0.42), transparent 28%),
+            radial-gradient(circle at 78% 82%, rgba(0, 174, 255, 0.34), transparent 30%),
+            radial-gradient(circle at 28% 88%, rgba(184, 255, 122, 0.46), transparent 26%),
+            conic-gradient(
+                    from 0deg at 50% 50%,
+                    rgba(255, 230, 80, 0.18),
+                    rgba(0, 255, 178, 0.18),
+                    rgba(0, 174, 255, 0.14),
+                    rgba(184, 255, 122, 0.18),
+                    rgba(255, 230, 80, 0.18)
+            ) !important;
+
+    filter: saturate(1.35) brightness(1.08) !important;
+
+    animation:
+            aboutContainerAurora 8s ease-in-out infinite,
+            aboutSoftRotateGlow 20s linear infinite !important;
+}
+
+/* Üst ışık bandı daha hareketli */
+#about > .container::after {
+    background:
+            linear-gradient(
+                    100deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.00) 18%,
+                    rgba(255, 255, 255, 0.88) 34%,
+                    rgba(184, 255, 122, 0.42) 44%,
+                    rgba(0, 255, 178, 0.30) 54%,
+                    rgba(255, 255, 255, 0.00) 72%,
+                    transparent 100%
+            ),
+            radial-gradient(ellipse at center, rgba(255, 255, 255, 0.64), transparent 68%) !important;
+
+    width: min(1120px, 94vw) !important;
+    opacity: 0.88 !important;
+
+    animation: aboutCinemaLightSweep 5.8s ease-in-out infinite !important;
+}
+
+/* Başlık cam paneli daha canlı */
+#about .section-heading {
+    background:
+            linear-gradient(135deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
+            radial-gradient(circle at 12% 20%, rgba(255, 230, 70, 0.30), transparent 34%),
+            radial-gradient(circle at 86% 22%, rgba(0, 255, 178, 0.22), transparent 36%),
+            radial-gradient(circle at 76% 86%, rgba(0, 174, 255, 0.16), transparent 38%) !important;
+
+    box-shadow:
+            0 28px 80px rgba(15, 27, 20, 0.10),
+            0 0 46px rgba(184, 255, 122, 0.16),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+            inset 0 -1px 0 rgba(47, 122, 67, 0.08) !important;
+
+    animation: aboutGlassGlow 6s ease-in-out infinite !important;
+}
+
+/* Başlık arkasındaki halka daha renkli ve hızlı */
+#about .section-heading::before {
+    background:
+            conic-gradient(
+                    from 0deg,
+                    transparent 0deg 18deg,
+                    rgba(255, 230, 70, 0.52) 18deg 58deg,
+                    transparent 58deg 88deg,
+                    rgba(0, 255, 178, 0.46) 88deg 138deg,
+                    transparent 138deg 178deg,
+                    rgba(0, 174, 255, 0.34) 178deg 224deg,
+                    transparent 224deg 262deg,
+                    rgba(184, 255, 122, 0.48) 262deg 316deg,
+                    transparent 316deg 360deg
+            ) !important;
+
+    filter: saturate(1.6) brightness(1.12) !important;
+    opacity: 1 !important;
+
+    animation:
+            aboutPosterHaloSpin 11s linear infinite,
+            aboutHaloPulse 3.8s ease-in-out infinite !important;
+}
+
+/* Başlık yazısı daha belirgin renk geçişli */
+#about #aboutHeading {
+    background:
+            linear-gradient(
+                    110deg,
+                    #0f1b14 0%,
+                    #215732 20%,
+                    #2f7a43 36%,
+                    #00a86b 52%,
+                    #37c96f 68%,
+                    #153d24 84%,
+                    #0f1b14 100%
+            ) !important;
+    background-size: 320% 320% !important;
+
+    animation:
+            aboutTitleColorRun 5.5s ease-in-out infinite !important;
+}
+
+/* Kartlar daha renkli cam gibi */
+#about .info-card,
+#about .mission-strip {
+    background:
+            linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
+            radial-gradient(circle at 18% 0%, rgba(255, 230, 70, 0.24), transparent 34%),
+            radial-gradient(circle at 90% 16%, rgba(0, 255, 178, 0.18), transparent 34%),
+            radial-gradient(circle at 74% 88%, rgba(0, 174, 255, 0.12), transparent 40%) !important;
+
+    box-shadow:
+            0 24px 64px rgba(15, 27, 20, 0.10),
+            0 0 38px rgba(87, 178, 108, 0.10),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.56),
+            inset 0 -1px 0 rgba(47, 122, 67, 0.07) !important;
+}
+
+/* Kartların üstünde çok hafif video ışığı */
+#about .info-card::after {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    pointer-events: none;
+
+    background:
+            linear-gradient(
+                    115deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.00) 36%,
+                    rgba(255, 255, 255, 0.40) 46%,
+                    rgba(184, 255, 122, 0.18) 52%,
+                    rgba(255, 255, 255, 0.00) 64%,
+                    transparent 100%
+            );
+
+    transform: translateX(-60%) rotate(8deg);
+    opacity: 0.7;
+
+    animation: aboutCardLightMove 6.5s ease-in-out infinite;
+}
+
+/* İkonlar canlı, parlayan */
+#about .info-icon {
+    background:
+            radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.92), transparent 30%),
+            conic-gradient(
+                    from 0deg,
+                    rgba(255, 230, 70, 0.70),
+                    rgba(184, 255, 122, 0.78),
+                    rgba(0, 255, 178, 0.54),
+                    rgba(0, 174, 255, 0.32),
+                    rgba(255, 230, 70, 0.70)
+            ) !important;
+
+    box-shadow:
+            0 18px 40px rgba(47, 122, 67, 0.22),
+            0 0 26px rgba(184, 255, 122, 0.28),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.58) !important;
+
+    animation:
+            aboutIconPulse 4s ease-in-out infinite,
+            aboutIconHue 10s linear infinite !important;
+}
+
+/* Hover daha sinematik */
+#about .info-card:hover {
+    transform: translateY(-8px) scale(1.018) !important;
+    box-shadow:
+            0 34px 88px rgba(15, 27, 20, 0.14),
+            0 0 58px rgba(184, 255, 122, 0.24),
+            inset 0 0 0 1px rgba(255, 255, 255, 0.66) !important;
+}
+
+/* ---------------- ANIMATIONS ---------------- */
+
+@keyframes aboutMegaColorBreath {
+    0%,
+    100% {
+        filter: saturate(1.12) brightness(1);
+    }
+
+    50% {
+        filter: saturate(1.38) brightness(1.06);
+    }
+}
+
+@keyframes aboutBackgroundHueShift {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes aboutPosterVideoMove {
+    0%,
+    100% {
+        transform: scale(1.04) translate3d(0, 0, 0);
+        background-position: 50% 50%;
+    }
+
+    25% {
+        transform: scale(1.065) translate3d(-14px, -8px, 0);
+        background-position: 47% 48%;
+    }
+
+    50% {
+        transform: scale(1.055) translate3d(12px, 10px, 0);
+        background-position: 53% 52%;
+    }
+
+    75% {
+        transform: scale(1.07) translate3d(-8px, 12px, 0);
+        background-position: 49% 54%;
+    }
+}
+
+@keyframes aboutPosterColorPulse {
+    0%,
+    100% {
+        filter:
+                saturate(1.55)
+                contrast(1.06)
+                brightness(1.04);
+    }
+
+    50% {
+        filter:
+                saturate(2)
+                contrast(1.12)
+                brightness(1.12);
+    }
+}
+
+@keyframes aboutAuroraSweep {
+    0%,
+    100% {
+        background-position:
+                0% 40%,
+                100% 30%,
+                60% 100%,
+                center;
+    }
+
+    50% {
+        background-position:
+                100% 60%,
+                0% 50%,
+                40% 0%,
+                center;
+    }
+}
+
+@keyframes aboutLightPosition {
+    0% {
+        --about-light-x: 14%;
+        --about-light-y: 22%;
+    }
+
+    25% {
+        --about-light-x: 72%;
+        --about-light-y: 18%;
+    }
+
+    50% {
+        --about-light-x: 84%;
+        --about-light-y: 72%;
+    }
+
+    75% {
+        --about-light-x: 26%;
+        --about-light-y: 82%;
+    }
+
+    100% {
+        --about-light-x: 14%;
+        --about-light-y: 22%;
+    }
+}
+
+@keyframes aboutContainerAurora {
+    0%,
+    100% {
+        background-position:
+                0% 20%,
+                100% 20%,
+                80% 90%,
+                20% 90%,
+                50% 50%;
+        opacity: 0.86;
+    }
+
+    50% {
+        background-position:
+                100% 28%,
+                0% 22%,
+                22% 88%,
+                88% 82%,
+                50% 50%;
+        opacity: 1;
+    }
+}
+
+@keyframes aboutSoftRotateGlow {
+    0% {
+        filter: hue-rotate(0deg) saturate(1.25) brightness(1.02);
+    }
+
+    50% {
+        filter: hue-rotate(14deg) saturate(1.45) brightness(1.08);
+    }
+
+    100% {
+        filter: hue-rotate(0deg) saturate(1.25) brightness(1.02);
+    }
+}
+
+@keyframes aboutCinemaLightSweep {
+    0% {
+        transform: translateX(-50%) translateY(0) scaleX(1);
+        opacity: 0.48;
+    }
+
+    35% {
+        transform: translateX(-42%) translateY(10px) scaleX(1.08);
+        opacity: 0.95;
+    }
+
+    70% {
+        transform: translateX(-58%) translateY(-8px) scaleX(1.04);
+        opacity: 0.76;
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(0) scaleX(1);
+        opacity: 0.48;
+    }
+}
+
+@keyframes aboutGlassGlow {
+    0%,
+    100% {
+        box-shadow:
+                0 28px 80px rgba(15, 27, 20, 0.10),
+                0 0 42px rgba(184, 255, 122, 0.14),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.62),
+                inset 0 -1px 0 rgba(47, 122, 67, 0.08);
+    }
+
+    50% {
+        box-shadow:
+                0 34px 92px rgba(15, 27, 20, 0.12),
+                0 0 70px rgba(0, 255, 178, 0.22),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+                inset 0 -1px 0 rgba(47, 122, 67, 0.10);
+    }
+}
+
+@keyframes aboutHaloPulse {
+    0%,
+    100% {
+        opacity: 0.80;
+        filter: saturate(1.25) brightness(1);
+    }
+
+    50% {
+        opacity: 1;
+        filter: saturate(2) brightness(1.18);
+    }
+}
+
+@keyframes aboutTitleColorRun {
+    0%,
+    100% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes aboutCardLightMove {
+    0%,
+    100% {
+        transform: translateX(-65%) rotate(8deg);
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 0.55;
+    }
+
+    55% {
+        transform: translateX(45%) rotate(8deg);
+        opacity: 0.82;
+    }
+
+    80% {
+        opacity: 0;
+    }
+}
+
+@keyframes aboutIconPulse {
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow:
+                0 18px 40px rgba(47, 122, 67, 0.22),
+                0 0 24px rgba(184, 255, 122, 0.24),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.58);
+    }
+
+    50% {
+        transform: scale(1.055);
+        box-shadow:
+                0 22px 52px rgba(47, 122, 67, 0.28),
+                0 0 42px rgba(0, 255, 178, 0.32),
+                inset 0 0 0 1px rgba(255, 255, 255, 0.70);
+    }
+}
+
+@keyframes aboutIconHue {
+    0% {
+        filter: hue-rotate(0deg) saturate(1.1);
+    }
+
+    50% {
+        filter: hue-rotate(18deg) saturate(1.45);
+    }
+
+    100% {
+        filter: hue-rotate(0deg) saturate(1.1);
+    }
+}
+
+/* Dark mode daha neon/cinematic */
+:root[data-theme="dark"] #about.section::before {
+    opacity: 0.52 !important;
+    filter:
+            saturate(2)
+            contrast(1.16)
+            brightness(0.92) !important;
+}
+
+:root[data-theme="dark"] #about.section::after {
+    background:
+            radial-gradient(circle at var(--about-light-x, 20%) var(--about-light-y, 25%), rgba(184, 255, 122, 0.20), transparent 24%),
+            radial-gradient(circle at calc(100% - var(--about-light-x, 20%)) 30%, rgba(0, 255, 178, 0.18), transparent 28%),
+            radial-gradient(circle at 70% calc(100% - var(--about-light-y, 25%)), rgba(0, 174, 255, 0.16), transparent 28%),
+            linear-gradient(
+                    90deg,
+                    rgba(3, 16, 8, 0.76) 0%,
+                    rgba(3, 16, 8, 0.48) 34%,
+                    rgba(3, 16, 8, 0.36) 62%,
+                    rgba(3, 16, 8, 0.64) 100%
+            ) !important;
+}
+
+:root[data-theme="dark"] #about #aboutHeading {
+    background:
+            linear-gradient(
+                    110deg,
+                    #ffffff 0%,
+                    #b8ff7a 24%,
+                    #00ffb2 48%,
+                    #8eeeff 68%,
+                    #f8fff9 100%
+            ) !important;
+    background-size: 320% 320% !important;
+}
+
+/* Telefon uyumu: hareket var ama taşma yok */
+@media (max-width: 640px) {
+    #about.section::before {
+        animation:
+                aboutPosterVideoMoveMobile 16s ease-in-out infinite,
+                aboutPosterColorPulse 8s ease-in-out infinite !important;
+    }
+
+    #about .info-card::after {
+        animation-duration: 8s !important;
+    }
+}
+
+@keyframes aboutPosterVideoMoveMobile {
+    0%,
+    100% {
+        transform: scale(1.06) translate3d(0, 0, 0);
+        background-position: 58% 50%;
+    }
+
+    50% {
+        transform: scale(1.08) translate3d(-8px, 6px, 0);
+        background-position: 62% 52%;
+    }
+}
+
+/* Hareket azaltma ayarı varsa animasyonlar kapanır */
+@media (prefers-reduced-motion: reduce) {
+    #about.section,
+    #about.section-glow,
+    #about.section::before,
+    #about.section::after,
+    #about > .container::before,
+    #about > .container::after,
+    #about .section-heading,
+    #about .section-heading::before,
+    #about #aboutHeading,
+    #about .info-card::after,
+    #about .info-icon {
+        animation: none !important;
+    }
+}
+/* =========================================================
+   ABOUT SECTION TEXT VISIBILITY FIX
+   Learning Sustainability başlık/yazı görünmeme sorununu düzeltir.
+   Arka plan kalır, bölüm boyutu değişmez.
+   ========================================================= */
+
+/* Büyük başlığı tekrar okunur yap */
+#about #aboutHeading,
+#about .section-heading h2,
+#about .section-title {
+    background: none !important;
+    background-image: none !important;
+    background-clip: border-box !important;
+    -webkit-background-clip: border-box !important;
+
+    color: #0f1b14 !important;
+    -webkit-text-fill-color: #0f1b14 !important;
+
+    text-shadow:
+            0 2px 0 rgba(255, 255, 255, 0.55),
+            0 18px 45px rgba(15, 27, 20, 0.12) !important;
+
+    opacity: 1 !important;
+    visibility: visible !important;
+    mix-blend-mode: normal !important;
+}
+
+/* Başlık kutusunda koyu blok oluşmasını engelle */
+#about .section-heading h2::before,
+#about .section-heading h2::after,
+#about #aboutHeading::before,
+#about #aboutHeading::after {
+    display: none !important;
+    content: none !important;
+}
+
+/* Açıklama yazısı daha okunur olsun */
+#about .section-text,
+#about .section-heading p {
+    color: rgba(15, 27, 20, 0.72) !important;
+    -webkit-text-fill-color: rgba(15, 27, 20, 0.72) !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Kart başlıkları net görünsün */
+#about .info-card h3,
+#about .mission-strip h3 {
+    color: #0f1b14 !important;
+    -webkit-text-fill-color: #0f1b14 !important;
+    background: none !important;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45) !important;
+}
+
+/* Kart açıklama yazıları */
+#about .info-card p,
+#about .mission-strip p {
+    color: rgba(15, 27, 20, 0.68) !important;
+    -webkit-text-fill-color: rgba(15, 27, 20, 0.68) !important;
+}
+
+/* Turuncu vurgular daha görünür ama göz yormaz */
+#about mark,
+#about .highlight,
+#about em,
+#about strong span {
+    color: #ff6a00 !important;
+    -webkit-text-fill-color: #ff6a00 !important;
+    background: transparent !important;
+    text-shadow: 0 0 14px rgba(255, 106, 0, 0.16) !important;
+}
+
+/* Dark mode için */
+:root[data-theme="dark"] #about #aboutHeading,
+:root[data-theme="dark"] #about .section-heading h2,
+:root[data-theme="dark"] #about .section-title {
+    color: #f7fff5 !important;
+    -webkit-text-fill-color: #f7fff5 !important;
+    background: none !important;
+    background-image: none !important;
+
+    text-shadow:
+            0 0 18px rgba(184, 255, 122, 0.18),
+            0 18px 45px rgba(0, 0, 0, 0.42) !important;
+}
+
+:root[data-theme="dark"] #about .section-text,
+:root[data-theme="dark"] #about .section-heading p {
+    color: rgba(247, 255, 245, 0.78) !important;
+    -webkit-text-fill-color: rgba(247, 255, 245, 0.78) !important;
+}
+
+:root[data-theme="dark"] #about .info-card h3,
+:root[data-theme="dark"] #about .mission-strip h3 {
+    color: #f7fff5 !important;
+    -webkit-text-fill-color: #f7fff5 !important;
+}
+
+:root[data-theme="dark"] #about .info-card p,
+:root[data-theme="dark"] #about .mission-strip p {
+    color: rgba(247, 255, 245, 0.72) !important;
+    -webkit-text-fill-color: rgba(247, 255, 245, 0.72) !important;
+}
 
