@@ -1,165 +1,497 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>Accessibility Statement | Upcycling Patterns</title>
-  <meta name="description" content="Accessibility statement for the Upcycling Patterns Erasmus+ KA210-SCH project website." />
-  <meta name="robots" content="index, follow" />
+    <title id="pageTitle">Accessibility Statement | Upcycling Patterns</title>
+    <meta
+            id="metaDescription"
+            name="description"
+            content="Accessibility statement for the Upcycling Patterns Erasmus+ KA210-SCH project website."
+    />
 
-  <meta name="theme-color" content="#2f7a43" />
-  <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
 
-  <link rel="canonical" href="https://upcyclingpatterns.com/accessibility.html" />
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no, email=no, address=no" />
+    <meta name="application-name" content="Upcycling Patterns" />
+    <meta name="apple-mobile-web-app-title" content="UpCyc" />
 
-  <style>
-    :root {
-      --primary: #2f7a43;
-      --primary-light: #57b26c;
-      --accent: #b8ff7a;
-      --text-main: #0f1b14;
-      --text-soft: #5a6b60;
-      --bg-1: #f8fcf8;
-      --bg-2: #eef6ef;
-      --card: rgba(255, 255, 255, 0.84);
-      --border: rgba(47, 122, 67, 0.14);
-      --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
-    }
+    <!-- Defence-in-depth security headers (real ones live in netlify.toml) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --text-main: #f0f7f1;
-        --text-soft: #b8c5bb;
-        --bg-1: #0a120d;
-        --bg-2: #0f1912;
-        --card: rgba(20, 32, 24, 0.84);
-        --border: rgba(184, 255, 122, 0.14);
-      }
-    }
+    <link rel="canonical" href="https://upcyclingpatterns.com/accessibility.html" />
+    <link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/accessibility.html" />
+    <link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/accessibility.html?lang=tr" />
+    <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/accessibility.html" />
 
-    * {
-      box-sizing: border-box;
-    }
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
 
-    body {
-      margin: 0;
-      padding: 32px 16px 56px;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text-main);
-      background:
-        radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.16), transparent 30%),
-        linear-gradient(180deg, var(--bg-1), var(--bg-2));
-      line-height: 1.7;
-    }
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Accessibility Statement | Upcycling Patterns" />
+    <meta property="og:description" content="How the Upcycling Patterns project website supports accessibility for all visitors." />
+    <meta property="og:url" content="https://upcyclingpatterns.com/accessibility.html" />
+    <meta property="og:site_name" content="Upcycling Patterns" />
+    <meta property="og:image" content="https://upcyclingpatterns.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="tr_TR" />
 
-    .page {
-      width: min(920px, 100%);
-      margin: 0 auto;
-    }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Accessibility Statement | Upcycling Patterns" />
+    <meta name="twitter:description" content="How the Upcycling Patterns project website supports accessibility for all visitors." />
+    <meta name="twitter:image" content="https://upcyclingpatterns.com/og-image.png" />
 
-    .top-link {
-      display: inline-flex;
-      margin-bottom: 20px;
-      color: var(--primary);
-      font-weight: 800;
-      text-decoration: none;
-    }
+    <!-- Early theme detection (no FOUC) — syncs with main site's siteTheme key -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("siteTheme");
+                var prefersDark = window.matchMedia &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches;
+                var theme = (saved === "dark" || saved === "light")
+                    ? saved
+                    : (prefersDark ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
 
-    .card {
-      padding: clamp(26px, 5vw, 52px);
-      border: 1px solid var(--border);
-      border-radius: 32px;
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
+    <style>
+        :root {
+            --primary: #2f7a43;
+            --primary-light: #57b26c;
+            --accent: #b8ff7a;
+            --text-main: #0f1b14;
+            --text-soft: #5a6b60;
+            --bg-1: #f8fcf8;
+            --bg-2: #eef6ef;
+            --card: rgba(255, 255, 255, 0.84);
+            --border: rgba(47, 122, 67, 0.14);
+            --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
+        }
 
-    h1 {
-      margin: 0 0 16px;
-      font-size: clamp(2rem, 6vw, 3.4rem);
-      line-height: 1.05;
-    }
+        html[data-theme="dark"] {
+            --text-main: #f0f7f1;
+            --text-soft: #b8c5bb;
+            --bg-1: #0a120d;
+            --bg-2: #0f1912;
+            --card: rgba(20, 32, 24, 0.84);
+            --border: rgba(184, 255, 122, 0.14);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+        }
 
-    h2 {
-      margin: 32px 0 10px;
-      font-size: 1.35rem;
-    }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --text-main: #f0f7f1;
+                --text-soft: #b8c5bb;
+                --bg-1: #0a120d;
+                --bg-2: #0f1912;
+                --card: rgba(20, 32, 24, 0.84);
+                --border: rgba(184, 255, 122, 0.14);
+                --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+            }
+        }
 
-    p,
-    li {
-      color: var(--text-soft);
-    }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-    ul {
-      padding-left: 22px;
-    }
+        body {
+            margin: 0;
+            padding: 32px 16px 56px;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background:
+                    radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.16), transparent 30%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    a {
-      color: var(--primary);
-      font-weight: 700;
-    }
+        html[data-theme="dark"] body {
+            background:
+                    radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.08), transparent 30%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        }
 
-    .footer-note {
-      margin-top: 34px;
-      padding-top: 22px;
-      border-top: 1px solid var(--border);
-      color: var(--text-soft);
-      font-size: 0.92rem;
-    }
-  </style>
+        .page {
+            width: min(920px, 100%);
+            margin: 0 auto;
+        }
+
+        .top-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 800;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            transition: background 0.25s ease;
+        }
+
+        .top-link:hover,
+        .top-link:focus-visible {
+            background: rgba(87, 178, 108, 0.12);
+            outline: none;
+        }
+
+        .top-link:focus-visible {
+            box-shadow: 0 0 0 3px rgba(87, 178, 108, 0.35);
+        }
+
+        .card {
+            padding: clamp(26px, 5vw, 52px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            margin: 32px 0 10px;
+            font-size: 1.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        p,
+        li {
+            color: var(--text-soft);
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        li + li {
+            margin-top: 6px;
+        }
+
+        a {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        a:focus-visible {
+            outline: 3px solid rgba(87, 178, 108, 0.45);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 6px;
+            margin-bottom: 22px;
+            padding: 5px;
+            border-radius: 999px;
+            background: rgba(87, 178, 108, 0.08);
+            border: 1px solid var(--border);
+        }
+
+        .lang-btn {
+            min-width: 44px;
+            height: 34px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .lang-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .footer-note {
+            margin-top: 34px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            .top-link,
+            .lang-switch {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <main class="page">
-    <a class="top-link" href="/">← Back to Homepage</a>
+<main class="page">
+    <a class="top-link" href="/" id="topLink">
+        <span aria-hidden="true">←</span>
+        <span id="topLinkText">Back to Homepage</span>
+    </a>
+
+    <div class="lang-switch" role="group" aria-label="Language Switcher">
+        <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+        <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false" aria-label="Türkçe'ye geç">TR</button>
+    </div>
 
     <article class="card">
-      <h1>Accessibility Statement</h1>
+        <h1 id="title">Accessibility Statement</h1>
 
-      <p>
-        Upcycling Patterns aims to make its Erasmus+ KA210-SCH project website accessible, understandable, and usable for as many visitors as possible.
-      </p>
+        <p id="intro">
+            Upcycling Patterns aims to make its Erasmus+ KA210-SCH project website accessible, understandable, and usable for as many visitors as possible.
+        </p>
 
-      <h2>1. Our Accessibility Approach</h2>
-      <p>
-        We aim to provide clear navigation, readable text, keyboard-friendly controls, responsive layouts, and accessible visual content.
-      </p>
+        <h2 id="s1">1. Our Accessibility Approach</h2>
+        <p id="s1p">
+            We aim to provide clear navigation, readable text, keyboard-friendly controls, responsive layouts, and accessible visual content. The site is designed with WCAG 2.1 Level AA guidelines in mind.
+        </p>
 
-      <h2>2. Features We Support</h2>
-      <ul>
-        <li>Responsive design for desktop, tablet, and mobile screens</li>
-        <li>Readable color contrast and dark mode support</li>
-        <li>Keyboard-accessible links, buttons, tabs, and form elements</li>
-        <li>Alternative text for important images</li>
-        <li>Reduced motion support for users who prefer less animation</li>
-        <li>Clear headings and structured page sections</li>
-      </ul>
+        <h2 id="s2">2. Features We Support</h2>
+        <ul id="featureList">
+            <li id="f1">Responsive design for desktop, tablet, and mobile screens</li>
+            <li id="f2">Readable color contrast and dark mode support</li>
+            <li id="f3">Keyboard-accessible links, buttons, tabs, and form elements</li>
+            <li id="f4">Alternative text for important images</li>
+            <li id="f5">Reduced motion support for users who prefer less animation</li>
+            <li id="f6">Clear headings and structured page sections</li>
+            <li id="f7">Visible focus indicators on all interactive elements</li>
+        </ul>
 
-      <h2>3. Ongoing Improvements</h2>
-      <p>
-        Accessibility is an ongoing process. As the website grows with new project content, gallery items, downloads, and announcements, we will continue improving usability and accessibility.
-      </p>
+        <h2 id="s3">3. Ongoing Improvements</h2>
+        <p id="s3p">
+            Accessibility is an ongoing process. As the website grows with new project content, gallery items, downloads, and announcements, we will continue improving usability and accessibility.
+        </p>
 
-      <h2>4. Feedback</h2>
-      <p>
-        If you experience an accessibility issue on this website, please contact us and describe the problem so we can review it.
-      </p>
+        <h2 id="s4">4. Feedback</h2>
+        <p id="s4p">
+            If you experience an accessibility issue on this website, please contact us and describe the problem so we can review it.
+        </p>
 
-      <p>
-        Email:
-        <a href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
-      </p>
+        <p id="emailLine">
+            Email:
+            <a href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
+        </p>
 
-      <p class="footer-note">
-        Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns
-      </p>
+        <p class="footer-note" id="footerNote">
+            Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns
+        </p>
     </article>
-  </main>
+</main>
+
+<script>
+    (function () {
+        "use strict";
+
+        var SUPPORTED = ["en", "tr"];
+        var DEFAULT_LANG = "en";
+        var STORAGE_KEY = "siteLanguage";
+
+        var dict = {
+            en: {
+                pageTitle: "Accessibility Statement | Upcycling Patterns",
+                metaDescription: "Accessibility statement for the Upcycling Patterns Erasmus+ KA210-SCH project website.",
+                ogLocale: "en_US",
+                topLinkText: "Back to Homepage",
+                title: "Accessibility Statement",
+                intro: "Upcycling Patterns aims to make its Erasmus+ KA210-SCH project website accessible, understandable, and usable for as many visitors as possible.",
+                s1: "1. Our Accessibility Approach",
+                s1p: "We aim to provide clear navigation, readable text, keyboard-friendly controls, responsive layouts, and accessible visual content. The site is designed with WCAG 2.1 Level AA guidelines in mind.",
+                s2: "2. Features We Support",
+                f1: "Responsive design for desktop, tablet, and mobile screens",
+                f2: "Readable color contrast and dark mode support",
+                f3: "Keyboard-accessible links, buttons, tabs, and form elements",
+                f4: "Alternative text for important images",
+                f5: "Reduced motion support for users who prefer less animation",
+                f6: "Clear headings and structured page sections",
+                f7: "Visible focus indicators on all interactive elements",
+                s3: "3. Ongoing Improvements",
+                s3p: "Accessibility is an ongoing process. As the website grows with new project content, gallery items, downloads, and announcements, we will continue improving usability and accessibility.",
+                s4: "4. Feedback",
+                s4p: "If you experience an accessibility issue on this website, please contact us and describe the problem so we can review it.",
+                emailLabel: "Email:",
+                footerNote: "Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns"
+            },
+            tr: {
+                pageTitle: "Erişilebilirlik Bildirimi | Upcycling Patterns",
+                metaDescription: "Upcycling Patterns Erasmus+ KA210-SCH proje web sitesi için erişilebilirlik bildirimi.",
+                ogLocale: "tr_TR",
+                topLinkText: "Ana Sayfaya Dön",
+                title: "Erişilebilirlik Bildirimi",
+                intro: "Upcycling Patterns, Erasmus+ KA210-SCH proje web sitesini olabildiğince çok ziyaretçi için erişilebilir, anlaşılır ve kullanılabilir hale getirmeyi amaçlar.",
+                s1: "1. Erişilebilirlik Yaklaşımımız",
+                s1p: "Net gezinme, okunabilir metin, klavye dostu kontroller, duyarlı düzenler ve erişilebilir görsel içerik sunmayı amaçlıyoruz. Site, WCAG 2.1 AA Seviyesi yönergeleri göz önünde bulundurularak tasarlanmıştır.",
+                s2: "2. Desteklediğimiz Özellikler",
+                f1: "Masaüstü, tablet ve mobil ekranlar için duyarlı tasarım",
+                f2: "Okunabilir renk kontrastı ve koyu mod desteği",
+                f3: "Klavyeyle erişilebilen bağlantılar, düğmeler, sekmeler ve form öğeleri",
+                f4: "Önemli görseller için alternatif metin",
+                f5: "Daha az animasyon tercih eden kullanıcılar için azaltılmış hareket desteği",
+                f6: "Net başlıklar ve yapılandırılmış sayfa bölümleri",
+                f7: "Tüm etkileşimli öğelerde görünür odak göstergeleri",
+                s3: "3. Sürekli İyileştirmeler",
+                s3p: "Erişilebilirlik devam eden bir süreçtir. Yeni proje içerikleri, galeri öğeleri, indirilebilir dosyalar ve duyurular eklendikçe kullanılabilirliği ve erişilebilirliği geliştirmeye devam edeceğiz.",
+                s4: "4. Geri Bildirim",
+                s4p: "Bu web sitesinde bir erişilebilirlik sorunu yaşarsanız, gözden geçirebilmemiz için lütfen bizimle iletişime geçin ve sorunu açıklayın.",
+                emailLabel: "E-posta:",
+                footerNote: "Son güncelleme: 10 Mayıs 2026 · © 2025–2027 Upcycling Patterns"
+            }
+        };
+
+        function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+        function detectLang() {
+            try {
+                var p = new URLSearchParams(window.location.search).get("lang");
+                if (p && SUPPORTED.indexOf(p.toLowerCase()) !== -1) return p.toLowerCase();
+            } catch (e) {}
+            var s = safeGet(STORAGE_KEY);
+            if (s && SUPPORTED.indexOf(s) !== -1) return s;
+            var n = ((navigator.language || navigator.userLanguage || "en") + "").toLowerCase();
+            return n.indexOf("tr") === 0 ? "tr" : DEFAULT_LANG;
+        }
+
+        function setText(id, value) {
+            var el = document.getElementById(id);
+            if (el && typeof value === "string") el.textContent = value;
+        }
+
+        function setMeta(sel, attr, value) {
+            var el = document.querySelector(sel);
+            if (el && typeof value === "string") el.setAttribute(attr, value);
+        }
+
+        function applyLang(lang) {
+            var L = SUPPORTED.indexOf(lang) !== -1 ? lang : DEFAULT_LANG;
+            var d = dict[L];
+
+            document.documentElement.lang = L;
+            document.title = d.pageTitle;
+
+            setMeta('#metaDescription', 'content', d.metaDescription);
+            setMeta('meta[property="og:title"]', 'content', d.pageTitle);
+            setMeta('meta[property="og:description"]', 'content', d.metaDescription);
+            setMeta('meta[property="og:locale"]', 'content', d.ogLocale);
+            setMeta('meta[name="twitter:title"]', 'content', d.pageTitle);
+            setMeta('meta[name="twitter:description"]', 'content', d.metaDescription);
+
+            setText("topLinkText", d.topLinkText);
+            setText("title", d.title);
+            setText("intro", d.intro);
+            setText("s1", d.s1);
+            setText("s1p", d.s1p);
+            setText("s2", d.s2);
+            setText("f1", d.f1);
+            setText("f2", d.f2);
+            setText("f3", d.f3);
+            setText("f4", d.f4);
+            setText("f5", d.f5);
+            setText("f6", d.f6);
+            setText("f7", d.f7);
+            setText("s3", d.s3);
+            setText("s3p", d.s3p);
+            setText("s4", d.s4);
+            setText("s4p", d.s4p);
+            setText("footerNote", d.footerNote);
+
+            // Update "Email:" label without breaking the mailto link
+            var emailLine = document.getElementById("emailLine");
+            if (emailLine) {
+                var link = emailLine.querySelector("a");
+                emailLine.innerHTML = "";
+                emailLine.appendChild(document.createTextNode(d.emailLabel + " "));
+                if (link) emailLine.appendChild(link);
+            }
+
+            // Language switcher state
+            var btns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < btns.length; i++) {
+                var active = btns[i].getAttribute("data-lang") === L;
+                btns[i].classList.toggle("active", active);
+                btns[i].setAttribute("aria-pressed", active ? "true" : "false");
+            }
+
+            safeSet(STORAGE_KEY, L);
+        }
+
+        function bind() {
+            var btns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < btns.length; i++) {
+                (function (btn) {
+                    btn.addEventListener("click", function () {
+                        applyLang(btn.getAttribute("data-lang"));
+                    });
+                })(btns[i]);
+            }
+
+            window.addEventListener("storage", function (e) {
+                if (e.key === STORAGE_KEY && e.newValue && SUPPORTED.indexOf(e.newValue) !== -1) {
+                    applyLang(e.newValue);
+                }
+            });
+        }
+
+        function init() {
+            applyLang(detectLang());
+            bind();
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init, { once: true });
+        } else {
+            init();
+        }
+    })();
+</script>
 </body>
 </html>
