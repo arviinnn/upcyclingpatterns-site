@@ -37,15 +37,13 @@
 
   <!--
     SECURITY NOTE:
-    Real CSP lives in netlify.toml (per-route, more powerful than meta).
-    These meta-equiv headers only help in non-Netlify previews.
+    Real CSP + Permissions-Policy live in netlify.toml (per-route, more
+    powerful than meta). Below we only ship the http-equiv headers that
+    browsers actually honour from <meta>. Permissions-Policy is omitted
+    on purpose because it is silently ignored as a meta tag.
   -->
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-  <meta
-          http-equiv="Permissions-Policy"
-          content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
-  />
 
   <link rel="canonical" href="https://upcyclingpatterns.com/" />
   <link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/" />
@@ -53,31 +51,9 @@
   <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/" />
 
   <!-- Open Graph -->
+  <meta property="og:type" content="website" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="tr_TR" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Upcycling Patterns | Erasmus+ KA210-SCH" />
-  <meta
-          property="og:description"
-          content="An Erasmus+ school partnership focused on sustainability, climate awareness, and creative upcycling."
-  />
-  <meta property="og:url" content="https://upcyclingpatterns.com/" />
-  <meta property="og:image" content="https://upcyclingpatterns.com/images/hero-image.png" />
-  <meta property="og:image:secure_url" content="https://upcyclingpatterns.com/images/hero-image.png" />
-  <meta property="og:image:type" content="image/png" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta
-          property="og:image:alt"
-          content="Upcycling Patterns project visual showing sustainability, recycling, textile materials, and partner countries"
-  />
-  <meta property="og:site_name" content="Upcycling Patterns" />
-
-  <!-- Twitter / X -->
-   <!-- Open Graph -->
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:locale:alternate" content="tr_TR" />
-  <meta property="og:type" content="website" />
   <meta property="og:title" content="Upcycling Patterns | Erasmus+ KA210-SCH" />
   <meta
           property="og:description"
@@ -109,70 +85,98 @@
 
   <!-- Icons & Manifest -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml" />
 
-  <!-- Early Language + Theme Detection (no FOUC) -->
+  <!--
+    Early Language + Theme Detection (no FOUC).
+    Runs synchronously before any rendering so the page never flashes
+    in the wrong language or theme. Keys (siteLanguage / siteTheme)
+    match the rest of the site and the legal pages.
+  -->
   <script>
     (function () {
+      "use strict";
       try {
-        var path = window.location.pathname.toLowerCase();
-        var urlLang = new URLSearchParams(window.location.search).get("lang");
-        var savedLang = null, savedTheme = null;
+        var path     = window.location.pathname.toLowerCase();
+        var search   = window.location.search;
+        var urlLang  = null;
 
         try {
-          savedLang = localStorage.getItem("siteLanguage");
-          savedTheme = localStorage.getItem("siteTheme");
-        } catch (e) {}
+          urlLang = new URLSearchParams(search).get("lang");
+        } catch (e) { /* old browser */ }
 
-        var browserLang = (navigator.language || "en").toLowerCase().startsWith("tr") ? "tr" : "en";
+        var savedLang = null, savedTheme = null;
+        try {
+          savedLang  = localStorage.getItem("siteLanguage");
+          savedTheme = localStorage.getItem("siteTheme");
+        } catch (e) { /* private mode / disabled */ }
+
+        var nav        = ((navigator.language || navigator.userLanguage || "en") + "").toLowerCase();
+        var browserTr  = nav.indexOf("tr") === 0;
 
         var lang =
-                path.indexOf("/tr/") === 0 ? "tr" :
-                        urlLang === "tr" || urlLang === "en" ? urlLang :
-                                savedLang === "tr" || savedLang === "en" ? savedLang :
-                                        browserLang;
+                (path === "/tr" || path.indexOf("/tr/") === 0)            ? "tr" :
+                        (urlLang === "tr" || urlLang === "en")                    ? urlLang :
+                                (savedLang === "tr" || savedLang === "en")                ? savedLang :
+                                        (browserTr ? "tr" : "en");
 
         document.documentElement.lang = lang;
-        document.documentElement.dir = "ltr";
+        document.documentElement.dir  = "ltr";
 
         // Theme: explicit user pref → system pref → light
         var theme = savedTheme;
         if (theme !== "dark" && theme !== "light") {
-          theme = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+          theme = (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)
                   ? "dark"
                   : "light";
         }
         document.documentElement.setAttribute("data-theme", theme);
-      } catch (e) {}
+      } catch (e) {
+        // Last-resort defaults — never let this script crash page load.
+        document.documentElement.lang = "en";
+        document.documentElement.setAttribute("data-theme", "light");
+      }
     })();
   </script>
 
-
-
-  <!-- Netlify Identity token redirect for CMS invitations / password recovery -->
+  <!--
+    Netlify Identity token redirect.
+    If someone clicks an invite / recovery / confirmation link that
+    lands on the homepage (the default redirect from Identity emails),
+    bounce them to /admin/ where the widget can actually consume the
+    token. Defensive try/catch so this never blocks initial render.
+  -->
   <script>
     (function () {
       "use strict";
+      try {
+        var hash   = window.location.hash || "";
+        var search = window.location.search || "";
 
-      var hash = window.location.hash || "";
-      var search = window.location.search || "";
+        var TOKEN_NAMES = [
+          "invite_token=",
+          "recovery_token=",
+          "confirmation_token=",
+          "email_change_token=",
+          "access_token="
+        ];
 
-      var hasIdentityToken =
-              hash.indexOf("invite_token=") !== -1 ||
-              hash.indexOf("recovery_token=") !== -1 ||
-              hash.indexOf("confirmation_token=") !== -1 ||
-              hash.indexOf("email_change_token=") !== -1 ||
-              search.indexOf("invite_token=") !== -1 ||
-              search.indexOf("recovery_token=") !== -1 ||
-              search.indexOf("confirmation_token=") !== -1 ||
-              search.indexOf("email_change_token=") !== -1;
+        var hasToken = false;
+        for (var i = 0; i < TOKEN_NAMES.length; i++) {
+          if (hash.indexOf(TOKEN_NAMES[i]) !== -1 || search.indexOf(TOKEN_NAMES[i]) !== -1) {
+            hasToken = true;
+            break;
+          }
+        }
 
-      if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
-        var tokenPart = hash || search.replace("?", "#");
-        window.location.replace("/admin/" + tokenPart);
-      }
+        if (hasToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
+          var tokenPart = hash || search.replace("?", "#");
+          window.location.replace("/admin/" + tokenPart);
+        }
+      } catch (e) { /* never crash */ }
     })();
   </script>
 
@@ -182,11 +186,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
-  />
+  <!--
+    Google Fonts loaded as a single stylesheet (no separate preload).
+    `display=swap` lets text appear in the fallback font instantly and
+    swap to the loaded font when ready — no blank text, no flash.
+  -->
   <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap"
@@ -199,7 +203,7 @@
   <link rel="preload" href="images/hero-image.png" as="image" fetchpriority="high" />
   <link rel="preload" href="images/logo.jpeg" as="image" />
 
-  <!-- Structured Data -->
+  <!-- Structured Data (Schema.org) — helps Google understand the site -->
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -255,22 +259,22 @@
             {
               "@type": "EducationalOrganization",
               "name": "MEV Koleji Özel Basınköy Anadolu Lisesi",
-              "address": { "@type": "PostalAddress", "addressCountry": "TR" }
+              "address": { "@type": "PostalAddress", "addressLocality": "Istanbul", "addressCountry": "TR" }
             },
             {
               "@type": "EducationalOrganization",
               "name": "OEMUC SV. NAUM OHRIDSKI",
-              "address": { "@type": "PostalAddress", "addressCountry": "MK" }
+              "address": { "@type": "PostalAddress", "addressLocality": "Ohrid", "addressCountry": "MK" }
             },
             {
               "@type": "EducationalOrganization",
               "name": "Vilniaus automechanikos ir verslo mokykla",
-              "address": { "@type": "PostalAddress", "addressCountry": "LT" }
+              "address": { "@type": "PostalAddress", "addressLocality": "Vilnius", "addressCountry": "LT" }
             },
             {
               "@type": "EducationalOrganization",
-              "name": "Zespol Szkol Samochodowych im. Tadeusza Tanskiego",
-              "address": { "@type": "PostalAddress", "addressCountry": "PL" }
+              "name": "Zespół Szkół Samochodowych im. Tadeusza Tańskiego",
+              "address": { "@type": "PostalAddress", "addressLocality": "Włocławek", "addressCountry": "PL" }
             }
           ]
         },
@@ -317,7 +321,7 @@
   </script>
 </head>
 
-<body data-page="home" data-cms-ready="true">
+<body data-page="home">
 <a href="#mainContent" class="skip-link" data-i18n="skipToContent">Skip to content</a>
 
 <noscript>
@@ -388,6 +392,7 @@
                 id="themeToggle"
                 type="button"
                 aria-label="Toggle dark mode"
+                aria-pressed="false"
                 title="Toggle theme"
         >
           <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -443,7 +448,6 @@
     </div>
   </div>
 </header>
-
 <main id="mainContent">
 
   <!-- HERO -->
@@ -514,6 +518,8 @@
                   loading="eager"
                   decoding="async"
                   fetchpriority="high"
+                  width="600"
+                  height="450"
           />
           <div class="hero-image-glow" aria-hidden="true"></div>
         </div>
@@ -641,19 +647,19 @@
             <span class="tab-icon" aria-hidden="true">🎯</span>
             <span data-i18n="tabGoals">Goals</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-timeline" data-tab="timeline" id="tab-timeline" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-timeline" data-tab="timeline" id="tab-timeline" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">⏱️</span>
             <span data-i18n="tabTimeline">Timeline</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-activities" data-tab="activities" id="tab-activities" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-activities" data-tab="activities" id="tab-activities" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">✅</span>
             <span data-i18n="tabActivities">Activities</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-results" data-tab="results" id="tab-results" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-results" data-tab="results" id="tab-results" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">🏆</span>
             <span data-i18n="tabResults">Results</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-details" data-tab="details" id="tab-details" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-details" data-tab="details" id="tab-details" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">ℹ️</span>
             <span data-i18n="tabDetails">Details</span>
           </button>
@@ -860,6 +866,7 @@
           <h3 data-i18n="partner3Country">Lithuania</h3>
           <div class="partner-info">
             <p><strong data-i18n="labelSchool">School:</strong> <span data-i18n="partner3School">Vilniaus automechanikos ir verslo mokykla</span></p>
+            <p><strong data-i18n="labelCity">City:</strong> <span data-i18n="partner3City">Vilnius</span></p>
             <p><strong data-i18n="labelRole">Role:</strong> <span data-i18n="partner3Role">Project partner</span></p>
           </div>
           <span class="partner-badge partner-badge-alt" data-i18n="badgePartner">Partner</span>
@@ -869,7 +876,8 @@
           <div class="partner-flag" aria-hidden="true"><span class="flag-pl"></span></div>
           <h3 data-i18n="partner4Country">Poland</h3>
           <div class="partner-info">
-            <p><strong data-i18n="labelSchool">School:</strong> <span data-i18n="partner4School">Zespol Szkol Samochodowych im. Tadeusza Tanskiego</span></p>
+            <p><strong data-i18n="labelSchool">School:</strong> <span data-i18n="partner4School">Zespół Szkół Samochodowych im. Tadeusza Tańskiego</span></p>
+            <p><strong data-i18n="labelCity">City:</strong> <span data-i18n="partner4City">Włocławek</span></p>
             <p><strong data-i18n="labelRole">Role:</strong> <span data-i18n="partner4Role">Project partner</span></p>
           </div>
           <span class="partner-badge partner-badge-alt" data-i18n="badgePartner">Partner</span>
@@ -895,11 +903,11 @@
             <span class="tab-icon" aria-hidden="true">🖼️</span>
             <span data-i18n="tabGallery">Gallery</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-news" data-tab="news" id="tab-news" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-news" data-tab="news" id="tab-news" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">📰</span>
             <span data-i18n="tabNews">News</span>
           </button>
-          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-outputs" data-tab="outputs" id="tab-outputs" type="button">
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-outputs" data-tab="outputs" id="tab-outputs" tabindex="-1" type="button">
             <span class="tab-icon" aria-hidden="true">📥</span>
             <span data-i18n="tabOutputs">Outputs</span>
           </button>
@@ -962,24 +970,24 @@
           <div class="tab-panel" role="tabpanel" id="panel-news" aria-labelledby="tab-news" tabindex="0" hidden>
             <div class="news-grid" data-cms-collection="news">
               <article class="news-card glass-card tilt-card" data-cms-item="news">
-                <span class="news-date">2025</span>
+                <span class="news-date">2026</span>
                 <h3 data-i18n="news1Title">Kick-off Meeting Completed</h3>
                 <p data-i18n="news1Text">Partner schools met to finalize the work plan, responsibilities, and dissemination goals.</p>
-                <button type="button" class="news-link" aria-disabled="true" data-status="coming-soon" data-i18n="readMore">Read More</button>
+                <button type="button" class="news-link" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="readMore">Read More</button>
               </article>
 
               <article class="news-card glass-card tilt-card" data-cms-item="news">
                 <span class="news-date">2026</span>
                 <h3 data-i18n="news2Title">Student Workshop Series Started</h3>
                 <p data-i18n="news2Text">Students began hands-on activities focused on transforming waste materials into creative products.</p>
-                <button type="button" class="news-link" aria-disabled="true" data-status="coming-soon" data-i18n="readMore">Read More</button>
+                <button type="button" class="news-link" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="readMore">Read More</button>
               </article>
 
               <article class="news-card glass-card tilt-card" data-cms-item="news">
                 <span class="news-date">2026</span>
                 <h3 data-i18n="news3Title">Dissemination Materials Published</h3>
                 <p data-i18n="news3Text">Digital content and visual project outputs were shared with the wider school community.</p>
-                <button type="button" class="news-link" aria-disabled="true" data-status="coming-soon" data-i18n="readMore">Read More</button>
+                <button type="button" class="news-link" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="readMore">Read More</button>
               </article>
             </div>
           </div>
@@ -990,21 +998,21 @@
                 <div class="output-icon" aria-hidden="true">📄</div>
                 <h3 data-i18n="output1Title">Project Brochure</h3>
                 <p data-i18n="output1Text">A short introduction to the aims, partners, and activities of the project.</p>
-                <button type="button" class="btn btn-secondary" aria-disabled="true" data-status="coming-soon" data-i18n="downloadBtn">Download</button>
+                <button type="button" class="btn btn-secondary" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="downloadBtn">Download</button>
               </article>
 
               <article class="output-card glass-card" data-cms-item="output">
                 <div class="output-icon" aria-hidden="true">📘</div>
                 <h3 data-i18n="output2Title">Workshop Guide</h3>
                 <p data-i18n="output2Text">A practical guide containing activity samples and implementation steps.</p>
-                <button type="button" class="btn btn-secondary" aria-disabled="true" data-status="coming-soon" data-i18n="downloadBtn">Download</button>
+                <button type="button" class="btn btn-secondary" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="downloadBtn">Download</button>
               </article>
 
               <article class="output-card glass-card" data-cms-item="output">
                 <div class="output-icon" aria-hidden="true">📊</div>
                 <h3 data-i18n="output3Title">Dissemination Report</h3>
                 <p data-i18n="output3Text">A summary of project communication, outreach, and visibility activities.</p>
-                <button type="button" class="btn btn-secondary" aria-disabled="true" data-status="coming-soon" data-i18n="downloadBtn">Download</button>
+                <button type="button" class="btn btn-secondary" disabled aria-disabled="true" data-status="coming-soon" title="Coming soon" data-i18n="downloadBtn">Download</button>
               </article>
             </div>
           </div>
@@ -1090,7 +1098,7 @@
             <div class="contact-icon" aria-hidden="true">✉️</div>
             <h3 data-i18n="contactCard4Title">Email</h3>
             <p>
-              <a href="#" class="email-link" data-user="upcyclingpatterns" data-domain="gmail.com" rel="noopener">
+              <a href="mailto:upcyclingpatterns@gmail.com" class="email-link" data-user="upcyclingpatterns" data-domain="gmail.com" rel="noopener">
                 <span class="email-display">upcyclingpatterns<span aria-hidden="true">[at]</span>gmail<span aria-hidden="true">[dot]</span>com</span>
               </a>
             </p>
@@ -1300,13 +1308,13 @@
         </p>
         <p>
           <strong>Email:</strong>
-          <a href="#" class="email-link" data-user="upcyclingpatterns" data-domain="gmail.com" rel="noopener">
+          <a href="mailto:upcyclingpatterns@gmail.com" class="email-link" data-user="upcyclingpatterns" data-domain="gmail.com" rel="noopener">
             <span class="email-display">upcyclingpatterns<span aria-hidden="true">[at]</span>gmail<span aria-hidden="true">[dot]</span>com</span>
           </a>
         </p>
       </div>
 
-           <div class="footer-legal reveal-item">
+      <div class="footer-legal reveal-item">
         <h4 data-i18n="legalTitle">Legal</h4>
         <ul class="footer-legal-list">
           <li><a href="/privacy-policy.html" data-i18n="privacyPolicyLink">Privacy Policy</a></li>
@@ -1335,7 +1343,7 @@
         <img src="images/lg1.jpeg" alt="MEV Koleji Özel Basınköy Anadolu Lisesi" class="footer-logo partner-logo partner-logo-square" loading="lazy" decoding="async" width="100" height="100" />
         <img src="images/lg2.jpeg" alt="Vilniaus automechanikos ir verslo mokykla" class="footer-logo partner-logo partner-logo-wide" loading="lazy" decoding="async" width="160" height="100" />
         <img src="images/lg3.jpeg" alt="OEMUC SV. NAUM OHRIDSKI" class="footer-logo partner-logo partner-logo-square" loading="lazy" decoding="async" width="100" height="100" />
-        <img src="images/lg4.jpeg" alt="Zespol Szkol Samochodowych im. Tadeusza Tanskiego" class="footer-logo partner-logo partner-logo-wide" loading="lazy" decoding="async" width="160" height="100" />
+        <img src="images/lg4.jpeg" alt="Zespół Szkół Samochodowych im. Tadeusza Tańskiego" class="footer-logo partner-logo partner-logo-wide" loading="lazy" decoding="async" width="160" height="100" />
       </div>
     </div>
 
