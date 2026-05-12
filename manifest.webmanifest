@@ -1,81 +1,101 @@
 {
   "name": "Upcycling Patterns",
   "short_name": "UpCyc",
-  "description": "Upcycling Patterns is an Erasmus+ KA210-SCH project focused on sustainability, environmental awareness, climate responsibility, and upcycling.",
-  "start_url": "/",
+  "description": "Erasmus+ KA210-SCH school partnership project on sustainability, climate awareness, and creative upcycling.",
+  "id": "/?source=pwa",
+  "start_url": "/?source=pwa",
   "scope": "/",
   "display": "standalone",
-  "display_override": ["standalone", "minimal-ui", "browser"],
-  "background_color": "#f8fcf8",
-  "theme_color": "#2f7a43",
-  "orientation": "portrait-primary",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "orientation": "any",
   "lang": "en",
   "dir": "ltr",
-  "categories": ["education", "sustainability"],
+  "theme_color": "#2f7a43",
+  "background_color": "#f8fcf8",
+  "categories": ["education", "social", "lifestyle"],
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "32x32 48x48",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/apple-touch-icon.png",
-      "sizes": "180x180",
+      "src": "/icon-192.png",
       "type": "image/png",
+      "sizes": "192x192",
       "purpose": "any"
     },
     {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
+      "src": "/icon-512.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512",
+      "purpose": "any"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
+      "src": "/icon-maskable.png",
       "type": "image/png",
-      "purpose": "any maskable"
+      "sizes": "512x512",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/screenshot-wide.png",
+      "type": "image/png",
+      "sizes": "1280x720",
+      "form_factor": "wide",
+      "label": "Upcycling Patterns homepage on desktop"
+    },
+    {
+      "src": "/images/screenshot-narrow.png",
+      "type": "image/png",
+      "sizes": "720x1280",
+      "form_factor": "narrow",
+      "label": "Upcycling Patterns homepage on mobile"
     }
   ],
   "shortcuts": [
     {
-      "name": "Project",
-      "short_name": "Project",
-      "description": "Open the Upcycling Patterns project website.",
-      "url": "/#about",
+      "name": "News",
+      "short_name": "News",
+      "description": "Latest project news and announcements",
+      "url": "/?source=pwa-shortcut#news",
       "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
+        { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Gallery",
+      "short_name": "Gallery",
+      "description": "Photos from workshops, meetings, and events",
+      "url": "/?source=pwa-shortcut#media",
+      "icons": [
+        { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }
       ]
     },
     {
       "name": "Partners",
       "short_name": "Partners",
-      "description": "View project partner schools.",
-      "url": "/#partners",
+      "description": "Partner schools across Europe",
+      "url": "/?source=pwa-shortcut#partners",
       "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
+        { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }
       ]
     },
     {
       "name": "Contact",
       "short_name": "Contact",
-      "description": "Contact the Upcycling Patterns project team.",
-      "url": "/#contact",
+      "description": "Get in touch with the project team",
+      "url": "/?source=pwa-shortcut#contact",
       "icons": [
-        {
-          "src": "/icon-192.png",
-          "sizes": "192x192",
-          "type": "image/png"
-        }
+        { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }
       ]
     }
-  ]
+  ],
+  "related_applications": [],
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  }
 }
