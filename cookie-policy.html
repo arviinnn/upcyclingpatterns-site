@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <title>Cookie Policy | Upcycling Patterns</title>
+    <title id="pageTitle">Cookie Policy | Upcycling Patterns</title>
 
     <meta
+            id="metaDescription"
             name="description"
             content="Cookie Policy for the Upcycling Patterns Erasmus+ KA210-SCH project website."
     />
@@ -20,22 +21,41 @@
     <meta name="color-scheme" content="light dark" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="format-detection" content="telephone=no, email=no, address=no" />
+    <meta name="application-name" content="Upcycling Patterns" />
+    <meta name="apple-mobile-web-app-title" content="UpCyc" />
 
+    <!-- Defence-in-depth headers (real ones live in netlify.toml) -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
-    <meta
-            http-equiv="Permissions-Policy"
-            content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
-    />
 
     <link rel="canonical" href="https://upcyclingpatterns.com/cookie-policy.html" />
     <link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/cookie-policy.html" />
+    <link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/cookie-policy.html?lang=tr" />
     <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/cookie-policy.html" />
 
-    <link rel="icon" href="/images/favicon.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Cookie Policy | Upcycling Patterns" />
+    <meta property="og:description" content="How the Upcycling Patterns project website uses cookies and local browser storage." />
+    <meta property="og:url" content="https://upcyclingpatterns.com/cookie-policy.html" />
+    <meta property="og:site_name" content="Upcycling Patterns" />
+    <meta property="og:image" content="https://upcyclingpatterns.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="tr_TR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Cookie Policy | Upcycling Patterns" />
+    <meta name="twitter:description" content="How the Upcycling Patterns project website uses cookies and local browser storage." />
+    <meta name="twitter:image" content="https://upcyclingpatterns.com/og-image.png" />
+
+    <!-- Early theme detection (no FOUC) — syncs with main site's siteTheme key -->
     <script>
         (function () {
             "use strict";
@@ -158,6 +178,12 @@
             margin-bottom: 28px;
         }
 
+        .header-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         .top-link {
             display: inline-flex;
             align-items: center;
@@ -189,6 +215,42 @@
             background: var(--accent-bright);
             color: #0a120d;
             border-color: var(--accent-bright);
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 4px;
+            padding: 4px;
+            border-radius: 999px;
+            background: var(--card);
+            border: 1.5px solid var(--border);
+        }
+
+        .lang-btn {
+            min-width: 38px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-soft);
+            font-size: 0.8rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--primary);
+        }
+
+        .lang-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), #57b26c);
+        }
+
+        :root[data-theme="dark"] .lang-btn.active {
+            color: #0a120d;
+            background: linear-gradient(135deg, var(--accent-bright), var(--accent));
         }
 
         .theme-toggle {
@@ -373,116 +435,137 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        @media print {
+            .page-header,
+            .related-links {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+            }
+        }
     </style>
 </head>
 
 <body>
 <main class="page">
     <header class="page-header">
-        <a class="top-link" href="/">
+        <a class="top-link" href="/" id="topLink">
             <span aria-hidden="true">←</span>
-            <span>Back to Homepage</span>
+            <span id="topLinkText">Back to Homepage</span>
         </a>
 
-        <button
-                class="theme-toggle"
-                type="button"
-                id="themeToggle"
-                aria-label="Switch theme"
-                aria-pressed="false"
-        >
-            <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-            </svg>
+        <div class="header-actions">
+            <div class="lang-switch" role="group" aria-label="Language Switcher">
+                <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+                <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false" aria-label="Türkçe'ye geç">TR</button>
+            </div>
 
-            <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-        </button>
+            <button
+                    class="theme-toggle"
+                    type="button"
+                    id="themeToggle"
+                    aria-label="Switch theme"
+                    aria-pressed="false"
+            >
+                <svg class="theme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4" />
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+                </svg>
+
+                <svg class="theme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                </svg>
+            </button>
+        </div>
     </header>
 
     <article class="card">
-        <h1>Cookie Policy</h1>
+        <h1 id="title">Cookie Policy</h1>
 
-        <p class="intro">
+        <p class="intro" id="intro">
             This Cookie Policy explains how the Upcycling Patterns Erasmus+ KA210-SCH project website uses cookies, local storage, and similar browser-based technologies.
         </p>
 
-        <div class="notice-box">
-            <strong>Important:</strong> This website does not currently use tracking cookies, advertising cookies, or analytics cookies. It only uses essential browser storage to improve basic website functionality.
+        <div class="notice-box" role="region" aria-labelledby="noticeStrong">
+            <strong id="noticeStrong">Important:</strong>
+            <span id="noticeText"> This website does not currently use tracking cookies, advertising cookies, or analytics cookies. It only uses essential browser storage to improve basic website functionality.</span>
         </div>
 
-        <h2>1. What Are Cookies?</h2>
-        <p>
+        <h2 id="s1">1. What Are Cookies?</h2>
+        <p id="s1p">
             Cookies are small text files that websites may store on your device through your browser. They can help websites remember preferences, keep sessions active, or understand how a website is used.
         </p>
 
-        <h2>2. What This Website Uses</h2>
-        <p>
+        <h2 id="s2">2. What This Website Uses</h2>
+        <p id="s2p">
             The Upcycling Patterns website currently uses limited local browser storage for essential user preferences only.
         </p>
 
         <ul>
-            <li><strong>Language preference:</strong> remembers whether you selected English or Turkish.</li>
-            <li><strong>Theme preference:</strong> remembers whether you selected light mode or dark mode.</li>
-            <li><strong>Cookie notice choice:</strong> remembers that you dismissed the cookie notice.</li>
+            <li><strong id="s2l1Label">Language preference:</strong> <span id="s2l1">remembers whether you selected English or Turkish.</span></li>
+            <li><strong id="s2l2Label">Theme preference:</strong> <span id="s2l2">remembers whether you selected light mode or dark mode.</span></li>
+            <li><strong id="s2l3Label">Cookie notice choice:</strong> <span id="s2l3">remembers that you dismissed the cookie notice.</span></li>
         </ul>
 
-        <h2>3. Essential Storage</h2>
-        <p>
+        <h2 id="s3">3. Essential Storage</h2>
+        <p id="s3p">
             These preferences are stored locally in your browser. They are used only to make the website easier to use and do not identify you personally.
         </p>
 
-        <h2>4. Analytics and Tracking</h2>
-        <p>
+        <h2 id="s4">4. Analytics and Tracking</h2>
+        <p id="s4p">
             This website does not currently use Google Analytics, Meta Pixel, advertising networks, behavioral tracking, or profiling tools.
         </p>
 
-        <h2>5. Third-Party Services</h2>
-        <p>
+        <h2 id="s5">5. Third-Party Services</h2>
+        <p id="s5p">
             Some website features may connect to third-party services when you actively use them. For example, the contact form may use Web3Forms to deliver messages to the project email address. Social media links may also take you to external platforms such as Instagram, X, YouTube, or LinkedIn.
         </p>
 
-        <h2>6. Embedded Content</h2>
-        <p>
+        <h2 id="s6">6. Embedded Content</h2>
+        <p id="s6p">
             If videos or other embedded content are added in the future, those third-party platforms may use their own cookies or tracking technologies. Their cookie practices are controlled by the relevant third-party provider, not by this website.
         </p>
 
-        <h2>7. How to Control Cookies</h2>
-        <p>
+        <h2 id="s7">7. How to Control Cookies</h2>
+        <p id="s7p">
             You can manage or delete cookies and local storage through your browser settings. You may also block cookies entirely, but some preferences such as language or theme may no longer be remembered.
         </p>
 
-        <h2>8. Browser Storage Used by This Website</h2>
-        <p>
+        <h2 id="s8">8. Browser Storage Used by This Website</h2>
+        <p id="s8p">
             The website may store the following values in your browser:
         </p>
 
         <ul>
-            <li><strong>siteLanguage:</strong> stores your selected website language.</li>
-            <li><strong>siteTheme:</strong> stores your selected light or dark theme.</li>
-            <li><strong>cookieConsentDismissed:</strong> stores whether the cookie notice has been closed.</li>
+            <li><strong>siteLanguage:</strong> <span id="s8l1">stores your selected website language.</span></li>
+            <li><strong>siteTheme:</strong> <span id="s8l2">stores your selected light or dark theme.</span></li>
+            <li><strong>cookieConsentDismissed:</strong> <span id="s8l3">stores whether the cookie notice has been closed.</span></li>
         </ul>
 
-        <h2>9. Changes to This Cookie Policy</h2>
-        <p>
+        <h2 id="s9">9. Changes to This Cookie Policy</h2>
+        <p id="s9p">
             This Cookie Policy may be updated if the website adds new features, analytics, embedded media, or third-party services. Any important changes will be reflected on this page.
         </p>
 
-        <h2>10. Contact</h2>
-        <p>
-            For questions about this Cookie Policy, you can contact us at:
+        <h2 id="s10">10. Contact</h2>
+        <p id="s10p">
+            <span id="s10pText">For questions about this Cookie Policy, you can contact us at:</span>
             <a class="email" href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
         </p>
 
         <div class="related-links" aria-label="Related pages">
-            <a href="/privacy-policy.html">Privacy Policy →</a>
-            <a href="/">Homepage →</a>
+            <a href="/privacy-policy.html" id="relPrivacy">Privacy Policy →</a>
+            <a href="/" id="relHome">Homepage →</a>
         </div>
 
         <p class="footer-note">
-            <span>Last updated: 10 May 2026</span>
+            <span id="footerUpdated">Last updated: 10 May 2026</span>
             <span>© 2025–2027 Upcycling Patterns</span>
         </p>
     </article>
@@ -492,7 +575,211 @@
     (function () {
         "use strict";
 
-        var btn = document.getElementById("themeToggle");
+        // ─── Translations ─────────────────────────────────────────────────
+        var SUPPORTED = ["en", "tr"];
+        var DEFAULT_LANG = "en";
+        var STORAGE_KEY = "siteLanguage";
+
+        var dict = {
+            en: {
+                pageTitle: "Cookie Policy | Upcycling Patterns",
+                metaDescription: "Cookie Policy for the Upcycling Patterns Erasmus+ KA210-SCH project website.",
+                ogLocale: "en_US",
+                topLinkText: "Back to Homepage",
+                title: "Cookie Policy",
+                intro: "This Cookie Policy explains how the Upcycling Patterns Erasmus+ KA210-SCH project website uses cookies, local storage, and similar browser-based technologies.",
+                noticeStrong: "Important:",
+                noticeText: " This website does not currently use tracking cookies, advertising cookies, or analytics cookies. It only uses essential browser storage to improve basic website functionality.",
+                s1: "1. What Are Cookies?",
+                s1p: "Cookies are small text files that websites may store on your device through your browser. They can help websites remember preferences, keep sessions active, or understand how a website is used.",
+                s2: "2. What This Website Uses",
+                s2p: "The Upcycling Patterns website currently uses limited local browser storage for essential user preferences only.",
+                s2l1Label: "Language preference:",
+                s2l1: "remembers whether you selected English or Turkish.",
+                s2l2Label: "Theme preference:",
+                s2l2: "remembers whether you selected light mode or dark mode.",
+                s2l3Label: "Cookie notice choice:",
+                s2l3: "remembers that you dismissed the cookie notice.",
+                s3: "3. Essential Storage",
+                s3p: "These preferences are stored locally in your browser. They are used only to make the website easier to use and do not identify you personally.",
+                s4: "4. Analytics and Tracking",
+                s4p: "This website does not currently use Google Analytics, Meta Pixel, advertising networks, behavioral tracking, or profiling tools.",
+                s5: "5. Third-Party Services",
+                s5p: "Some website features may connect to third-party services when you actively use them. For example, the contact form may use Web3Forms to deliver messages to the project email address. Social media links may also take you to external platforms such as Instagram, X, YouTube, or LinkedIn.",
+                s6: "6. Embedded Content",
+                s6p: "If videos or other embedded content are added in the future, those third-party platforms may use their own cookies or tracking technologies. Their cookie practices are controlled by the relevant third-party provider, not by this website.",
+                s7: "7. How to Control Cookies",
+                s7p: "You can manage or delete cookies and local storage through your browser settings. You may also block cookies entirely, but some preferences such as language or theme may no longer be remembered.",
+                s8: "8. Browser Storage Used by This Website",
+                s8p: "The website may store the following values in your browser:",
+                s8l1: "stores your selected website language.",
+                s8l2: "stores your selected light or dark theme.",
+                s8l3: "stores whether the cookie notice has been closed.",
+                s9: "9. Changes to This Cookie Policy",
+                s9p: "This Cookie Policy may be updated if the website adds new features, analytics, embedded media, or third-party services. Any important changes will be reflected on this page.",
+                s10: "10. Contact",
+                s10pText: "For questions about this Cookie Policy, you can contact us at:",
+                relPrivacy: "Privacy Policy →",
+                relHome: "Homepage →",
+                footerUpdated: "Last updated: 10 May 2026",
+                themeToLight: "Switch to light mode",
+                themeToDark: "Switch to dark mode"
+            },
+            tr: {
+                pageTitle: "Çerez Politikası | Upcycling Patterns",
+                metaDescription: "Upcycling Patterns Erasmus+ KA210-SCH proje web sitesi için Çerez Politikası.",
+                ogLocale: "tr_TR",
+                topLinkText: "Ana Sayfaya Dön",
+                title: "Çerez Politikası",
+                intro: "Bu Çerez Politikası, Upcycling Patterns Erasmus+ KA210-SCH proje web sitesinin çerezleri, yerel depolamayı ve benzer tarayıcı tabanlı teknolojileri nasıl kullandığını açıklar.",
+                noticeStrong: "Önemli:",
+                noticeText: " Bu web sitesi şu anda izleme çerezleri, reklam çerezleri veya analitik çerezler kullanmamaktadır. Yalnızca temel web sitesi işlevselliğini geliştirmek için gerekli tarayıcı depolamasını kullanır.",
+                s1: "1. Çerez Nedir?",
+                s1p: "Çerezler, web sitelerinin tarayıcınız aracılığıyla cihazınızda depolayabileceği küçük metin dosyalarıdır. Web sitelerinin tercihleri hatırlamasına, oturumları aktif tutmasına veya bir web sitesinin nasıl kullanıldığını anlamasına yardımcı olabilirler.",
+                s2: "2. Bu Web Sitesi Neyi Kullanıyor",
+                s2p: "Upcycling Patterns web sitesi şu anda yalnızca temel kullanıcı tercihleri için sınırlı yerel tarayıcı depolaması kullanır.",
+                s2l1Label: "Dil tercihi:",
+                s2l1: "İngilizce mi yoksa Türkçe mi seçtiğinizi hatırlar.",
+                s2l2Label: "Tema tercihi:",
+                s2l2: "Açık modu mu yoksa koyu modu mu seçtiğinizi hatırlar.",
+                s2l3Label: "Çerez bildirimi tercihi:",
+                s2l3: "Çerez bildirimini kapattığınızı hatırlar.",
+                s3: "3. Temel Depolama",
+                s3p: "Bu tercihler tarayıcınızda yerel olarak saklanır. Yalnızca web sitesini kullanmayı kolaylaştırmak için kullanılırlar ve sizi kişisel olarak tanımlamazlar.",
+                s4: "4. Analitik ve İzleme",
+                s4p: "Bu web sitesi şu anda Google Analytics, Meta Pixel, reklam ağları, davranışsal izleme veya profilleme araçları kullanmamaktadır.",
+                s5: "5. Üçüncü Taraf Hizmetler",
+                s5p: "Bazı web sitesi özellikleri, etkin olarak kullandığınızda üçüncü taraf hizmetlere bağlanabilir. Örneğin, iletişim formu mesajları proje e-posta adresine iletmek için Web3Forms kullanabilir. Sosyal medya bağlantıları sizi Instagram, X, YouTube veya LinkedIn gibi harici platformlara da götürebilir.",
+                s6: "6. Gömülü İçerik",
+                s6p: "Gelecekte videolar veya diğer gömülü içerikler eklenirse, bu üçüncü taraf platformlar kendi çerezlerini veya izleme teknolojilerini kullanabilir. Çerez uygulamaları bu web sitesi tarafından değil, ilgili üçüncü taraf sağlayıcı tarafından kontrol edilir.",
+                s7: "7. Çerezleri Nasıl Kontrol Edersiniz",
+                s7p: "Tarayıcı ayarlarınız aracılığıyla çerezleri ve yerel depolamayı yönetebilir veya silebilirsiniz. Çerezleri tamamen engelleyebilirsiniz ancak dil veya tema gibi bazı tercihler artık hatırlanmayabilir.",
+                s8: "8. Bu Web Sitesinin Kullandığı Tarayıcı Depolaması",
+                s8p: "Web sitesi tarayıcınızda aşağıdaki değerleri saklayabilir:",
+                s8l1: "Seçtiğiniz web sitesi dilini saklar.",
+                s8l2: "Seçtiğiniz açık veya koyu temayı saklar.",
+                s8l3: "Çerez bildiriminin kapatılıp kapatılmadığını saklar.",
+                s9: "9. Bu Çerez Politikasındaki Değişiklikler",
+                s9p: "Web sitesi yeni özellikler, analitik, gömülü medya veya üçüncü taraf hizmetler eklerse bu Çerez Politikası güncellenebilir. Önemli değişiklikler bu sayfaya yansıtılacaktır.",
+                s10: "10. İletişim",
+                s10pText: "Bu Çerez Politikası hakkındaki sorularınız için bizimle şu adresten iletişime geçebilirsiniz:",
+                relPrivacy: "Gizlilik Politikası →",
+                relHome: "Ana Sayfa →",
+                footerUpdated: "Son güncelleme: 10 Mayıs 2026",
+                themeToLight: "Açık moda geç",
+                themeToDark: "Koyu moda geç"
+            }
+        };
+
+        // ─── Safe storage helpers ─────────────────────────────────────────
+        function safeGet(k) {
+            try { return localStorage.getItem(k); } catch (e) { return null; }
+        }
+
+        function safeSet(k, v) {
+            try { localStorage.setItem(k, v); } catch (e) { /* quota / disabled */ }
+        }
+
+        // ─── Language detection ───────────────────────────────────────────
+        function detectLang() {
+            try {
+                var p = new URLSearchParams(window.location.search).get("lang");
+                if (p && SUPPORTED.indexOf(p.toLowerCase()) !== -1) return p.toLowerCase();
+            } catch (e) {}
+
+            var s = safeGet(STORAGE_KEY);
+            if (s && SUPPORTED.indexOf(s) !== -1) return s;
+
+            var n = ((navigator.language || navigator.userLanguage || "en") + "").toLowerCase();
+            return n.indexOf("tr") === 0 ? "tr" : DEFAULT_LANG;
+        }
+
+        function setText(id, value) {
+            var el = document.getElementById(id);
+            if (el && typeof value === "string") el.textContent = value;
+        }
+
+        function setMeta(sel, attr, value) {
+            var el = document.querySelector(sel);
+            if (el && typeof value === "string") el.setAttribute(attr, value);
+        }
+
+        // ─── Apply language ───────────────────────────────────────────────
+        function applyLang(lang) {
+            var L = SUPPORTED.indexOf(lang) !== -1 ? lang : DEFAULT_LANG;
+            var d = dict[L];
+
+            document.documentElement.lang = L;
+            document.title = d.pageTitle;
+
+            setMeta('#metaDescription', 'content', d.metaDescription);
+            setMeta('meta[property="og:title"]', 'content', d.pageTitle);
+            setMeta('meta[property="og:description"]', 'content', d.metaDescription);
+            setMeta('meta[property="og:locale"]', 'content', d.ogLocale);
+            setMeta('meta[name="twitter:title"]', 'content', d.pageTitle);
+            setMeta('meta[name="twitter:description"]', 'content', d.metaDescription);
+
+            setText("topLinkText", d.topLinkText);
+            setText("title", d.title);
+            setText("intro", d.intro);
+            setText("noticeStrong", d.noticeStrong);
+            setText("noticeText", d.noticeText);
+
+            setText("s1", d.s1);
+            setText("s1p", d.s1p);
+            setText("s2", d.s2);
+            setText("s2p", d.s2p);
+            setText("s2l1Label", d.s2l1Label);
+            setText("s2l1", d.s2l1);
+            setText("s2l2Label", d.s2l2Label);
+            setText("s2l2", d.s2l2);
+            setText("s2l3Label", d.s2l3Label);
+            setText("s2l3", d.s2l3);
+
+            setText("s3", d.s3);
+            setText("s3p", d.s3p);
+            setText("s4", d.s4);
+            setText("s4p", d.s4p);
+            setText("s5", d.s5);
+            setText("s5p", d.s5p);
+            setText("s6", d.s6);
+            setText("s6p", d.s6p);
+            setText("s7", d.s7);
+            setText("s7p", d.s7p);
+            setText("s8", d.s8);
+            setText("s8p", d.s8p);
+            setText("s8l1", d.s8l1);
+            setText("s8l2", d.s8l2);
+            setText("s8l3", d.s8l3);
+            setText("s9", d.s9);
+            setText("s9p", d.s9p);
+            setText("s10", d.s10);
+            setText("s10pText", d.s10pText);
+
+            setText("relPrivacy", d.relPrivacy);
+            setText("relHome", d.relHome);
+            setText("footerUpdated", d.footerUpdated);
+
+            // Language switcher state
+            var btns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < btns.length; i++) {
+                var active = btns[i].getAttribute("data-lang") === L;
+                btns[i].classList.toggle("active", active);
+                btns[i].setAttribute("aria-pressed", active ? "true" : "false");
+            }
+
+            // Theme toggle label localization
+            updateThemeButton(getTheme(), d);
+
+            safeSet(STORAGE_KEY, L);
+        }
+
+        // ─── Theme toggle ─────────────────────────────────────────────────
+        var themeBtn = document.getElementById("themeToggle");
+        var currentLangDict = function () {
+            var L = safeGet(STORAGE_KEY);
+            return dict[SUPPORTED.indexOf(L) !== -1 ? L : DEFAULT_LANG];
+        };
 
         function getTheme() {
             return document.documentElement.getAttribute("data-theme") === "dark"
@@ -500,33 +787,62 @@
                 : "light";
         }
 
-        function updateButton(theme) {
-            if (!btn) return;
+        function updateThemeButton(theme, d) {
+            if (!themeBtn) return;
+            d = d || currentLangDict();
 
-            btn.setAttribute(
-                "aria-label",
-                theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
-            );
-            btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+            themeBtn.setAttribute("aria-label", theme === "dark" ? d.themeToLight : d.themeToDark);
+            themeBtn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
         }
 
         function setTheme(theme) {
             document.documentElement.setAttribute("data-theme", theme);
-
-            try {
-                localStorage.setItem("siteTheme", theme);
-            } catch (error) {}
-
-            updateButton(theme);
+            safeSet("siteTheme", theme);
+            updateThemeButton(theme);
         }
 
-        updateButton(getTheme());
+        // ─── Bind events ──────────────────────────────────────────────────
+        function bind() {
+            // Language buttons
+            var langBtns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < langBtns.length; i++) {
+                (function (btn) {
+                    btn.addEventListener("click", function () {
+                        applyLang(btn.getAttribute("data-lang"));
+                    });
+                })(langBtns[i]);
+            }
 
-        if (btn) {
-            btn.addEventListener("click", function () {
-                var nextTheme = getTheme() === "dark" ? "light" : "dark";
-                setTheme(nextTheme);
+            // Theme toggle
+            if (themeBtn) {
+                themeBtn.addEventListener("click", function () {
+                    setTheme(getTheme() === "dark" ? "light" : "dark");
+                });
+            }
+
+            // Cross-tab sync
+            window.addEventListener("storage", function (e) {
+                if (e.key === STORAGE_KEY && e.newValue && SUPPORTED.indexOf(e.newValue) !== -1) {
+                    applyLang(e.newValue);
+                }
+                if (e.key === "siteTheme" && (e.newValue === "dark" || e.newValue === "light")) {
+                    document.documentElement.setAttribute("data-theme", e.newValue);
+                    updateThemeButton(e.newValue);
+                }
             });
+        }
+
+        // ─── Init ─────────────────────────────────────────────────────────
+        function init() {
+            applyLang(detectLang());
+            updateThemeButton(getTheme());
+            bind();
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init, { once: true });
+        } else {
+            init();
         }
     })();
 </script>
