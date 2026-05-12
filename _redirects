@@ -1,14 +1,76 @@
-# =========================================================
-# Netlify Redirects — Upcycling Patterns
-# =========================================================
+# =====================================================================
+#  _redirects — Upcycling Patterns
+#  Erasmus+ KA210-SCH Project
+# ---------------------------------------------------------------------
+#  PRIMARY redirect rules live in netlify.toml. This file is a
+#  defence-in-depth fallback so the site behaves correctly even if
+#  the .toml file is ignored or fails to parse. Where this file and
+#  netlify.toml define the same rule, netlify.toml wins.
+#
+#  Format: <from>  <to>  <status>  [force]
+#  • 200 = rewrite (URL stays the same, content from <to>)
+#  • 301 = permanent redirect (SEO-safe)
+#  • 302 = temporary redirect
+#  • 404 = serve the <to> page with a 404 status
+# =====================================================================
 
-# Turkish path should use the main index.html
-/tr      /index.html   200
-/tr/     /index.html   200
-/tr/*    /index.html   200
+# ---------------------------------------------------------------------
+#  FORCE HTTPS + CANONICAL HOST (apex, no www)
+#  Netlify auto-adds HTTPS; these are belt-and-braces fallbacks.
+# ---------------------------------------------------------------------
+http://upcyclingpatterns.com/*       https://upcyclingpatterns.com/:splat       301!
+http://www.upcyclingpatterns.com/*   https://upcyclingpatterns.com/:splat       301!
+https://www.upcyclingpatterns.com/*  https://upcyclingpatterns.com/:splat       301!
 
-# Admin panel
-/admin   /admin/       301
+# ---------------------------------------------------------------------
+#  CLEAN ROOT — direct /index.html → /
+# ---------------------------------------------------------------------
+/index.html                          /                                          301
 
-# Custom 404 page
-/*       /404.html     404
+# ---------------------------------------------------------------------
+#  TURKISH PATH (SPA — language detected client-side by script.js)
+# ---------------------------------------------------------------------
+/tr        /index.html   200
+/tr/       /index.html   200
+/tr/*      /index.html   200
+
+# ---------------------------------------------------------------------
+#  ADMIN PANEL
+#  Ensure /admin always lands on /admin/ (canonical with trailing slash)
+# ---------------------------------------------------------------------
+/admin     /admin/       301
+
+# Hide internal CMS files from direct browsing
+# (They're served as plain text otherwise — not sensitive, but tidier.)
+/admin/config.yml        /admin/   301
+/admin/config.yaml       /admin/   301
+
+# ---------------------------------------------------------------------
+#  LEGAL / INFO PAGE ALIASES
+#  Friendly URLs that some browsers / scanners try by convention.
+# ---------------------------------------------------------------------
+/privacy            /privacy-policy.html              301
+/privacy/           /privacy-policy.html              301
+/cookies            /cookie-policy.html               301
+/cookies/           /cookie-policy.html               301
+/terms              /terms.html                       301
+/terms/             /terms.html                       301
+/accessibility      /accessibility.html               301
+/accessibility/     /accessibility.html               301
+/funding            /funding-disclaimer.html          301
+/funding/           /funding-disclaimer.html          301
+
+# ---------------------------------------------------------------------
+#  COMMON CRAWLER PROBES — return clean 404 instead of bouncing them
+#  through the SPA. (Optional but reduces noise in Netlify analytics.)
+# ---------------------------------------------------------------------
+/wp-admin/*         /404.html     404
+/wp-login.php       /404.html     404
+/.env               /404.html     404
+/.git/*             /404.html     404
+
+# ---------------------------------------------------------------------
+#  CUSTOM 404 — must remain the LAST rule
+#  Netlify processes rules top-down; this catches anything unmatched.
+# ---------------------------------------------------------------------
+/*         /404.html     404
