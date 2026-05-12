@@ -2129,51 +2129,48 @@
 })();
 
 /* =====================================================================
-   FOOTER LEGAL REAL POSITION FIX
-   Moves the Legal block out of footer-content and into the footer's
-   bottom-left corner. Self-contained, idempotent, safe to run twice.
-   Lives outside the main IIFE on purpose so it can run as early as
-   possible without depending on the rest of the script.
+   FOOTER LEGAL ABOVE COPYRIGHT LINE FIX
+   Legal bölümünü Partner Schools'dan sonra,
+   copyright çizgisinin üstüne taşır.
+   Copyright ve Designed by Arvin Hakimi yazılarına dokunmaz.
    ===================================================================== */
 (function () {
     "use strict";
 
-    function fixFooterLegalPosition() {
+    function moveLegalAboveCopyright() {
         const footer = document.querySelector(".site-footer");
         if (!footer) return;
 
-        const container =
-            footer.querySelector(":scope > .container") ||
-            footer.querySelector(".container");
-        if (!container) return;
-
         const legal = footer.querySelector(".footer-legal");
-        if (!legal) return;
+        const footerBottom = footer.querySelector(".footer-bottom");
 
-        // Idempotency guard — never run twice on the same element.
-        if (legal.classList.contains("footer-legal-corner")) return;
+        if (!legal || !footerBottom) return;
 
-        // Strip reveal-state classes so it doesn't stay invisible
-        // after the reposition (those classes drive an opacity:0
-        // starting state in CSS).
+        /* Önce eski hatalı class'ları temizle */
+        legal.classList.remove("footer-legal-corner");
+        legal.classList.remove("footer-legal-bottom-bar");
+        legal.classList.remove("footer-legal-left-mini");
         legal.classList.remove("reveal-item");
         legal.classList.remove("visible");
 
-        // Apply the new positioning class.
-        legal.classList.add("footer-legal-corner");
+        /* Yeni class */
+        legal.classList.add("footer-legal-above-line");
 
-        // Move the element to the end of the footer container so the
-        // layout snaps to the new corner position.
-        container.appendChild(legal);
+        /*
+           Legal'i copyright bölümünden hemen önce koyuyoruz.
+           Böylece Partner Schools'dan sonra gelir,
+           çizginin üstünde durur.
+        */
+        if (legal.nextElementSibling !== footerBottom) {
+            footerBottom.parentElement.insertBefore(legal, footerBottom);
+        }
     }
 
     if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", fixFooterLegalPosition);
+        document.addEventListener("DOMContentLoaded", moveLegalAboveCopyright);
     } else {
-        fixFooterLegalPosition();
+        moveLegalAboveCopyright();
     }
 
-    // Belt-and-braces — run again on full load, in case the footer was
-    // re-rendered by something async (CMS hydration, etc).
-    window.addEventListener("load", fixFooterLegalPosition);
+    window.addEventListener("load", moveLegalAboveCopyright);
 })();
