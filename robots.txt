@@ -1,49 +1,46 @@
 # =====================================================================
-# robots.txt — Upcycling Patterns
-# Erasmus+ KA210-SCH Project
-# Website: https://upcyclingpatterns.com/
+#  robots.txt — Upcycling Patterns
+#  Erasmus+ KA210-SCH Project
+#  Website: https://upcyclingpatterns.com/
+# =====================================================================
+#  Conventions:
+#    • Lowercase user-agent names where possible (most bots are case-insensitive).
+#    • One blank line between rule groups.
+#    • Sitemap declared at the very end (the only directive that's group-independent).
 # =====================================================================
 
-# ---------------------------------------------------------------------
-# Default rule for all crawlers
-# ---------------------------------------------------------------------
 
+# ---------------------------------------------------------------------
+#  DEFAULT — applies to every crawler not matched below
+# ---------------------------------------------------------------------
 User-agent: *
 Allow: /
-
-# Block admin/CMS area and internal paths
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
+Disallow: /data/
 Disallow: /private/
 Disallow: /drafts/
 Disallow: /content/drafts/
-Disallow: /data/
 Disallow: /api/
-Disallow: /*?*lang=
+Disallow: /images/uploads/private/
 Disallow: /*?*utm_
+Disallow: /*?*fbclid=
+Disallow: /*?*gclid=
+Disallow: /*?*ref=
 
-# Allow public assets explicitly
-Allow: /images/
-Allow: /assets/
-Allow: /style.css
-Allow: /script.js
-Allow: /manifest.webmanifest
-Allow: /sitemap.xml
-
-# Slow down aggressive crawlers
+# Be polite to small servers — most major bots ignore this anyway.
 Crawl-delay: 2
 
+
 # ---------------------------------------------------------------------
-# Major search engines
+#  MAJOR SEARCH ENGINES
 # ---------------------------------------------------------------------
 
 User-agent: Googlebot
 Allow: /
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
-Disallow: /success.html
+Disallow: /data/
 Disallow: /private/
 Disallow: /drafts/
 
@@ -52,33 +49,37 @@ Allow: /images/
 Disallow: /admin/
 Disallow: /images/uploads/private/
 
+User-agent: Googlebot-News
+Allow: /
+
 User-agent: Bingbot
 Allow: /
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
+Disallow: /data/
 Disallow: /private/
 
 User-agent: DuckDuckBot
 Allow: /
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
+Disallow: /data/
 
 User-agent: YandexBot
 Allow: /
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
+Disallow: /data/
 
 User-agent: Applebot
 Allow: /
 Disallow: /admin/
 Disallow: /admin
-Disallow: /404.html
+Disallow: /data/
+
 
 # ---------------------------------------------------------------------
-# Block aggressive SEO crawlers and content scrapers
+#  AGGRESSIVE SEO CRAWLERS & CONTENT SCRAPERS — fully blocked
 # ---------------------------------------------------------------------
 
 User-agent: AhrefsBot
@@ -105,10 +106,19 @@ Disallow: /
 User-agent: DataForSeoBot
 Disallow: /
 
+User-agent: ZoominfoBot
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+
 # ---------------------------------------------------------------------
-# AI training crawlers
-# Currently allowed. To opt out, change "Allow: /" to "Disallow: /"
-# for the relevant agent below.
+#  AI TRAINING CRAWLERS
+#  Currently ALLOWED so this Erasmus+ project's educational content
+#  can be discovered through AI assistants and search experiences.
+#  To opt out of any specific service, change "Allow: /" to "Disallow: /"
+#  for that user-agent below.
 # ---------------------------------------------------------------------
 
 User-agent: GPTBot
@@ -138,11 +148,22 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Bytespider (TikTok parent ByteDance) — blocked due to aggressive
+# crawl patterns reported by many small sites.
 User-agent: Bytespider
 Disallow: /
 
+
 # ---------------------------------------------------------------------
-# Sitemap
+#  HOST + SITEMAP
 # ---------------------------------------------------------------------
+
+Host: upcyclingpatterns.com
 
 Sitemap: https://upcyclingpatterns.com/sitemap.xml
