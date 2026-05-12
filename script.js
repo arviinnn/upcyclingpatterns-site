@@ -2,20 +2,23 @@
    Upcycling Patterns — Main Script
    Erasmus+ KA210-SCH Project
    ---------------------------------------------------------------------
-   - EN/TR language system
+   - EN/TR language system (single source of truth here)
    - /tr/ and ?lang=tr ready language detection
-   - Accessible tabs
-   - Mobile menu
+   - Accessible tabs (ARIA + keyboard)
+   - Mobile menu (focus management + Escape)
    - Scroll progress
    - Back-to-top button
-   - Reveal animations
+   - Reveal animations (IntersectionObserver)
    - Counter animation
-   - Email obfuscation
-   - Contact form validation
-   - Web3Forms support + mailto fallback
-   - Anti-spam cooldown
+   - Email obfuscation (mailto built at runtime)
+   - Contact form validation + sanitisation + honeypot + cooldown
+   - Web3Forms support with graceful mailto fallback
    - Reduced-motion support
-   - Admin/CMS-ready HTML support
+   - Dark/light theme toggle (synced with siteTheme localStorage)
+   - Cookie consent banner
+   - Lightbox for the gallery (with focus trap)
+   - Footer-legal placement fix
+   - Admin/CMS-ready data-* hooks
    ===================================================================== */
 
 (function () {
@@ -31,6 +34,7 @@
         const body = document.body;
         const html = document.documentElement;
 
+        // ─── DOM references ─────────────────────────────────────────────
         const pageLoader = document.getElementById("pageLoader");
         const header = document.querySelector(".site-header");
         const navMenu = document.getElementById("navMenu");
@@ -59,7 +63,9 @@
         const messageInput = document.getElementById("message");
         const honeypotInput = document.getElementById("websiteField");
 
-        const prefersReducedMotion = window.matchMedia &&
+        // ─── Environment flags ─────────────────────────────────────────
+        const prefersReducedMotion =
+            window.matchMedia &&
             window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         const isTouchDevice =
@@ -67,7 +73,11 @@
             navigator.maxTouchPoints > 0 ||
             navigator.msMaxTouchPoints > 0;
 
+        // ─── Constants ──────────────────────────────────────────────────
         const SAFE_LANGUAGE_KEY = "siteLanguage";
+        const SAFE_THEME_KEY = "siteTheme";
+        const COOKIE_CONSENT_KEY = "cookieConsentDismissed";
+
         const DEFAULT_LANGUAGE = "en";
         const SUPPORTED_LANGS = ["en", "tr"];
 
@@ -83,6 +93,7 @@
         let lastSubmitTime = 0;
         let currentLanguage = getCurrentLanguage();
 
+        // ─── Translation dictionaries ───────────────────────────────────
         const translations = {
             en: {
                 pageTitle: "Upcycling Patterns | Erasmus+ KA210-SCH",
@@ -258,11 +269,13 @@
 
                 partner3Country: "Lithuania",
                 partner3School: "Vilniaus automechanikos ir verslo mokykla",
+                partner3City: "Vilnius",
                 partner3Role: "Project partner",
 
                 partner4Country: "Poland",
                 partner4School:
-                    "Zespol Szkol Samochodowych im. Tadeusza Tanskiego",
+                    "Zespół Szkół Samochodowych im. Tadeusza Tańskiego",
+                partner4City: "Włocławek",
                 partner4Role: "Project partner",
 
                 mediaTag: "Media Hub",
@@ -390,7 +403,7 @@
                 lightboxClose: "Close image viewer",
                 lightboxPrev: "Previous image",
                 lightboxNext: "Next image",
-               
+
                 legalTitle: "Legal",
                 privacyPolicyLink: "Privacy Policy",
                 cookiePolicyLink: "Cookie Policy",
@@ -399,7 +412,6 @@
                 fundingDisclaimerLink: "Funding Disclaimer",
                 adminLink: "Admin"
             },
-
             tr: {
                 pageTitle: "Upcycling Patterns | Erasmus+ KA210-SCH",
                 metaDescription:
@@ -575,11 +587,13 @@
 
                 partner3Country: "Litvanya",
                 partner3School: "Vilniaus automechanikos ir verslo mokykla",
+                partner3City: "Vilnius",
                 partner3Role: "Proje ortağı",
 
                 partner4Country: "Polonya",
                 partner4School:
-                    "Zespol Szkol Samochodowych im. Tadeusza Tanskiego",
+                    "Zespół Szkół Samochodowych im. Tadeusza Tańskiego",
+                partner4City: "Włocławek",
                 partner4Role: "Proje ortağı",
 
                 mediaTag: "Medya Merkezi",
@@ -712,10 +726,15 @@
                 legalTitle: "Yasal",
                 privacyPolicyLink: "Gizlilik Politikası",
                 cookiePolicyLink: "Çerez Politikası",
+                termsLink: "Kullanım Koşulları",
+                accessibilityLink: "Erişilebilirlik",
+                fundingDisclaimerLink: "Finansman Bildirimi",
                 adminLink: "Yönetim Paneli"
             }
         };
 
+        // ─── Safe storage helpers ───────────────────────────────────────
+        // Never throw in private browsing or when storage is disabled.
         function safeStorageGet(key) {
             try {
                 return localStorage.getItem(key);
@@ -727,12 +746,14 @@
         function safeStorageSet(key, value) {
             try {
                 localStorage.setItem(key, value);
+                return true;
             } catch (error) {
                 return false;
             }
-            return true;
         }
 
+        // ─── Language detection ─────────────────────────────────────────
+        // Priority: URL path (/tr/) → ?lang= → stored pref → browser → EN.
         function getCurrentLanguage() {
             const path = window.location.pathname.toLowerCase();
 
@@ -742,19 +763,20 @@
 
             try {
                 const urlLang = new URLSearchParams(window.location.search).get("lang");
-                if (SUPPORTED_LANGS.includes(urlLang)) {
-                    return urlLang;
+                if (urlLang && SUPPORTED_LANGS.includes(urlLang.toLowerCase())) {
+                    return urlLang.toLowerCase();
                 }
             } catch (error) {
-                /* ignore */
+                /* old browser without URLSearchParams — ignore */
             }
 
             const saved = safeStorageGet(SAFE_LANGUAGE_KEY);
-            if (SUPPORTED_LANGS.includes(saved)) {
+            if (saved && SUPPORTED_LANGS.includes(saved)) {
                 return saved;
             }
 
-            const browserLang = (navigator.language || "en").toLowerCase();
+            const browserLang = ((navigator.language || navigator.userLanguage || "en") + "")
+                .toLowerCase();
             return browserLang.startsWith("tr") ? "tr" : DEFAULT_LANGUAGE;
         }
 
@@ -762,6 +784,8 @@
             return translations[lang] || translations[DEFAULT_LANGUAGE];
         }
 
+        // Update ?lang= in the URL bar without reloading.
+        // Skipped entirely when the user is under /tr/ — the path is enough.
         function updateUrlLanguage(lang) {
             if (!window.history || !window.history.replaceState) {
                 return;
@@ -787,6 +811,11 @@
             }
         }
 
+        // ─── Text application helper ────────────────────────────────────
+        // Handles three cases:
+        //   1. Buttons with an inner .btn-text → only that span gets the text.
+        //   2. Multi-line strings ("foo\nbar") → newlines become real <br>.
+        //   3. Everything else → plain textContent.
         function setTextSafely(element, value) {
             if (!element || typeof value !== "string") {
                 return;
@@ -799,20 +828,26 @@
                 return;
             }
 
-            if (value.includes("\n")) {
+            if (value.indexOf("\n") !== -1) {
                 element.textContent = "";
-                value.split("\n").forEach((part, index, arr) => {
-                    element.appendChild(document.createTextNode(part));
-                    if (index < arr.length - 1) {
+                const parts = value.split("\n");
+                for (let i = 0; i < parts.length; i++) {
+                    element.appendChild(document.createTextNode(parts[i]));
+                    if (i < parts.length - 1) {
                         element.appendChild(document.createElement("br"));
                     }
-                });
+                }
                 return;
             }
 
             element.textContent = value;
         }
 
+        // ─── Meta-tag localisation ──────────────────────────────────────
+        // Keeps <title>, meta description, Open Graph and Twitter Card meta
+        // in sync with the visible language. Crawlers re-read these on
+        // re-crawl, so this directly affects how search engines and social
+        // shares present the page.
         function updateMetaForLanguage(lang) {
             const dict = getDictionary(lang);
 
@@ -837,25 +872,23 @@
             if (ogTitle && dict.pageTitle) {
                 ogTitle.setAttribute("content", dict.pageTitle);
             }
-
             if (ogDescription && dict.metaDescription) {
                 ogDescription.setAttribute("content", dict.metaDescription);
             }
-
             if (twitterTitle && dict.pageTitle) {
                 twitterTitle.setAttribute("content", dict.pageTitle);
             }
-
             if (twitterDescription && dict.metaDescription) {
                 twitterDescription.setAttribute("content", dict.metaDescription);
             }
-
             if (ogLocale) {
                 ogLocale.setAttribute("content", lang === "tr" ? "tr_TR" : "en_US");
             }
         }
 
-        function applyTranslations(lang, options = {}) {
+        // ─── Apply translations to the whole page ───────────────────────
+        function applyTranslations(lang, options) {
+            options = options || {};
             const nextLang = SUPPORTED_LANGS.includes(lang) ? lang : DEFAULT_LANGUAGE;
             const dict = getDictionary(nextLang);
 
@@ -863,27 +896,45 @@
             html.setAttribute("lang", nextLang);
             html.setAttribute("dir", "ltr");
 
-            document.querySelectorAll("[data-i18n]").forEach((element) => {
-                const key = element.getAttribute("data-i18n");
-                if (!key || !(key in dict)) {
-                    return;
+            // Text content from data-i18n
+            const i18nNodes = document.querySelectorAll("[data-i18n]");
+            for (let i = 0; i < i18nNodes.length; i++) {
+                const el = i18nNodes[i];
+                const key = el.getAttribute("data-i18n");
+                if (!key) continue;
+                if (Object.prototype.hasOwnProperty.call(dict, key)) {
+                    setTextSafely(el, dict[key]);
                 }
-                setTextSafely(element, dict[key]);
-            });
+            }
 
-            document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
-                const key = element.getAttribute("data-i18n-placeholder");
-                if (!key || !(key in dict)) {
-                    return;
+            // Placeholders for inputs/textareas
+            const placeholderNodes = document.querySelectorAll("[data-i18n-placeholder]");
+            for (let i = 0; i < placeholderNodes.length; i++) {
+                const el = placeholderNodes[i];
+                const key = el.getAttribute("data-i18n-placeholder");
+                if (!key) continue;
+                if (Object.prototype.hasOwnProperty.call(dict, key)) {
+                    el.setAttribute("placeholder", dict[key]);
                 }
-                element.setAttribute("placeholder", dict[key]);
-            });
+            }
 
-            langButtons.forEach((button) => {
+            // Language switcher state
+            for (let i = 0; i < langButtons.length; i++) {
+                const button = langButtons[i];
                 const isActive = button.dataset.lang === nextLang;
                 button.classList.toggle("active", isActive);
                 button.setAttribute("aria-pressed", String(isActive));
-            });
+            }
+
+            // Theme toggle's accessible label depends on language
+            const themeBtn = document.getElementById("themeToggle");
+            if (themeBtn) {
+                const isDark = html.getAttribute("data-theme") === "dark";
+                themeBtn.setAttribute(
+                    "aria-label",
+                    isDark ? dict.themeToLight : dict.themeToDark
+                );
+            }
 
             updateMetaForLanguage(nextLang);
             safeStorageSet(SAFE_LANGUAGE_KEY, nextLang);
@@ -892,14 +943,15 @@
                 updateUrlLanguage(nextLang);
             }
 
+            // A brief fade keeps the swap from feeling abrupt.
+            // Reduced-motion users get instant swap.
             if (!prefersReducedMotion && options.animate !== false) {
                 body.style.transition = "opacity 0.25s ease";
                 body.style.opacity = "0.92";
 
-                window.setTimeout(() => {
+                window.setTimeout(function () {
                     body.style.opacity = "1";
-
-                    window.setTimeout(() => {
+                    window.setTimeout(function () {
                         body.style.transition = "";
                     }, 260);
                 }, 90);
@@ -907,27 +959,34 @@
         }
 
         function bindLanguageSwitcher() {
-            langButtons.forEach((button) => {
-                button.addEventListener("click", () => {
-                    const nextLang = button.dataset.lang;
-
-                    if (!SUPPORTED_LANGS.includes(nextLang)) {
-                        return;
-                    }
-
-                    applyTranslations(nextLang, {
-                        updateUrl: true,
-                        animate: true
+            for (let i = 0; i < langButtons.length; i++) {
+                (function (button) {
+                    button.addEventListener("click", function () {
+                        const nextLang = button.dataset.lang;
+                        if (!SUPPORTED_LANGS.includes(nextLang)) return;
+                        applyTranslations(nextLang, { updateUrl: true, animate: true });
                     });
-                });
+                })(langButtons[i]);
+            }
+
+            // Cross-tab sync — if another tab on the same site changes
+            // the language, this tab follows.
+            window.addEventListener("storage", function (event) {
+                if (event.key !== SAFE_LANGUAGE_KEY) return;
+                const v = event.newValue;
+                if (v && SUPPORTED_LANGS.includes(v) && v !== currentLanguage) {
+                    applyTranslations(v, { updateUrl: false, animate: false });
+                }
             });
         }
 
+        // ─── Input sanitisation ─────────────────────────────────────────
+        // Strips control characters, removes < and > (defence-in-depth — the
+        // payload is sent over fetch as form-data, but we still want to keep
+        // the displayed values clean), collapses whitespace, and enforces
+        // a max length. Cheap, safe, no surprises.
         function sanitizeText(value, maxLength) {
-            if (typeof value !== "string") {
-                return "";
-            }
-
+            if (typeof value !== "string") return "";
             return value
                 .replace(/[\u0000-\u001F\u007F]/g, " ")
                 .replace(/[<>]/g, "")
@@ -937,10 +996,7 @@
         }
 
         function sanitizeMultilineText(value, maxLength) {
-            if (typeof value !== "string") {
-                return "";
-            }
-
+            if (typeof value !== "string") return "";
             return value
                 .replace(/[\u0000-\u0008\u000B-\u001F\u007F]/g, "")
                 .replace(/[<>]/g, "")
@@ -950,20 +1006,24 @@
                 .slice(0, maxLength);
         }
 
+        // Simple but effective: at least one char, an @, a dot, and a TLD.
+        // Web3Forms re-validates server-side; this is just the first gate.
         function isValidEmail(value) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) &&
                 value.length <= MAX_EMAIL_LENGTH;
         }
 
         function setStatusMessage(message, isError) {
-            if (!formStatus) {
-                return;
-            }
-
+            if (!formStatus) return;
             formStatus.textContent = message || "";
             formStatus.style.color = isError ? "#b42318" : "#18794e";
+
+            // Allow CSS to react via a class too (e.g. for icons / borders).
+            formStatus.classList.toggle("error", Boolean(isError));
+            formStatus.classList.toggle("success", Boolean(message) && !isError);
         }
 
+        // ─── Contact form validation ────────────────────────────────────
         function validateForm() {
             const dict = getDictionary(currentLanguage);
 
@@ -971,16 +1031,21 @@
                 return false;
             }
 
-            const name = sanitizeText(nameInput.value, MAX_NAME_LENGTH);
-            const email = sanitizeText(emailInput.value, MAX_EMAIL_LENGTH);
+            // Sanitise and write the cleaned values back into the inputs
+            // so the user sees exactly what will be submitted.
+            const name    = sanitizeText(nameInput.value, MAX_NAME_LENGTH);
+            const email   = sanitizeText(emailInput.value, MAX_EMAIL_LENGTH);
             const subject = sanitizeText(subjectInput.value, MAX_SUBJECT_LENGTH);
             const message = sanitizeMultilineText(messageInput.value, MAX_MESSAGE_LENGTH);
 
-            nameInput.value = name;
-            emailInput.value = email;
+            nameInput.value    = name;
+            emailInput.value   = email;
             subjectInput.value = subject;
             messageInput.value = message;
 
+            // Honeypot — invisible field that real users never fill in.
+            // Bots tend to fill every input they see, so a non-empty value
+            // here is a strong signal of automated submission.
             if (honeypotInput) {
                 const botFilled = honeypotInput.type === "checkbox"
                     ? honeypotInput.checked
@@ -992,8 +1057,18 @@
                 }
             }
 
+            // Field-level validation with focus on the first problem.
             if (!name || !email || !subject || !message) {
                 setStatusMessage(dict.formError, true);
+                if (!name) {
+                    nameInput.focus();
+                } else if (!email) {
+                    emailInput.focus();
+                } else if (!subject) {
+                    subjectInput.focus();
+                } else {
+                    messageInput.focus();
+                }
                 return false;
             }
 
@@ -1005,9 +1080,11 @@
 
             if (!isValidEmail(email)) {
                 setStatusMessage(dict.formEmailError, true);
+                emailInput.setAttribute("aria-invalid", "true");
                 emailInput.focus();
                 return false;
             }
+            emailInput.removeAttribute("aria-invalid");
 
             if (message.length < 10) {
                 setStatusMessage(dict.formTooShortError, true);
@@ -1017,24 +1094,25 @@
 
             return true;
         }
-
+        // ─── Web3Forms access key resolver ──────────────────────────────
+        // Reads from either the hidden input or the data-access-key attr.
+        // Treats the literal placeholder "YOUR_WEB3FORMS_ACCESS_KEY" as
+        // "not set" so unconfigured forms gracefully fall back to mailto.
         function getFormAccessKey() {
-            if (!contactForm) {
-                return "";
-            }
+            if (!contactForm) return "";
 
             const hiddenKey = contactForm.querySelector('input[name="access_key"]');
             const keyFromInput = hiddenKey ? hiddenKey.value.trim() : "";
-            const keyFromData = contactForm.getAttribute("data-access-key") || "";
-            const key = keyFromInput || keyFromData.trim();
+            const keyFromData  = (contactForm.getAttribute("data-access-key") || "").trim();
+            const key = keyFromInput || keyFromData;
 
-            if (!key || key === "YOUR_WEB3FORMS_ACCESS_KEY") {
-                return "";
-            }
-
+            if (!key || key === "YOUR_WEB3FORMS_ACCESS_KEY") return "";
             return key;
         }
 
+        // Last-resort: open the user's default mail client with the message
+        // pre-filled. Used when the API key isn't configured or the network
+        // request fails. Never silently loses the user's input.
         function fallbackToMailto() {
             if (!contactForm || !nameInput || !emailInput || !subjectInput || !messageInput) {
                 return;
@@ -1058,9 +1136,7 @@
         }
 
         function setSubmitState(isSubmitting) {
-            if (!submitBtn) {
-                return;
-            }
+            if (!submitBtn) return;
 
             submitBtn.disabled = Boolean(isSubmitting);
             submitBtn.setAttribute("aria-busy", String(Boolean(isSubmitting)));
@@ -1078,22 +1154,21 @@
 
             const dict = getDictionary(currentLanguage);
 
-            if (!validateForm()) {
-                return;
-            }
+            if (!validateForm()) return;
 
             const now = Date.now();
 
+            // Anti-spam: a real user can't sanely submit within 2.5s of
+            // load, and shouldn't be hammering submit. Both checks use
+            // the same friendly cooldown message.
             if (now - pageLoadTime < MIN_TIME_ON_PAGE_MS) {
                 setStatusMessage(dict.formCooldownError, true);
                 return;
             }
-
             if (now - lastSubmitTime < SUBMIT_COOLDOWN_MS) {
                 setStatusMessage(dict.formCooldownError, true);
                 return;
             }
-
             lastSubmitTime = now;
 
             const accessKey = getFormAccessKey();
@@ -1120,12 +1195,10 @@
                 const response = await fetch(contactForm.action, {
                     method: "POST",
                     body: formData,
-                    headers: {
-                        Accept: "application/json"
-                    }
+                    headers: { Accept: "application/json" }
                 });
 
-                const result = await response.json().catch(() => ({}));
+                const result = await response.json().catch(function () { return {}; });
 
                 if (!response.ok || result.success === false) {
                     throw new Error(result.message || "Form submission failed");
@@ -1142,21 +1215,23 @@
         }
 
         function bindContactForm() {
-            if (!contactForm) {
-                return;
-            }
-
+            if (!contactForm) return;
             contactForm.addEventListener("submit", handleContactSubmit);
         }
 
+        // ─── Email obfuscation ──────────────────────────────────────────
+        // The address is split across data-user/data-domain attributes in
+        // the HTML so simple scrapers don't see "upcyclingpatterns@gmail.com"
+        // in the raw markup. JS reassembles it at runtime into a real
+        // mailto: link with the visible text decoded.
         function bindEmailLinks() {
-            document.querySelectorAll("a.email-link").forEach((link) => {
+            const links = document.querySelectorAll("a.email-link");
+            for (let i = 0; i < links.length; i++) {
+                const link = links[i];
                 const user = link.getAttribute("data-user");
                 const domain = link.getAttribute("data-domain");
 
-                if (!user || !domain) {
-                    return;
-                }
+                if (!user || !domain) continue;
 
                 const address = user + "@" + domain;
                 link.setAttribute("href", "mailto:" + address);
@@ -1165,17 +1240,16 @@
                 if (display) {
                     display.textContent = address;
                 }
-            });
+            }
         }
 
+        // ─── Mobile menu ────────────────────────────────────────────────
         function isMobile() {
             return window.innerWidth <= 960;
         }
 
         function openMenu() {
-            if (!navMenu || !menuToggle) {
-                return;
-            }
+            if (!navMenu || !menuToggle) return;
 
             navMenu.classList.add("open");
             menuToggle.classList.add("active");
@@ -1185,16 +1259,15 @@
                 body.style.overflow = "hidden";
             }
 
+            // Move focus into the menu so keyboard users land somewhere useful.
             const firstLink = navMenu.querySelector(".nav-link");
             if (firstLink) {
-                window.setTimeout(() => firstLink.focus(), 180);
+                window.setTimeout(function () { firstLink.focus(); }, 180);
             }
         }
 
         function closeMenu() {
-            if (!navMenu || !menuToggle) {
-                return;
-            }
+            if (!navMenu || !menuToggle) return;
 
             navMenu.classList.remove("open");
             menuToggle.classList.remove("active");
@@ -1203,10 +1276,7 @@
         }
 
         function toggleMenu() {
-            if (!navMenu) {
-                return;
-            }
-
+            if (!navMenu) return;
             if (navMenu.classList.contains("open")) {
                 closeMenu();
             } else {
@@ -1215,13 +1285,12 @@
         }
 
         function bindMenuBehavior() {
-            if (!menuToggle || !navMenu) {
-                return;
-            }
+            if (!menuToggle || !navMenu) return;
 
             menuToggle.addEventListener("click", toggleMenu);
 
-            document.addEventListener("click", (event) => {
+            // Click outside → close.
+            document.addEventListener("click", function (event) {
                 if (
                     navMenu.classList.contains("open") &&
                     !navMenu.contains(event.target) &&
@@ -1231,33 +1300,32 @@
                 }
             });
 
-            document.addEventListener("keydown", (event) => {
+            // Escape → close + return focus to toggle.
+            document.addEventListener("keydown", function (event) {
                 if (event.key === "Escape" && navMenu.classList.contains("open")) {
                     closeMenu();
                     menuToggle.focus();
                 }
             });
 
-            navLinks.forEach((link) => {
-                link.addEventListener("click", () => {
-                    if (isMobile()) {
-                        closeMenu();
-                    }
+            // Tapping a nav link on mobile dismisses the menu after navigation.
+            for (let i = 0; i < navLinks.length; i++) {
+                navLinks[i].addEventListener("click", function () {
+                    if (isMobile()) closeMenu();
                 });
-            });
+            }
 
-            window.addEventListener("resize", throttle(() => {
+            window.addEventListener("resize", throttle(function () {
+                // Going from mobile → desktop with the menu open: free the body scroll.
                 if (!isMobile()) {
                     body.style.overflow = "";
                 }
             }, 150), { passive: true });
         }
 
+        // ─── Header / scroll observers ──────────────────────────────────
         function handleHeaderScroll() {
-            if (!header) {
-                return;
-            }
-
+            if (!header) return;
             header.classList.toggle("scrolled", window.scrollY > 20);
         }
 
@@ -1265,41 +1333,36 @@
             let current = "";
             const marker = window.scrollY + window.innerHeight * 0.35;
 
-            sections.forEach((section) => {
+            for (let i = 0; i < sections.length; i++) {
+                const section = sections[i];
                 const top = section.offsetTop;
                 const bottom = top + section.offsetHeight;
-
                 if (marker >= top && marker < bottom) {
                     current = section.id || "";
                 }
-            });
+            }
 
-            navLinks.forEach((link) => {
+            for (let i = 0; i < navLinks.length; i++) {
+                const link = navLinks[i];
                 const href = link.getAttribute("href") || "";
                 const isActive = href === "#" + current || (!current && href === "#home");
 
                 link.classList.toggle("active", isActive);
-
                 if (isActive) {
                     link.setAttribute("aria-current", "page");
                 } else {
                     link.removeAttribute("aria-current");
                 }
-            });
+            }
         }
 
         function updateScrollProgress() {
-            if (!scrollProgressBar) {
-                return;
-            }
+            if (!scrollProgressBar) return;
 
             const scrollTop = window.scrollY || window.pageYOffset;
             const docHeight = Math.max(
-                body.scrollHeight,
-                body.offsetHeight,
-                html.clientHeight,
-                html.scrollHeight,
-                html.offsetHeight
+                body.scrollHeight, body.offsetHeight,
+                html.clientHeight, html.scrollHeight, html.offsetHeight
             );
 
             const scrollable = Math.max(docHeight - window.innerHeight, 1);
@@ -1314,11 +1377,9 @@
         }
 
         function bindBackToTop() {
-            if (!backToTop) {
-                return;
-            }
+            if (!backToTop) return;
 
-            backToTop.addEventListener("click", () => {
+            backToTop.addEventListener("click", function () {
                 window.scrollTo({
                     top: 0,
                     behavior: prefersReducedMotion ? "auto" : "smooth"
@@ -1327,33 +1388,28 @@
         }
 
         function updateBackToTop() {
-            if (!backToTop) {
-                return;
-            }
-
+            if (!backToTop) return;
             backToTop.classList.toggle("visible", window.scrollY > 500);
         }
 
+        // ─── Smooth anchor scrolling ────────────────────────────────────
         function bindAnchorScroll() {
-            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-                anchor.addEventListener("click", (event) => {
+            const anchors = document.querySelectorAll('a[href^="#"]');
+            for (let i = 0; i < anchors.length; i++) {
+                const anchor = anchors[i];
+                anchor.addEventListener("click", function (event) {
                     const href = anchor.getAttribute("href");
-
-                    if (!href || href === "#") {
-                        return;
-                    }
+                    if (!href || href === "#") return;
 
                     let target = null;
-
                     try {
                         target = document.querySelector(href);
                     } catch (error) {
+                        // Invalid selector (e.g. "#!" or "#foo bar") → let the
+                        // browser handle it.
                         return;
                     }
-
-                    if (!target) {
-                        return;
-                    }
+                    if (!target) return;
 
                     event.preventDefault();
 
@@ -1361,7 +1417,7 @@
                     const top = target.getBoundingClientRect().top + window.scrollY - offset;
 
                     window.scrollTo({
-                        top,
+                        top: top,
                         behavior: prefersReducedMotion ? "auto" : "smooth"
                     });
 
@@ -1369,22 +1425,18 @@
                         history.pushState(null, "", href);
                     }
                 });
-            });
+            }
         }
 
+        // ─── Counter animation ──────────────────────────────────────────
         function animateCounter(element) {
-            if (!element || element.dataset.animated === "true") {
-                return;
-            }
+            if (!element || element.dataset.animated === "true") return;
 
             const target = parseInt(
                 element.getAttribute("data-target") || element.textContent,
                 10
             );
-
-            if (!Number.isFinite(target)) {
-                return;
-            }
+            if (!Number.isFinite(target)) return;
 
             if (prefersReducedMotion) {
                 element.textContent = String(target);
@@ -1398,8 +1450,7 @@
             function step(now) {
                 const elapsed = now - start;
                 const progress = Math.min(elapsed / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-
+                const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
                 element.textContent = String(Math.floor(target * eased));
 
                 if (progress < 1) {
@@ -1413,71 +1464,64 @@
             requestAnimationFrame(step);
         }
 
+        // ─── Reveal-on-scroll animations + counter triggers ─────────────
         function bindRevealAnimations() {
             const revealItems = document.querySelectorAll(".reveal-item");
             const statNumbers = document.querySelectorAll(".stat-number[data-target]");
 
+            // Older browsers: just show everything immediately.
             if (!("IntersectionObserver" in window)) {
-                revealItems.forEach((item) => item.classList.add("visible"));
-                statNumbers.forEach((number) => animateCounter(number));
+                for (let i = 0; i < revealItems.length; i++) {
+                    revealItems[i].classList.add("visible");
+                }
+                for (let i = 0; i < statNumbers.length; i++) {
+                    animateCounter(statNumbers[i]);
+                }
                 return;
             }
 
-            const revealObserver = new IntersectionObserver(
-                (entries, observer) => {
-                    entries.forEach((entry) => {
-                        if (!entry.isIntersecting) {
-                            return;
-                        }
-
-                        entry.target.classList.add("visible");
-                        observer.unobserve(entry.target);
-                    });
-                },
-                {
-                    threshold: 0.14,
-                    rootMargin: "0px 0px -60px 0px"
+            const revealObserver = new IntersectionObserver(function (entries, observer) {
+                for (let i = 0; i < entries.length; i++) {
+                    const entry = entries[i];
+                    if (!entry.isIntersecting) continue;
+                    entry.target.classList.add("visible");
+                    observer.unobserve(entry.target);
                 }
-            );
+            }, { threshold: 0.14, rootMargin: "0px 0px -60px 0px" });
 
-            revealItems.forEach((item) => revealObserver.observe(item));
+            for (let i = 0; i < revealItems.length; i++) {
+                revealObserver.observe(revealItems[i]);
+            }
 
-            const counterObserver = new IntersectionObserver(
-                (entries, observer) => {
-                    entries.forEach((entry) => {
-                        if (!entry.isIntersecting) {
-                            return;
-                        }
-
-                        animateCounter(entry.target);
-                        observer.unobserve(entry.target);
-                    });
-                },
-                {
-                    threshold: 0.45
+            const counterObserver = new IntersectionObserver(function (entries, observer) {
+                for (let i = 0; i < entries.length; i++) {
+                    const entry = entries[i];
+                    if (!entry.isIntersecting) continue;
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
                 }
-            );
+            }, { threshold: 0.45 });
 
-            statNumbers.forEach((number) => counterObserver.observe(number));
+            for (let i = 0; i < statNumbers.length; i++) {
+                counterObserver.observe(statNumbers[i]);
+            }
         }
 
+        // ─── Tabs (full ARIA + keyboard support) ────────────────────────
         function bindTabs() {
             const tabWrappers = document.querySelectorAll(".tabs-wrapper");
 
-            tabWrappers.forEach((wrapper) => {
-                const tabButtons = Array.from(wrapper.querySelectorAll(".tab-btn"));
-                const panels = Array.from(wrapper.querySelectorAll(".tab-panel"));
+            for (let w = 0; w < tabWrappers.length; w++) {
+                const wrapper = tabWrappers[w];
+                const tabButtons = Array.prototype.slice.call(wrapper.querySelectorAll(".tab-btn"));
+                const panels = Array.prototype.slice.call(wrapper.querySelectorAll(".tab-panel"));
                 const indicator = wrapper.querySelector(".tab-indicator");
                 const tabsNav = wrapper.querySelector(".tabs-nav");
 
-                if (!tabButtons.length || !panels.length) {
-                    return;
-                }
+                if (!tabButtons.length || !panels.length) continue;
 
                 function moveIndicator(targetButton) {
-                    if (!indicator || !targetButton || !tabsNav) {
-                        return;
-                    }
+                    if (!indicator || !targetButton || !tabsNav) return;
 
                     const navRect = tabsNav.getBoundingClientRect();
                     const buttonRect = targetButton.getBoundingClientRect();
@@ -1488,120 +1532,120 @@
                 }
 
                 function activateTab(targetButton, focusPanel) {
-                    if (!targetButton) {
-                        return;
-                    }
+                    if (!targetButton) return;
 
                     const targetTab = targetButton.dataset.tab;
                     const targetPanel = wrapper.querySelector("#panel-" + targetTab);
+                    if (!targetTab || !targetPanel) return;
 
-                    if (!targetTab || !targetPanel) {
-                        return;
-                    }
-
-                    tabButtons.forEach((button) => {
+                    for (let i = 0; i < tabButtons.length; i++) {
+                        const button = tabButtons[i];
                         const isActive = button === targetButton;
-
                         button.classList.toggle("active", isActive);
                         button.setAttribute("aria-selected", String(isActive));
                         button.setAttribute("tabindex", isActive ? "0" : "-1");
-                    });
+                    }
 
-                    panels.forEach((panel) => {
+                    for (let i = 0; i < panels.length; i++) {
+                        const panel = panels[i];
                         const isActive = panel === targetPanel;
-
                         panel.classList.toggle("active", isActive);
                         panel.hidden = !isActive;
-                    });
+                    }
 
                     moveIndicator(targetButton);
-
                     if (focusPanel) {
                         targetPanel.focus({ preventScroll: true });
                     }
                 }
 
-                tabButtons.forEach((button) => {
-                    button.addEventListener("click", () => {
-                        activateTab(button, false);
-                    });
+                for (let i = 0; i < tabButtons.length; i++) {
+                    (function (button) {
+                        button.addEventListener("click", function () {
+                            activateTab(button, false);
+                        });
 
-                    button.addEventListener("keydown", (event) => {
-                        const currentIndex = tabButtons.indexOf(button);
-                        let nextButton = null;
+                        button.addEventListener("keydown", function (event) {
+                            const currentIndex = tabButtons.indexOf(button);
+                            let nextButton = null;
 
-                        if (event.key === "ArrowRight") {
-                            nextButton = tabButtons[(currentIndex + 1) % tabButtons.length];
-                        } else if (event.key === "ArrowLeft") {
-                            nextButton =
-                                tabButtons[(currentIndex - 1 + tabButtons.length) % tabButtons.length];
-                        } else if (event.key === "Home") {
-                            nextButton = tabButtons[0];
-                        } else if (event.key === "End") {
-                            nextButton = tabButtons[tabButtons.length - 1];
-                        }
+                            if (event.key === "ArrowRight") {
+                                nextButton = tabButtons[(currentIndex + 1) % tabButtons.length];
+                            } else if (event.key === "ArrowLeft") {
+                                nextButton = tabButtons[
+                                (currentIndex - 1 + tabButtons.length) % tabButtons.length
+                                    ];
+                            } else if (event.key === "Home") {
+                                nextButton = tabButtons[0];
+                            } else if (event.key === "End") {
+                                nextButton = tabButtons[tabButtons.length - 1];
+                            }
 
-                        if (nextButton) {
-                            event.preventDefault();
-                            activateTab(nextButton, false);
-                            nextButton.focus();
-                        }
-                    });
-                });
+                            if (nextButton) {
+                                event.preventDefault();
+                                activateTab(nextButton, false);
+                                nextButton.focus();
+                            }
+                        });
+                    })(tabButtons[i]);
+                }
 
                 const activeButton = wrapper.querySelector(".tab-btn.active") || tabButtons[0];
 
-                requestAnimationFrame(() => {
+                // Wait one frame so layout is settled before measuring rects
+                // for the moving indicator.
+                requestAnimationFrame(function () {
                     activateTab(activeButton, false);
                     moveIndicator(activeButton);
                 });
 
-                window.addEventListener("resize", debounce(() => {
+                window.addEventListener("resize", debounce(function () {
                     const current = wrapper.querySelector(".tab-btn.active") || activeButton;
                     moveIndicator(current);
                 }, 120), { passive: true });
 
                 if (tabsNav) {
-                    tabsNav.addEventListener("scroll", throttle(() => {
+                    tabsNav.addEventListener("scroll", throttle(function () {
                         const current = wrapper.querySelector(".tab-btn.active") || activeButton;
                         moveIndicator(current);
                     }, 80), { passive: true });
                 }
-            });
+            }
         }
 
+        // ─── Magnetic buttons (subtle pointer-pull effect) ──────────────
         function bindMagneticButtons() {
-            if (prefersReducedMotion || isTouchDevice) {
-                return;
-            }
+            if (prefersReducedMotion || isTouchDevice) return;
 
-            document.querySelectorAll(".magnetic").forEach((element) => {
-                element.addEventListener("mousemove", (event) => {
+            const elements = document.querySelectorAll(".magnetic");
+            for (let i = 0; i < elements.length; i++) {
+                const element = elements[i];
+                element.addEventListener("mousemove", function (event) {
                     const rect = element.getBoundingClientRect();
                     const x = event.clientX - rect.left - rect.width / 2;
                     const y = event.clientY - rect.top - rect.height / 2;
                     const strength = 0.22;
-
                     element.style.transform =
-                        "translate(" + x * strength + "px, " + y * strength + "px)";
+                        "translate(" + (x * strength) + "px, " + (y * strength) + "px)";
                 });
 
-                element.addEventListener("mouseleave", () => {
+                element.addEventListener("mouseleave", function () {
                     element.style.transform = "";
                 });
-            });
+            }
         }
 
+        // ─── 3D tilt cards ──────────────────────────────────────────────
         function bindTiltCards() {
-            if (prefersReducedMotion || isTouchDevice) {
-                return;
-            }
+            if (prefersReducedMotion || isTouchDevice) return;
 
-            document.querySelectorAll(".tilt-card").forEach((card) => {
+            const cards = document.querySelectorAll(".tilt-card");
+            for (let i = 0; i < cards.length; i++) {
+                const card = cards[i];
                 card.style.transformStyle = "preserve-3d";
                 card.style.willChange = "transform";
 
-                card.addEventListener("mousemove", (event) => {
+                card.addEventListener("mousemove", function (event) {
                     const rect = card.getBoundingClientRect();
                     const x = (event.clientX - rect.left) / rect.width;
                     const y = (event.clientY - rect.top) / rect.height;
@@ -1609,24 +1653,21 @@
                     const rotateY = (x - 0.5) * 6;
 
                     card.style.transform =
-                        "perspective(1000px) rotateX(" +
-                        rotateX +
-                        "deg) rotateY(" +
-                        rotateY +
+                        "perspective(1000px) rotateX(" + rotateX +
+                        "deg) rotateY(" + rotateY +
                         "deg) translateY(-6px)";
                 });
 
-                card.addEventListener("mouseleave", () => {
+                card.addEventListener("mouseleave", function () {
                     card.style.transform = "";
                 });
-            });
+            }
         }
 
+        // ─── Cursor glow (decorative) ───────────────────────────────────
         function bindCursorGlow() {
             if (!cursorGlow || prefersReducedMotion || isTouchDevice) {
-                if (cursorGlow) {
-                    cursorGlow.style.display = "none";
-                }
+                if (cursorGlow) cursorGlow.style.display = "none";
                 return;
             }
 
@@ -1635,7 +1676,7 @@
             let currentX = mouseX;
             let currentY = mouseY;
 
-            window.addEventListener("mousemove", (event) => {
+            window.addEventListener("mousemove", function (event) {
                 mouseX = event.clientX;
                 mouseY = event.clientY;
             }, { passive: true });
@@ -1643,44 +1684,45 @@
             function animateGlow() {
                 currentX += (mouseX - currentX) * 0.12;
                 currentY += (mouseY - currentY) * 0.12;
-
                 cursorGlow.style.transform =
                     "translate(" + (currentX - 140) + "px, " + (currentY - 140) + "px)";
-
                 requestAnimationFrame(animateGlow);
             }
 
             animateGlow();
         }
 
+        // ─── "Coming soon" placeholder buttons ──────────────────────────
+        // Disabled controls with data-status="coming-soon" still get a
+        // friendly notice when clicked through assistive tech.
         function bindComingSoonActions() {
-            document.querySelectorAll('[data-status="coming-soon"]').forEach((element) => {
-                element.addEventListener("click", (event) => {
+            const items = document.querySelectorAll('[data-status="coming-soon"]');
+            for (let i = 0; i < items.length; i++) {
+                items[i].addEventListener("click", function (event) {
                     event.preventDefault();
-
                     const dict = getDictionary(currentLanguage);
                     setStatusMessage(dict.formDisabledMessage, false);
                 });
-            });
-        }
-
-        function bindImageFallbacks() {
-            document.querySelectorAll("img").forEach((image) => {
-                image.addEventListener("error", () => {
-                    image.dataset.missing = "true";
-                    image.alt = image.alt || "Image could not be loaded";
-                }, { once: true });
-            });
-        }
-
-        function hideLoader() {
-            if (!pageLoader) {
-                return;
             }
+        }
 
+        // ─── Image fallback ─────────────────────────────────────────────
+        function bindImageFallbacks() {
+            const images = document.querySelectorAll("img");
+            for (let i = 0; i < images.length; i++) {
+                const image = images[i];
+                image.addEventListener("error", function () {
+                    image.dataset.missing = "true";
+                    if (!image.alt) image.alt = "Image could not be loaded";
+                }, { once: true });
+            }
+        }
+
+        // ─── Page loader ────────────────────────────────────────────────
+        function hideLoader() {
+            if (!pageLoader) return;
             pageLoader.classList.add("hidden");
-
-            window.setTimeout(() => {
+            window.setTimeout(function () {
                 if (pageLoader && pageLoader.parentNode) {
                     pageLoader.setAttribute("aria-hidden", "true");
                 }
@@ -1688,35 +1730,36 @@
         }
 
         function bindLoader() {
-            if (!pageLoader) {
-                return;
-            }
+            if (!pageLoader) return;
 
             window.addEventListener("load", hideLoader, { once: true });
 
-            window.setTimeout(() => {
-                hideLoader();
-            }, 2200);
+            // Safety net — if the load event never fires (rare, but possible
+            // with broken third-party requests), hide the loader anyway.
+            window.setTimeout(hideLoader, 2200);
         }
 
+        // ─── Throttle / Debounce ────────────────────────────────────────
         function throttle(fn, wait) {
             let lastTime = 0;
             let rafId = null;
 
-            return function throttled(...args) {
+            return function throttled() {
+                const args = arguments;
+                const ctx = this;
                 const now = Date.now();
 
                 if (now - lastTime >= wait) {
                     lastTime = now;
-                    fn.apply(this, args);
+                    fn.apply(ctx, args);
                     return;
                 }
 
                 if (!rafId) {
-                    rafId = requestAnimationFrame(() => {
+                    rafId = requestAnimationFrame(function () {
                         rafId = null;
                         lastTime = Date.now();
-                        fn.apply(this, args);
+                        fn.apply(ctx, args);
                     });
                 }
             };
@@ -1724,11 +1767,12 @@
 
         function debounce(fn, wait) {
             let timeoutId = null;
-
-            return function debounced(...args) {
+            return function debounced() {
+                const args = arguments;
+                const ctx = this;
                 window.clearTimeout(timeoutId);
-                timeoutId = window.setTimeout(() => {
-                    fn.apply(this, args);
+                timeoutId = window.setTimeout(function () {
+                    fn.apply(ctx, args);
                 }, wait);
             };
         }
@@ -1742,24 +1786,21 @@
 
         function bindScrollHandlers() {
             const throttledScroll = throttle(handleScroll, 80);
-
             window.addEventListener("scroll", throttledScroll, { passive: true });
             window.addEventListener("resize", debounce(handleScroll, 120), { passive: true });
-
             handleScroll();
         }
 
-        /* ============================================================
-           NEW: Theme toggle (light / dark)
-           Pref order: explicit user choice → system → light fallback.
-           Persisted in localStorage under "siteTheme".
-           Inline script in index.html sets the initial theme to avoid FOUC.
-           ============================================================ */
+        // ──────────────────────────────────────────────────────────────
+        // Theme toggle (light / dark)
+        // Pref order: explicit user choice → system → light fallback.
+        // Persisted in localStorage under "siteTheme".
+        // Inline script in index.html sets the initial theme to avoid FOUC.
+        // ──────────────────────────────────────────────────────────────
         function getCurrentTheme() {
-            const root = document.documentElement;
-            const attr = root.getAttribute("data-theme");
+            const attr = html.getAttribute("data-theme");
             if (attr === "dark" || attr === "light") return attr;
-            const saved = safeStorageGet("siteTheme");
+            const saved = safeStorageGet(SAFE_THEME_KEY);
             if (saved === "dark" || saved === "light") return saved;
             return window.matchMedia &&
             window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -1768,17 +1809,33 @@
         }
 
         function applyTheme(theme) {
-            const root = document.documentElement;
-            root.setAttribute("data-theme", theme);
-            try { localStorage.setItem("siteTheme", theme); } catch (e) {}
+            html.setAttribute("data-theme", theme);
+            safeStorageSet(SAFE_THEME_KEY, theme);
 
-            // Update meta theme-color so mobile browser chrome adapts
-            const meta = document.querySelector('meta[name="theme-color"]:not([media])');
-            if (meta) {
-                meta.setAttribute("content", theme === "dark" ? "#0f1912" : "#2f7a43");
+            // Update meta theme-color so mobile browser chrome adapts.
+            // The HTML uses media-scoped meta tags (light + dark variants),
+            // so we update BOTH variants — the unscoped `:not([media])`
+            // selector from the older code missed everything because every
+            // theme-color in this site is media-scoped.
+            const metaLight = document.querySelector(
+                'meta[name="theme-color"][media="(prefers-color-scheme: light)"]'
+            );
+            const metaDark = document.querySelector(
+                'meta[name="theme-color"][media="(prefers-color-scheme: dark)"]'
+            );
+            const metaPlain = document.querySelector('meta[name="theme-color"]:not([media])');
+
+            if (metaLight) {
+                metaLight.setAttribute("content", theme === "dark" ? "#0f1912" : "#2f7a43");
+            }
+            if (metaDark) {
+                metaDark.setAttribute("content", theme === "dark" ? "#0f1912" : "#2f7a43");
+            }
+            if (metaPlain) {
+                metaPlain.setAttribute("content", theme === "dark" ? "#0f1912" : "#2f7a43");
             }
 
-            // Update toggle button aria-label
+            // Update toggle button aria-label + pressed state
             const dict = getDictionary(currentLanguage);
             const btn = document.getElementById("themeToggle");
             if (btn) {
@@ -1796,58 +1853,77 @@
 
             applyTheme(getCurrentTheme());
 
-            btn.addEventListener("click", () => {
-                const current = document.documentElement.getAttribute("data-theme");
+            btn.addEventListener("click", function () {
+                const current = html.getAttribute("data-theme");
                 applyTheme(current === "dark" ? "light" : "dark");
             });
 
-            // React to OS-level theme changes ONLY if user hasn't explicitly chosen
+            // React to OS-level theme changes ONLY if the user hasn't
+            // explicitly chosen a theme yet. Once they pick, their choice
+            // wins forever (until they clear storage).
             if (window.matchMedia) {
                 const mq = window.matchMedia("(prefers-color-scheme: dark)");
-                const onChange = (event) => {
-                    if (!safeStorageGet("siteTheme")) {
+                const onChange = function (event) {
+                    if (!safeStorageGet(SAFE_THEME_KEY)) {
                         applyTheme(event.matches ? "dark" : "light");
                     }
                 };
                 if (typeof mq.addEventListener === "function") {
                     mq.addEventListener("change", onChange);
                 } else if (typeof mq.addListener === "function") {
+                    // Older Safari
                     mq.addListener(onChange);
                 }
             }
+
+            // Cross-tab theme sync — like the language sync, but for theme.
+            window.addEventListener("storage", function (event) {
+                if (event.key !== SAFE_THEME_KEY) return;
+                if (event.newValue === "dark" || event.newValue === "light") {
+                    if (event.newValue !== html.getAttribute("data-theme")) {
+                        applyTheme(event.newValue);
+                    }
+                }
+            });
         }
 
-        /* ============================================================
-           NEW: Cookie consent banner
-           Shown once until dismissed.
-           ============================================================ */
+        // ──────────────────────────────────────────────────────────────
+        // Cookie consent banner
+        // Shown once until dismissed. Stores the dismissal under
+        // cookieConsentDismissed = "true".
+        // ──────────────────────────────────────────────────────────────
         function bindCookieBanner() {
             const banner = document.getElementById("cookieBanner");
             if (!banner) return;
 
-            const dismissed = safeStorageGet("cookieConsentDismissed");
+            const dismissed = safeStorageGet(COOKIE_CONSENT_KEY);
             if (dismissed === "true") return;
 
-            // Show banner with a slight delay to avoid clashing with page load
-            window.setTimeout(() => {
+            // Defer slightly so it doesn't fight the page-load animation.
+            window.setTimeout(function () {
                 banner.hidden = false;
-                window.requestAnimationFrame(() => banner.classList.add("is-visible"));
+                window.requestAnimationFrame(function () {
+                    banner.classList.add("is-visible");
+                });
             }, 1400);
 
             const acceptBtn = document.getElementById("cookieAccept");
             if (acceptBtn) {
-                acceptBtn.addEventListener("click", () => {
+                acceptBtn.addEventListener("click", function () {
                     banner.classList.remove("is-visible");
-                    try { localStorage.setItem("cookieConsentDismissed", "true"); } catch (e) {}
-                    window.setTimeout(() => { banner.hidden = true; }, 600);
+                    safeStorageSet(COOKIE_CONSENT_KEY, "true");
+                    window.setTimeout(function () { banner.hidden = true; }, 600);
                 });
             }
         }
 
-        /* ============================================================
-           NEW: Lightbox for the gallery
-           Opens on .gallery-card click, supports keyboard nav.
-           ============================================================ */
+        // ──────────────────────────────────────────────────────────────
+        // Lightbox for the gallery
+        // - Opens on .gallery-card click
+        // - Keyboard: Arrow keys to navigate, Escape to close
+        // - Focus trap so Tab/Shift+Tab stay inside the dialog
+        // - Returns focus to the originating element on close
+        // ──────────────────────────────────────────────────────────────
         function bindLightbox() {
             const lightbox = document.getElementById("lightbox");
             const lightboxImg = document.getElementById("lightboxImage");
@@ -1856,26 +1932,35 @@
             const closeBtn = document.getElementById("lightboxClose");
             const prevBtn = document.getElementById("lightboxPrev");
             const nextBtn = document.getElementById("lightboxNext");
-            const galleryCards = document.querySelectorAll(
-                '.gallery-card[data-lightbox="true"], .gallery-card'
-            );
+            const galleryCards = document.querySelectorAll(".gallery-card");
 
             if (!lightbox || !lightboxImg || !galleryCards.length) return;
 
-            const items = Array.from(galleryCards).map((card) => {
+            const items = [];
+            for (let i = 0; i < galleryCards.length; i++) {
+                const card = galleryCards[i];
                 const img = card.querySelector("img");
                 const cap = card.querySelector("figcaption");
-                return {
-                    src: img ? img.getAttribute("src") : "",
-                    alt: img ? img.getAttribute("alt") || "" : "",
-                    caption: cap ? cap.textContent.trim() : ""
-                };
-            }).filter((item) => item.src);
+                if (!img || !img.getAttribute("src")) continue;
+                items.push({
+                    src: img.getAttribute("src"),
+                    alt: img.getAttribute("alt") || "",
+                    caption: cap ? cap.textContent.trim() : "",
+                    card: card
+                });
+            }
 
             if (!items.length) return;
 
             let currentIndex = 0;
             let lastActiveElement = null;
+
+            // All focusable elements inside the lightbox, used for focus trap.
+            function getFocusable() {
+                return Array.prototype.slice.call(lightbox.querySelectorAll(
+                    'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])'
+                ));
+            }
 
             function showItem(index) {
                 if (index < 0) index = items.length - 1;
@@ -1898,7 +1983,9 @@
                 lastActiveElement = document.activeElement;
                 showItem(index);
                 lightbox.hidden = false;
-                window.requestAnimationFrame(() => lightbox.classList.add("is-visible"));
+                window.requestAnimationFrame(function () {
+                    lightbox.classList.add("is-visible");
+                });
                 document.body.style.overflow = "hidden";
                 if (closeBtn) closeBtn.focus();
                 document.addEventListener("keydown", handleKey);
@@ -1908,7 +1995,8 @@
                 lightbox.classList.remove("is-visible");
                 document.body.style.overflow = "";
                 document.removeEventListener("keydown", handleKey);
-                window.setTimeout(() => {
+
+                window.setTimeout(function () {
                     lightbox.hidden = true;
                     lightboxImg.setAttribute("src", "");
                     if (lastActiveElement && typeof lastActiveElement.focus === "function") {
@@ -1917,70 +2005,101 @@
                 }, 400);
             }
 
-            function handleKey(event) {
-                switch (event.key) {
-                    case "Escape": closeLightbox(); break;
-                    case "ArrowLeft": showItem(currentIndex - 1); break;
-                    case "ArrowRight": showItem(currentIndex + 1); break;
+            function trapFocus(event) {
+                const focusable = getFocusable();
+                if (!focusable.length) return;
+
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+
+                if (event.shiftKey) {
+                    // Shift+Tab from first → wrap to last
+                    if (document.activeElement === first || !lightbox.contains(document.activeElement)) {
+                        event.preventDefault();
+                        last.focus();
+                    }
+                } else {
+                    // Tab from last → wrap to first
+                    if (document.activeElement === last) {
+                        event.preventDefault();
+                        first.focus();
+                    }
                 }
             }
 
-            galleryCards.forEach((card, index) => {
-                card.style.cursor = "zoom-in";
-                card.setAttribute("role", "button");
-                card.setAttribute("tabindex", "0");
+            function handleKey(event) {
+                switch (event.key) {
+                    case "Escape":
+                        closeLightbox();
+                        break;
+                    case "ArrowLeft":
+                        showItem(currentIndex - 1);
+                        break;
+                    case "ArrowRight":
+                        showItem(currentIndex + 1);
+                        break;
+                    case "Tab":
+                        trapFocus(event);
+                        break;
+                }
+            }
 
-                card.addEventListener("click", (event) => {
-                    event.preventDefault();
-                    openLightbox(index);
-                });
+            for (let i = 0; i < galleryCards.length; i++) {
+                (function (card, index) {
+                    card.style.cursor = "zoom-in";
+                    card.setAttribute("role", "button");
+                    card.setAttribute("tabindex", "0");
 
-                card.addEventListener("keydown", (event) => {
-                    if (event.key === "Enter" || event.key === " ") {
+                    card.addEventListener("click", function (event) {
                         event.preventDefault();
                         openLightbox(index);
-                    }
-                });
-            });
+                    });
+
+                    card.addEventListener("keydown", function (event) {
+                        if (event.key === "Enter" || event.key === " ") {
+                            event.preventDefault();
+                            openLightbox(index);
+                        }
+                    });
+                })(galleryCards[i], i);
+            }
 
             if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
-            if (prevBtn) prevBtn.addEventListener("click", () => showItem(currentIndex - 1));
-            if (nextBtn) nextBtn.addEventListener("click", () => showItem(currentIndex + 1));
+            if (prevBtn) prevBtn.addEventListener("click", function () { showItem(currentIndex - 1); });
+            if (nextBtn) nextBtn.addEventListener("click", function () { showItem(currentIndex + 1); });
 
-            lightbox.addEventListener("click", (event) => {
+            // Click outside the figure (on the backdrop) → close
+            lightbox.addEventListener("click", function (event) {
                 if (event.target === lightbox) closeLightbox();
             });
         }
 
-        /* ============================================================
-           NEW: Form consent enforcement
-           If the consent checkbox exists and isn't checked, block submit.
-           ============================================================ */
+        // ──────────────────────────────────────────────────────────────
+        // Form consent enforcement
+        // The checkbox already has the `required` attribute, but we use
+        // `novalidate` on the form so we surface our own friendly message
+        // before the submission handler even runs. The capture-phase
+        // listener stops propagation so handleContactSubmit never sees a
+        // missing-consent submission.
+        // ──────────────────────────────────────────────────────────────
         function bindFormConsent() {
-            const form = document.getElementById("contactForm");
             const checkbox = document.getElementById("formConsent");
-            const status = document.getElementById("formStatus");
-            if (!form || !checkbox) return;
+            if (!contactForm || !checkbox) return;
 
-            form.addEventListener("submit", (event) => {
+            contactForm.addEventListener("submit", function (event) {
                 if (!checkbox.checked) {
                     event.preventDefault();
                     event.stopImmediatePropagation();
                     const dict = getDictionary(currentLanguage);
-                    if (status) {
-                        status.textContent = dict.formConsentRequired;
-                        status.classList.add("error");
-                    }
+                    setStatusMessage(dict.formConsentRequired, true);
                     checkbox.focus();
                 }
             }, true);
         }
 
+        // ─── Init ────────────────────────────────────────────────────────
         function init() {
-            applyTranslations(currentLanguage, {
-                updateUrl: false,
-                animate: false
-            });
+            applyTranslations(currentLanguage, { updateUrl: false, animate: false });
 
             bindLoader();
             bindThemeToggle();
@@ -2008,42 +2127,43 @@
         init();
     }
 })();
-/* =========================================================
-   FOOTER LEGAL REAL POSITION FIX
-   Legal bölümünü footer-content içinden çıkarıp footer'ın
-   gerçek en alt sol köşesine taşır.
-   script.js EN ALTINA EKLE
-   ========================================================= */
 
+/* =====================================================================
+   FOOTER LEGAL REAL POSITION FIX
+   Moves the Legal block out of footer-content and into the footer's
+   bottom-left corner. Self-contained, idempotent, safe to run twice.
+   Lives outside the main IIFE on purpose so it can run as early as
+   possible without depending on the rest of the script.
+   ===================================================================== */
 (function () {
     "use strict";
 
     function fixFooterLegalPosition() {
-        var footer = document.querySelector(".site-footer");
+        const footer = document.querySelector(".site-footer");
         if (!footer) return;
 
-        var container = footer.querySelector(":scope > .container") || footer.querySelector(".container");
+        const container =
+            footer.querySelector(":scope > .container") ||
+            footer.querySelector(".container");
         if (!container) return;
 
-        var legal = footer.querySelector(".footer-legal");
+        const legal = footer.querySelector(".footer-legal");
         if (!legal) return;
 
-        /* Aynı işlem tekrar tekrar yapılmasın */
+        // Idempotency guard — never run twice on the same element.
         if (legal.classList.contains("footer-legal-corner")) return;
 
-        /* Reveal animasyonu üstte takılmasın diye etkisini kaldırıyoruz */
+        // Strip reveal-state classes so it doesn't stay invisible
+        // after the reposition (those classes drive an opacity:0
+        // starting state in CSS).
         legal.classList.remove("reveal-item");
         legal.classList.remove("visible");
-        legal.classList.remove("revealed");
 
-        /* Sağlam yeni sınıf */
+        // Apply the new positioning class.
         legal.classList.add("footer-legal-corner");
 
-        /*
-          Legal şu an footer-content içinde.
-          Onu container'ın en sonuna taşıyoruz.
-          Böylece artık Upcycling Patterns başlığının yanında kalamaz.
-        */
+        // Move the element to the end of the footer container so the
+        // layout snaps to the new corner position.
         container.appendChild(legal);
     }
 
@@ -2053,6 +2173,7 @@
         fixFooterLegalPosition();
     }
 
+    // Belt-and-braces — run again on full load, in case the footer was
+    // re-rendered by something async (CMS hydration, etc).
     window.addEventListener("load", fixFooterLegalPosition);
 })();
-
