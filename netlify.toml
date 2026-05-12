@@ -1,41 +1,64 @@
 # =====================================================================
-# Netlify Configuration — Upcycling Patterns
-# Erasmus+ KA210-SCH Project
+#  Netlify Configuration — Upcycling Patterns
+#  Erasmus+ KA210-SCH Project
+# ---------------------------------------------------------------------
+#  This file controls:
+#    • how the site is built and published
+#    • all HTTP response headers (security + caching)
+#    • all URL redirects (HTTPS, www→apex, /tr, /admin, 404)
+#    • deploy-context-specific overrides (production / preview / branch)
+#
+#  When in doubt, this file wins over _headers and _redirects.
 # =====================================================================
 
+# ---------------------------------------------------------------------
+#  BUILD
+# ---------------------------------------------------------------------
 [build]
   publish = "."
+  # No build command — this is a static site.
 
-# =====================================================================
-# Environment / build defaults
-# =====================================================================
 [build.environment]
   NODE_VERSION = "20"
+  NPM_FLAGS    = "--prefer-offline --no-audit"
 
-# =====================================================================
-# Pretty URLs (no trailing /index.html)
-# =====================================================================
 [build.processing]
   skip_processing = false
+
+[build.processing.css]
+  bundle  = false
+  minify  = false
+
+[build.processing.js]
+  bundle  = false
+  minify  = false
 
 [build.processing.html]
   pretty_urls = true
 
+[build.processing.images]
+  compress = true
+
 # =====================================================================
-# GLOBAL SECURITY HEADERS
-# These apply to every page on the site.
+#  GLOBAL SECURITY HEADERS
+#  These apply to every page on the site.
 # =====================================================================
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "SAMEORIGIN"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
+    X-Content-Type-Options    = "nosniff"
+    X-Frame-Options           = "SAMEORIGIN"
+    X-XSS-Protection          = "1; mode=block"
+    X-DNS-Prefetch-Control    = "on"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
-    Cross-Origin-Opener-Policy = "same-origin"
-    X-XSS-Protection = "1; mode=block"
-    # Public site CSP — allows fonts, images, Web3Forms API, YouTube embeds
+    Cross-Origin-Opener-Policy   = "same-origin"
+    Cross-Origin-Resource-Policy = "same-site"
+
+    # Public-site Content Security Policy.
+    # Allows: Google Fonts, Web3Forms (form submission), YouTube embeds,
+    # inline scripts/styles required by the page itself.
     Content-Security-Policy = """
       default-src 'self';
       script-src 'self' 'unsafe-inline';
@@ -50,19 +73,22 @@
       form-action 'self' https://api.web3forms.com;
       object-src 'none';
       manifest-src 'self';
+      worker-src 'self' blob:;
       upgrade-insecure-requests
     """
 
 # =====================================================================
-# ADMIN PANEL (Decap CMS) — Permissive CSP
-# Decap loads from unpkg, talks to Netlify Identity, GitHub, Cloudinary.
-# The admin is /admin/* only — never the public site.
+#  ADMIN PANEL (Decap CMS) — Permissive CSP
+#  Decap loads from unpkg/jsDelivr, talks to Netlify Identity, GitHub,
+#  and Cloudinary. The admin lives only at /admin/* — never on public pages.
 # =====================================================================
 [[headers]]
   for = "/admin/*"
   [headers.values]
     X-Frame-Options = "SAMEORIGIN"
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control   = "public, max-age=0, must-revalidate"
+    X-Robots-Tag    = "noindex, nofollow, noarchive, nosnippet, noimageindex"
+
     Content-Security-Policy = """
       default-src 'self';
       script-src 'self' 'unsafe-inline' 'unsafe-eval' https://identity.netlify.com https://unpkg.com https://cdn.jsdelivr.net;
@@ -70,7 +96,7 @@
       font-src 'self' https://fonts.gstatic.com data:;
       img-src 'self' data: blob: https:;
       media-src 'self' https: blob:;
-      connect-src 'self' https://identity.netlify.com https://api.netlify.com https://api.github.com https://github.com https://api.cloudinary.com https://res.cloudinary.com https://unpkg.com;
+      connect-src 'self' https://identity.netlify.com https://api.netlify.com https://api.github.com https://github.com https://api.cloudinary.com https://res.cloudinary.com https://unpkg.com https://cdn.jsdelivr.net;
       frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://identity.netlify.com;
       frame-ancestors 'self';
       base-uri 'self';
@@ -82,7 +108,18 @@
     """
 
 # =====================================================================
-# CACHE — HTML must always re-validate
+#  CMS DATA — keep editors' JSON out of search engines
+# =====================================================================
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    X-Robots-Tag                  = "noindex, nofollow"
+    Content-Type                  = "application/json; charset=utf-8"
+    Cache-Control                 = "public, max-age=300, stale-while-revalidate=86400"
+    Access-Control-Allow-Origin   = "*"
+
+# =====================================================================
+#  CACHE — HTML must always re-validate (so edits go live immediately)
 # =====================================================================
 [[headers]]
   for = "/*.html"
@@ -95,7 +132,7 @@
     Cache-Control = "public, max-age=0, must-revalidate"
 
 # =====================================================================
-# CACHE — CSS, JS (1 week, public)
+#  CACHE — CSS, JS (1 week, public)
 # =====================================================================
 [[headers]]
   for = "/*.css"
@@ -108,109 +145,232 @@
     Cache-Control = "public, max-age=604800, stale-while-revalidate=86400"
 
 # =====================================================================
-# CACHE — Images (30 days, immutable-ish)
+#  CACHE — Images (30 days, CORS-enabled for social previews)
 # =====================================================================
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=2592000, stale-while-revalidate=86400"
+    Cache-Control               = "public, max-age=2592000, stale-while-revalidate=86400"
+    Access-Control-Allow-Origin = "*"
+
+# Long-lived assets that effectively never change
+[[headers]]
+  for = "/og-image.png"
+  [headers.values]
+    Cache-Control               = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
 
 # =====================================================================
-# CACHE — Fonts (1 year)
+#  CACHE — Fonts (1 year, immutable, CORS)
 # =====================================================================
 [[headers]]
   for = "/fonts/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control               = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
 
 # =====================================================================
-# CACHE — JSON data (CMS-edited)
-# Short cache, since editors update these
-# =====================================================================
-[[headers]]
-  for = "/data/*.json"
-  [headers.values]
-    Cache-Control = "public, max-age=300, stale-while-revalidate=86400"
-    Content-Type = "application/json; charset=utf-8"
-
-# =====================================================================
-# Sitemap, robots, manifest
+#  PWA / SEO META FILES
 # =====================================================================
 [[headers]]
   for = "/sitemap.xml"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
-    Content-Type = "application/xml; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+    Content-Type  = "application/xml; charset=utf-8"
 
 [[headers]]
   for = "/robots.txt"
   [headers.values]
-    Cache-Control = "public, max-age=3600"
-    Content-Type = "text/plain; charset=utf-8"
+    Cache-Control = "public, max-age=86400"
+    Content-Type  = "text/plain; charset=utf-8"
 
 [[headers]]
   for = "/manifest.webmanifest"
   [headers.values]
     Cache-Control = "public, max-age=86400"
-    Content-Type = "application/manifest+json; charset=utf-8"
+    Content-Type  = "application/manifest+json; charset=utf-8"
 
 # =====================================================================
-# Service worker — never cache (must update fast)
+#  FAVICONS / APP ICONS — long, immutable
+# =====================================================================
+[[headers]]
+  for = "/favicon.ico"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/apple-touch-icon.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icon-192.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icon-512.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/icon-maskable.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# =====================================================================
+#  SERVICE WORKER — never cache, ship updates instantly
+#  (Harmless if /sw.js doesn't exist yet.)
 # =====================================================================
 [[headers]]
   for = "/sw.js"
   [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
+    Cache-Control          = "public, max-age=0, must-revalidate"
     Service-Worker-Allowed = "/"
 
 # =====================================================================
-# REDIRECTS
+#  REDIRECTS
 # =====================================================================
 
-# Force HTTPS + canonical (apex) — Netlify handles auto-HTTPS,
-# this is just a defensive top-up.
+# Force HTTPS + canonical apex (no www).
+# Netlify auto-issues HTTPS; these are belt-and-braces fallbacks.
 [[redirects]]
-  from = "http://upcyclingpatterns.com/*"
-  to = "https://upcyclingpatterns.com/:splat"
+  from   = "http://upcyclingpatterns.com/*"
+  to     = "https://upcyclingpatterns.com/:splat"
   status = 301
-  force = true
+  force  = true
 
 [[redirects]]
-  from = "http://www.upcyclingpatterns.com/*"
-  to = "https://upcyclingpatterns.com/:splat"
+  from   = "http://www.upcyclingpatterns.com/*"
+  to     = "https://upcyclingpatterns.com/:splat"
   status = 301
-  force = true
+  force  = true
 
 [[redirects]]
-  from = "https://www.upcyclingpatterns.com/*"
-  to = "https://upcyclingpatterns.com/:splat"
+  from   = "https://www.upcyclingpatterns.com/*"
+  to     = "https://upcyclingpatterns.com/:splat"
   status = 301
-  force = true
+  force  = true
 
-# Turkish path — same SPA, language detected client-side
+# Clean root — direct /index.html → /
+[[redirects]]
+  from   = "/index.html"
+  to     = "/"
+  status = 301
+
+# Turkish path — same SPA, language detected client-side by script.js
 [[redirects]]
   from = "/tr"
-  to = "/index.html"
+  to   = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/tr/"
-  to = "/index.html"
+  to   = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/tr/*"
-  to = "/index.html"
+  to   = "/index.html"
   status = 200
 
-# Admin: ensure /admin always lands on /admin/
+# Admin canonical with trailing slash
 [[redirects]]
-  from = "/admin"
-  to = "/admin/"
+  from   = "/admin"
+  to     = "/admin/"
   status = 301
 
-# Custom 404 catch-all (must be last)
+# Hide internal CMS files from direct browsing
 [[redirects]]
-  from = "/*"
-  to = "/404.html"
+  from   = "/admin/config.yml"
+  to     = "/admin/"
+  status = 301
+
+[[redirects]]
+  from   = "/admin/config.yaml"
+  to     = "/admin/"
+  status = 301
+
+# Friendly URL aliases for legal pages
+[[redirects]]
+  from   = "/privacy"
+  to     = "/privacy-policy.html"
+  status = 301
+
+[[redirects]]
+  from   = "/cookies"
+  to     = "/cookie-policy.html"
+  status = 301
+
+[[redirects]]
+  from   = "/terms"
+  to     = "/terms.html"
+  status = 301
+
+[[redirects]]
+  from   = "/accessibility"
+  to     = "/accessibility.html"
+  status = 301
+
+[[redirects]]
+  from   = "/funding"
+  to     = "/funding-disclaimer.html"
+  status = 301
+
+# Block common attack/scanner probes with a clean 404
+[[redirects]]
+  from   = "/wp-admin/*"
+  to     = "/404.html"
   status = 404
+
+[[redirects]]
+  from   = "/wp-login.php"
+  to     = "/404.html"
+  status = 404
+
+[[redirects]]
+  from   = "/.env"
+  to     = "/404.html"
+  status = 404
+
+[[redirects]]
+  from   = "/.git/*"
+  to     = "/404.html"
+  status = 404
+
+# Custom 404 catch-all — MUST remain last
+[[redirects]]
+  from   = "/*"
+  to     = "/404.html"
+  status = 404
+
+# =====================================================================
+#  DEPLOY-CONTEXT OVERRIDES
+#  Production gets full SEO. Preview deploys must never be indexed
+#  by Google — otherwise draft content leaks into search results.
+# =====================================================================
+
+# Deploy previews (pull requests) — block search engines
+[context.deploy-preview]
+  [context.deploy-preview.environment]
+    NETLIFY_PREVIEW = "true"
+
+[[context.deploy-preview.headers]]
+  for = "/*"
+  [context.deploy-preview.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+
+# Branch deploys (non-main branches) — block search engines
+[context.branch-deploy]
+  [context.branch-deploy.environment]
+    NETLIFY_BRANCH_DEPLOY = "true"
+
+[[context.branch-deploy.headers]]
+  for = "/*"
+  [context.branch-deploy.headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+
+# Production (main branch) — explicit, no overrides needed.
+[context.production]
+  [context.production.environment]
+    NETLIFY_PRODUCTION = "true"
