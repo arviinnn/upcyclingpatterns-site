@@ -5,31 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-    <title id="pageTitle">404 — Page Not Found | Upcycling Patterns</title>
+    <title>404 — Page Not Found | Upcycling Patterns</title>
     <meta
             id="metaDescription"
             name="description"
             content="The page you are looking for could not be found. Return to the Upcycling Patterns homepage."
     />
 
-    <meta name="robots" content="noindex, follow" />
-    <meta name="googlebot" content="noindex, follow" />
-    <meta name="bingbot" content="noindex, follow" />
+    <!-- Search engines: don't index 404s but DO follow links so the homepage is still discoverable -->
+    <meta name="robots" content="noindex, follow, noarchive" />
+    <meta name="googlebot" content="noindex, follow, noarchive" />
+    <meta name="bingbot" content="noindex, follow, noarchive" />
 
-    <meta name="theme-color" content="#2f7a43" />
-    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="format-detection" content="telephone=no, email=no, address=no" />
+    <meta name="application-name" content="Upcycling Patterns" />
+    <meta name="apple-mobile-web-app-title" content="UpCyc" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
+    <!--
+      Defence-in-depth security headers.
+      Real headers live in netlify.toml; these meta-equivs cover edge cases
+      where the page is served standalone (file://, alternative hosting, etc.).
+      Note: Permissions-Policy via http-equiv is non-standard and silently
+      ignored by most browsers, so it's omitted here — only netlify.toml ships it.
+    -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta
-            http-equiv="Permissions-Policy"
-            content="camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()"
-    />
-    <meta
             http-equiv="Content-Security-Policy"
-            content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+            content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'; form-action 'self'; object-src 'none'; manifest-src 'self'; upgrade-insecure-requests"
     />
 
     <link rel="canonical" href="https://upcyclingpatterns.com/404.html" />
@@ -37,31 +46,85 @@
     <link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/tr/404.html" />
     <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/404.html" />
 
-    <link rel="icon" href="/images/favicon.png" type="image/png" sizes="32x32" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
-    <!-- NETLIFY IDENTITY TOKEN FIX -->
+    <!-- Open Graph / Twitter — even 404 pages get shared, so make them look right -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="404 — Page Not Found | Upcycling Patterns" />
+    <meta property="og:description" content="The page you are looking for could not be found. Return to the Upcycling Patterns homepage." />
+    <meta property="og:url" content="https://upcyclingpatterns.com/404.html" />
+    <meta property="og:site_name" content="Upcycling Patterns" />
+    <meta property="og:image" content="https://upcyclingpatterns.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="Upcycling Patterns — Erasmus+ KA210-SCH project" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="tr_TR" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="404 — Page Not Found | Upcycling Patterns" />
+    <meta name="twitter:description" content="The page you are looking for could not be found." />
+    <meta name="twitter:image" content="https://upcyclingpatterns.com/og-image.png" />
+
+    <!--
+      NETLIFY IDENTITY TOKEN FIX
+      If a Netlify Identity invite or recovery email links here by mistake
+      (token in the URL hash or search), bounce the user to /admin/ where
+      the widget can actually consume the token.
+    -->
     <script>
         (function () {
             "use strict";
 
-            var hash = window.location.hash || "";
-            var search = window.location.search || "";
+            try {
+                var hash = window.location.hash || "";
+                var search = window.location.search || "";
 
-            var hasIdentityToken =
-                hash.indexOf("invite_token=") !== -1 ||
-                hash.indexOf("recovery_token=") !== -1 ||
-                hash.indexOf("confirmation_token=") !== -1 ||
-                hash.indexOf("email_change_token=") !== -1 ||
-                search.indexOf("invite_token=") !== -1 ||
-                search.indexOf("recovery_token=") !== -1 ||
-                search.indexOf("confirmation_token=") !== -1 ||
-                search.indexOf("email_change_token=") !== -1;
+                var TOKEN_NAMES = [
+                    "invite_token=",
+                    "recovery_token=",
+                    "confirmation_token=",
+                    "email_change_token=",
+                    "access_token="
+                ];
 
-            if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
-                var tokenPart = hash || search.replace("?", "#");
-                window.location.replace("/admin/" + tokenPart);
+                var hasIdentityToken = false;
+                for (var i = 0; i < TOKEN_NAMES.length; i++) {
+                    if (hash.indexOf(TOKEN_NAMES[i]) !== -1 || search.indexOf(TOKEN_NAMES[i]) !== -1) {
+                        hasIdentityToken = true;
+                        break;
+                    }
+                }
+
+                if (hasIdentityToken && window.location.pathname.toLowerCase().indexOf("/admin") !== 0) {
+                    var tokenPart = hash || search.replace("?", "#");
+                    window.location.replace("/admin/" + tokenPart);
+                }
+            } catch (e) { /* defensive: never crash on the 404 page */ }
+        })();
+    </script>
+
+    <!--
+      Early theme detection (no FOUC).
+      Syncs with the main site's `siteTheme` localStorage key so a user
+      who chose dark mode on the homepage doesn't get blinded here.
+    -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("siteTheme");
+                var prefersDark = window.matchMedia &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches;
+                var theme = (saved === "dark" || saved === "light")
+                    ? saved
+                    : (prefersDark ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
             }
         })();
     </script>
@@ -87,11 +150,28 @@
             --bg-2: #eef6ef;
             --bg-3: #e7f0e8;
             --glass-border: rgba(255, 255, 255, 0.55);
+            --glass-fill-1: rgba(255, 255, 255, 0.8);
+            --glass-fill-2: rgba(255, 255, 255, 0.58);
             --shadow-soft: 0 18px 48px rgba(15, 27, 20, 0.1);
             --shadow-strong: 0 35px 90px rgba(10, 18, 14, 0.18);
             --radius-round: 999px;
             --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
             --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html[data-theme="dark"] {
+            --primary-dark: #d4f5dd;
+            --text-main: #f0f7f1;
+            --text-soft: #b8c5bb;
+            --text-muted: #94a59b;
+            --bg-1: #0a120d;
+            --bg-2: #0f1912;
+            --bg-3: #142019;
+            --glass-border: rgba(184, 255, 122, 0.18);
+            --glass-fill-1: rgba(20, 32, 24, 0.82);
+            --glass-fill-2: rgba(20, 32, 24, 0.56);
+            --shadow-soft: 0 18px 48px rgba(0, 0, 0, 0.35);
+            --shadow-strong: 0 35px 90px rgba(0, 0, 0, 0.5);
         }
 
         *,
@@ -123,6 +203,14 @@
                     linear-gradient(180deg, var(--bg-1), var(--bg-2), var(--bg-3));
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+
+        html[data-theme="dark"] body {
+            background:
+                    radial-gradient(circle at top left, rgba(87, 178, 108, 0.10), transparent 28%),
+                    radial-gradient(circle at top right, rgba(184, 255, 122, 0.08), transparent 28%),
+                    radial-gradient(circle at bottom center, rgba(123, 219, 190, 0.06), transparent 35%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2), var(--bg-3));
         }
 
         a,
@@ -185,6 +273,9 @@
             animation-duration: 24s;
         }
 
+        html[data-theme="dark"] .ambient-1 { background: rgba(87, 178, 108, 0.10); }
+        html[data-theme="dark"] .ambient-2 { background: rgba(184, 255, 122, 0.08); }
+
         .grid-layer {
             position: fixed;
             inset: 0;
@@ -197,6 +288,12 @@
             mask-image: radial-gradient(circle at center, black 42%, transparent 88%);
             -webkit-mask-image: radial-gradient(circle at center, black 42%, transparent 88%);
             animation: gridDrift 60s linear infinite;
+        }
+
+        html[data-theme="dark"] .grid-layer {
+            background-image:
+                    linear-gradient(rgba(184, 255, 122, 0.04) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(184, 255, 122, 0.04) 1px, transparent 1px);
         }
 
         @keyframes ambientFloat {
@@ -231,7 +328,7 @@
             overflow: hidden;
             padding: clamp(30px, 6vw, 58px);
             border-radius: clamp(28px, 5vw, 42px);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.58));
+            background: linear-gradient(180deg, var(--glass-fill-1), var(--glass-fill-2));
             border: 1px solid var(--glass-border);
             box-shadow: var(--shadow-strong);
             backdrop-filter: blur(22px) saturate(160%);
@@ -250,6 +347,12 @@
                     radial-gradient(circle at top center, rgba(184, 255, 122, 0.18), transparent 45%);
         }
 
+        html[data-theme="dark"] .error-card::before {
+            background:
+                    linear-gradient(130deg, rgba(184, 255, 122, 0.12), transparent 36%, transparent 62%, rgba(184, 255, 122, 0.06)),
+                    radial-gradient(circle at top center, rgba(184, 255, 122, 0.10), transparent 45%);
+        }
+
         .content {
             position: relative;
             z-index: 1;
@@ -265,6 +368,11 @@
             background: rgba(255, 255, 255, 0.92);
             box-shadow: 0 14px 32px rgba(47, 122, 67, 0.16);
             overflow: hidden;
+        }
+
+        html[data-theme="dark"] .logo-wrap {
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
         }
 
         .logo-wrap img {
@@ -288,6 +396,11 @@
             font-weight: 900;
             letter-spacing: 0.1em;
             text-transform: uppercase;
+        }
+
+        html[data-theme="dark"] .badge {
+            color: var(--accent-bright);
+            background: rgba(184, 255, 122, 0.10);
         }
 
         .badge::before {
@@ -373,10 +486,20 @@
             box-shadow: var(--shadow-soft);
         }
 
+        html[data-theme="dark"] .btn-secondary {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(184, 255, 122, 0.16);
+            color: var(--accent-bright);
+        }
+
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.95);
             transform: translateY(-4px) scale(1.02);
             box-shadow: 0 20px 48px rgba(15, 27, 20, 0.14);
+        }
+
+        html[data-theme="dark"] .btn-secondary:hover {
+            background: rgba(184, 255, 122, 0.12);
         }
 
         .quick-links {
@@ -405,10 +528,20 @@
                     transform 0.25s ease;
         }
 
+        html[data-theme="dark"] .quick-link {
+            background: rgba(184, 255, 122, 0.06);
+            border-color: rgba(184, 255, 122, 0.12);
+        }
+
         .quick-link:hover {
             color: var(--primary);
             background: rgba(87, 178, 108, 0.15);
             transform: translateY(-2px);
+        }
+
+        html[data-theme="dark"] .quick-link:hover {
+            color: var(--accent-bright);
+            background: rgba(184, 255, 122, 0.14);
         }
 
         .language-box {
@@ -419,6 +552,11 @@
             border-radius: var(--radius-round);
             background: rgba(87, 178, 108, 0.08);
             border: 1px solid rgba(47, 122, 67, 0.1);
+        }
+
+        html[data-theme="dark"] .language-box {
+            background: rgba(184, 255, 122, 0.06);
+            border-color: rgba(184, 255, 122, 0.12);
         }
 
         .lang-btn {
@@ -439,6 +577,11 @@
             color: var(--primary);
             background: rgba(255, 255, 255, 0.78);
             transform: translateY(-1px);
+        }
+
+        html[data-theme="dark"] .lang-btn:hover {
+            color: var(--accent-bright);
+            background: rgba(184, 255, 122, 0.12);
         }
 
         .lang-btn.active {
@@ -540,6 +683,21 @@
                 display: none !important;
             }
         }
+
+        @media print {
+            .ambient,
+            .grid-layer,
+            .skip-link,
+            .language-box {
+                display: none !important;
+            }
+
+            .error-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: #fff !important;
+            }
+        }
     </style>
 </head>
 
@@ -594,8 +752,8 @@
             </nav>
 
             <div class="language-box" aria-label="Language Switcher" role="group">
-                <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true">EN</button>
-                <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false">TR</button>
+                <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+                <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false" aria-label="Türkçe'ye geç">TR</button>
             </div>
 
             <p class="small-note" id="smallNote">
@@ -627,6 +785,7 @@
                 media: "Media",
                 faq: "FAQ",
                 note: "Error 404 means this address does not exist on the website.",
+                ogLocale: "en_US",
                 homeHref: "/",
                 contactHref: "/#contact",
                 aboutHref: "/#about",
@@ -647,6 +806,7 @@
                 media: "Medya",
                 faq: "SSS",
                 note: "404 hatası, bu adresin web sitesinde bulunmadığı anlamına gelir.",
+                ogLocale: "tr_TR",
                 homeHref: "/tr/",
                 contactHref: "/tr/#contact",
                 aboutHref: "/tr/#about",
@@ -656,9 +816,10 @@
             }
         };
 
+        // ─── Safe storage helpers (no throws on private browsing / disabled storage) ──
         function safeGet(key) {
             try {
-                return localStorage.getItem(key);
+                return window.localStorage ? localStorage.getItem(key) : null;
             } catch (e) {
                 return null;
             }
@@ -666,10 +827,11 @@
 
         function safeSet(key, value) {
             try {
-                localStorage.setItem(key, value);
-            } catch (e) {}
+                if (window.localStorage) localStorage.setItem(key, value);
+            } catch (e) { /* quota exceeded / disabled */ }
         }
 
+        // ─── Language detection: URL path → ?lang= → storage → navigator ──
         function detectLang() {
             var path = window.location.pathname.toLowerCase();
 
@@ -679,17 +841,17 @@
 
             try {
                 var urlLang = new URLSearchParams(window.location.search).get("lang");
-                if (SUPPORTED.indexOf(urlLang) !== -1) {
-                    return urlLang;
+                if (urlLang && SUPPORTED.indexOf(urlLang.toLowerCase()) !== -1) {
+                    return urlLang.toLowerCase();
                 }
-            } catch (e) {}
+            } catch (e) { /* old browser without URLSearchParams */ }
 
             var saved = safeGet(STORAGE_KEY);
-            if (SUPPORTED.indexOf(saved) !== -1) {
+            if (saved && SUPPORTED.indexOf(saved) !== -1) {
                 return saved;
             }
 
-            var nav = (navigator.language || "en").toLowerCase();
+            var nav = ((navigator.language || navigator.userLanguage || "en") + "").toLowerCase();
             return nav.indexOf("tr") === 0 ? "tr" : DEFAULT_LANG;
         }
 
@@ -707,17 +869,23 @@
             }
         }
 
-        function updateUrl(lang) {
-            if (!window.history || !window.history.replaceState) {
-                return;
+        function setMeta(selector, attr, value) {
+            var el = document.querySelector(selector);
+            if (el && typeof value === "string") {
+                el.setAttribute(attr, value);
             }
+        }
+
+        // ─── URL update without reload, with defensive try/catch ──
+        function updateUrl(lang) {
+            if (!window.history || !window.history.replaceState) return;
 
             try {
                 var url = new URL(window.location.href);
+                var lcPath = url.pathname.toLowerCase();
 
-                if (url.pathname.toLowerCase().indexOf("/tr/") === 0 || url.pathname.toLowerCase() === "/tr") {
-                    return;
-                }
+                // If we're already under /tr/, don't pollute the URL with ?lang=
+                if (lcPath.indexOf("/tr/") === 0 || lcPath === "/tr") return;
 
                 if (lang === "tr") {
                     url.searchParams.set("lang", "tr");
@@ -726,28 +894,30 @@
                 }
 
                 window.history.replaceState({}, "", url.toString());
-            } catch (e) {}
+            } catch (e) { /* URL API unavailable */ }
         }
 
         function applyLang(lang, shouldUpdateUrl) {
             var currentLang = SUPPORTED.indexOf(lang) !== -1 ? lang : DEFAULT_LANG;
             var d = dictionary[currentLang] || dictionary[DEFAULT_LANG];
 
+            // Document-level metadata
             document.documentElement.lang = currentLang;
             document.documentElement.dir = "ltr";
-
             document.title = d.pageTitle;
 
-            var titleTag = document.getElementById("pageTitle");
-            if (titleTag) {
-                titleTag.textContent = d.pageTitle;
-            }
-
+            // Meta description
             var meta = document.getElementById("metaDescription");
-            if (meta) {
-                meta.setAttribute("content", d.metaDescription);
-            }
+            if (meta) meta.setAttribute("content", d.metaDescription);
 
+            // Open Graph locale + title + description (kept in sync with the visible language)
+            setMeta('meta[property="og:title"]',       'content', d.pageTitle);
+            setMeta('meta[property="og:description"]', 'content', d.metaDescription);
+            setMeta('meta[property="og:locale"]',      'content', d.ogLocale);
+            setMeta('meta[name="twitter:title"]',      'content', d.pageTitle);
+            setMeta('meta[name="twitter:description"]','content', d.metaDescription);
+
+            // Visible text
             setText("skipLink", d.skip);
             setText("title", d.title);
             setText("description", d.description);
@@ -759,6 +929,7 @@
             setText("faqLink", d.faq);
             setText("smallNote", d.note);
 
+            // Hrefs (point at the right language root)
             setHref("logoLink", d.homeHref);
             setHref("backHome", d.homeHref);
             setHref("contactLink", d.contactHref);
@@ -767,50 +938,62 @@
             setHref("mediaLink", d.mediaHref);
             setHref("faqLink", d.faqHref);
 
+            // Language switcher state
             var buttons = document.querySelectorAll(".lang-btn");
-            buttons.forEach(function (btn) {
+            for (var i = 0; i < buttons.length; i++) {
+                var btn = buttons[i];
                 var active = btn.getAttribute("data-lang") === currentLang;
                 btn.classList.toggle("active", active);
-                btn.setAttribute("aria-pressed", String(active));
-            });
+                btn.setAttribute("aria-pressed", active ? "true" : "false");
+            }
 
             safeSet(STORAGE_KEY, currentLang);
 
-            if (shouldUpdateUrl) {
-                updateUrl(currentLang);
-            }
+            if (shouldUpdateUrl) updateUrl(currentLang);
         }
 
         function bindLanguageButtons() {
             var buttons = document.querySelectorAll(".lang-btn");
-
-            buttons.forEach(function (btn) {
-                btn.addEventListener("click", function () {
-                    var lang = btn.getAttribute("data-lang");
-                    applyLang(lang, true);
-                });
-            });
+            for (var i = 0; i < buttons.length; i++) {
+                (function (btn) {
+                    btn.addEventListener("click", function () {
+                        var lang = btn.getAttribute("data-lang");
+                        applyLang(lang, true);
+                    });
+                })(buttons[i]);
+            }
         }
 
         function bindImageFallback() {
             var logo = document.querySelector(".logo-wrap img");
-
-            if (!logo) {
-                return;
-            }
+            if (!logo) return;
 
             logo.addEventListener("error", function () {
                 logo.style.display = "none";
             }, { once: true });
         }
 
+        // ─── Cross-tab language sync (if the user changes language on another tab) ──
+        function bindStorageSync() {
+            window.addEventListener("storage", function (e) {
+                if (e.key === STORAGE_KEY && e.newValue && SUPPORTED.indexOf(e.newValue) !== -1) {
+                    applyLang(e.newValue, false);
+                }
+            });
+        }
+
         function init() {
             applyLang(detectLang(), false);
             bindLanguageButtons();
             bindImageFallback();
+            bindStorageSync();
         }
 
-        init();
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init, { once: true });
+        } else {
+            init();
+        }
     })();
 </script>
 </body>
