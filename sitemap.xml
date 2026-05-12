@@ -1,19 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  =====================================================================
+   sitemap.xml — Upcycling Patterns
+   Erasmus+ KA210-SCH Project
+  ---------------------------------------------------------------------
+   Lists every public, indexable URL on the site with its language
+   alternates (en/tr) and (where useful) representative images.
+
+   NOT listed:
+     • /admin/*           (CMS — blocked by robots.txt + X-Robots-Tag)
+     • /data/*            (CMS data — blocked by robots.txt)
+     • /success.html      (form thank-you — noindex)
+     • /404.html          (error page — noindex)
+
+   Standard: https://www.sitemaps.org/protocol.html
+   Extensions: xhtml (alternates) + image (image sitemap)
+  =====================================================================
+-->
 <urlset
         xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+    http://www.sitemaps.org/schemas/sitemap/0.9
+    http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd
+  "
+>
 
-    <!-- ================================================================
-         Upcycling Patterns — Sitemap
-         Erasmus+ KA210-SCH Project
-         Website: https://upcyclingpatterns.com/
-         ================================================================ -->
-
-    <!-- English homepage -->
+    <!-- =================================================================
+         HOMEPAGE — highest priority, updated as news is published
+         ================================================================= -->
     <url>
         <loc>https://upcyclingpatterns.com/</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.00</priority>
 
@@ -22,89 +42,101 @@
         <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/" />
 
         <image:image>
+            <image:loc>https://upcyclingpatterns.com/og-image.png</image:loc>
+            <image:title>Upcycling Patterns — Erasmus+ KA210-SCH Project</image:title>
+            <image:caption>Project social preview image showing sustainability and creative upcycling.</image:caption>
+        </image:image>
+
+        <image:image>
             <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
-            <image:title>Upcycling Patterns Erasmus+ Project Visual</image:title>
-            <image:caption>Upcycling Patterns project visual showing sustainability, collaboration and creative reuse.</image:caption>
+            <image:title>Upcycling Patterns — Hero visual</image:title>
+            <image:caption>Visual representation of the project's sustainability and climate themes.</image:caption>
         </image:image>
 
         <image:image>
             <image:loc>https://upcyclingpatterns.com/images/logo.jpeg</image:loc>
-            <image:title>Upcycling Patterns Logo</image:title>
-            <image:caption>Official logo of the Upcycling Patterns Erasmus+ KA210-SCH project.</image:caption>
+            <image:title>Upcycling Patterns — Project logo</image:title>
         </image:image>
     </url>
 
-    <!-- Turkish homepage -->
+    <!-- =================================================================
+         TURKISH ROOT — same SPA, language detected client-side
+         Declared so Google indexes both language versions separately.
+         ================================================================= -->
     <url>
         <loc>https://upcyclingpatterns.com/tr/</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.95</priority>
 
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/" />
         <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/tr/" />
         <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/" />
-
-        <image:image>
-            <image:loc>https://upcyclingpatterns.com/images/hero-image.png</image:loc>
-            <image:title>Upcycling Patterns Erasmus+ Proje Görseli</image:title>
-            <image:caption>Upcycling Patterns projesinin sürdürülebilirlik, iş birliği ve ileri dönüşüm temasını gösteren ana görseli.</image:caption>
-        </image:image>
-
-        <image:image>
-            <image:loc>https://upcyclingpatterns.com/images/logo.jpeg</image:loc>
-            <image:title>Upcycling Patterns Logosu</image:title>
-            <image:caption>Upcycling Patterns Erasmus+ KA210-SCH projesinin resmi logosu.</image:caption>
-        </image:image>
     </url>
+
+    <!-- =================================================================
+         LEGAL PAGES
+         Indexable, low-medium priority. Each one has full EN+TR
+         in-page localisation (?lang=tr toggle) so we declare alternates.
+         ================================================================= -->
 
     <!-- Privacy Policy -->
     <url>
         <loc>https://upcyclingpatterns.com/privacy-policy.html</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.40</priority>
+
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/privacy-policy.html" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/privacy-policy.html?lang=tr" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/privacy-policy.html" />
     </url>
 
     <!-- Cookie Policy -->
     <url>
         <loc>https://upcyclingpatterns.com/cookie-policy.html</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.40</priority>
+
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/cookie-policy.html" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/cookie-policy.html?lang=tr" />
+        <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/cookie-policy.html" />
     </url>
-            <!-- Terms of Use -->
+
+    <!-- Terms of Use -->
     <url>
         <loc>https://upcyclingpatterns.com/terms.html</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.40</priority>
 
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/terms.html" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/terms.html?lang=tr" />
         <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/terms.html" />
     </url>
 
     <!-- Accessibility Statement -->
     <url>
         <loc>https://upcyclingpatterns.com/accessibility.html</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>yearly</changefreq>
         <priority>0.40</priority>
 
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/accessibility.html" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/accessibility.html?lang=tr" />
         <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/accessibility.html" />
     </url>
 
-    <!-- Funding Disclaimer -->
+    <!-- Funding Disclaimer (Erasmus+ visibility requirement) -->
     <url>
         <loc>https://upcyclingpatterns.com/funding-disclaimer.html</loc>
-        <lastmod>2026-05-10</lastmod>
+        <lastmod>2026-05-11</lastmod>
         <changefreq>yearly</changefreq>
-        <priority>0.40</priority>
+        <priority>0.50</priority>
 
         <xhtml:link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/funding-disclaimer.html" />
+        <xhtml:link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/funding-disclaimer.html?lang=tr" />
         <xhtml:link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/funding-disclaimer.html" />
     </url>
 
