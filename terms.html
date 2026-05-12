@@ -1,171 +1,496 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
-  <title>Terms of Use | Upcycling Patterns</title>
-  <meta name="description" content="Terms of use for the Upcycling Patterns Erasmus+ KA210-SCH project website." />
-  <meta name="robots" content="index, follow" />
+    <title id="pageTitle">Terms of Use | Upcycling Patterns</title>
+    <meta
+            id="metaDescription"
+            name="description"
+            content="Terms of use for the Upcycling Patterns Erasmus+ KA210-SCH project website."
+    />
 
-  <meta name="theme-color" content="#2f7a43" />
-  <meta name="color-scheme" content="light dark" />
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
 
-  <link rel="canonical" href="https://upcyclingpatterns.com/terms.html" />
-  <link rel="icon" href="/favicon.ico" sizes="any" />
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-  <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#2f7a43" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1912" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no, email=no, address=no" />
+    <meta name="application-name" content="Upcycling Patterns" />
+    <meta name="apple-mobile-web-app-title" content="UpCyc" />
 
-  <style>
-    :root {
-      --primary: #2f7a43;
-      --primary-light: #57b26c;
-      --accent: #b8ff7a;
-      --text-main: #0f1b14;
-      --text-soft: #5a6b60;
-      --bg-1: #f8fcf8;
-      --bg-2: #eef6ef;
-      --card: rgba(255, 255, 255, 0.84);
-      --border: rgba(47, 122, 67, 0.14);
-      --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
-    }
+    <!-- Defence-in-depth headers (real ones live in netlify.toml) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --text-main: #f0f7f1;
-        --text-soft: #b8c5bb;
-        --bg-1: #0a120d;
-        --bg-2: #0f1912;
-        --card: rgba(20, 32, 24, 0.84);
-        --border: rgba(184, 255, 122, 0.14);
-      }
-    }
+    <link rel="canonical" href="https://upcyclingpatterns.com/terms.html" />
+    <link rel="alternate" hreflang="en" href="https://upcyclingpatterns.com/terms.html" />
+    <link rel="alternate" hreflang="tr" href="https://upcyclingpatterns.com/terms.html?lang=tr" />
+    <link rel="alternate" hreflang="x-default" href="https://upcyclingpatterns.com/terms.html" />
 
-    * {
-      box-sizing: border-box;
-    }
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
 
-    body {
-      margin: 0;
-      padding: 32px 16px 56px;
-      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text-main);
-      background:
-        radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.16), transparent 30%),
-        linear-gradient(180deg, var(--bg-1), var(--bg-2));
-      line-height: 1.7;
-    }
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="Terms of Use | Upcycling Patterns" />
+    <meta property="og:description" content="Basic rules for using the Upcycling Patterns Erasmus+ project website." />
+    <meta property="og:url" content="https://upcyclingpatterns.com/terms.html" />
+    <meta property="og:site_name" content="Upcycling Patterns" />
+    <meta property="og:image" content="https://upcyclingpatterns.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="tr_TR" />
 
-    .page {
-      width: min(920px, 100%);
-      margin: 0 auto;
-    }
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Terms of Use | Upcycling Patterns" />
+    <meta name="twitter:description" content="Basic rules for using the Upcycling Patterns Erasmus+ project website." />
+    <meta name="twitter:image" content="https://upcyclingpatterns.com/og-image.png" />
 
-    .top-link {
-      display: inline-flex;
-      margin-bottom: 20px;
-      color: var(--primary);
-      font-weight: 800;
-      text-decoration: none;
-    }
+    <!-- Early theme detection (no FOUC) — syncs with main site's siteTheme key -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("siteTheme");
+                var prefersDark = window.matchMedia &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches;
+                var theme = (saved === "dark" || saved === "light")
+                    ? saved
+                    : (prefersDark ? "dark" : "light");
+                document.documentElement.setAttribute("data-theme", theme);
+            } catch (e) {
+                document.documentElement.setAttribute("data-theme", "light");
+            }
+        })();
+    </script>
 
-    .card {
-      padding: clamp(26px, 5vw, 52px);
-      border: 1px solid var(--border);
-      border-radius: 32px;
-      background: var(--card);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
+    <style>
+        :root {
+            --primary: #2f7a43;
+            --primary-light: #57b26c;
+            --accent: #b8ff7a;
+            --text-main: #0f1b14;
+            --text-soft: #5a6b60;
+            --bg-1: #f8fcf8;
+            --bg-2: #eef6ef;
+            --card: rgba(255, 255, 255, 0.84);
+            --border: rgba(47, 122, 67, 0.14);
+            --shadow: 0 24px 70px rgba(15, 27, 20, 0.12);
+        }
 
-    h1 {
-      margin: 0 0 16px;
-      font-size: clamp(2rem, 6vw, 3.4rem);
-      line-height: 1.05;
-    }
+        html[data-theme="dark"] {
+            --text-main: #f0f7f1;
+            --text-soft: #b8c5bb;
+            --bg-1: #0a120d;
+            --bg-2: #0f1912;
+            --card: rgba(20, 32, 24, 0.84);
+            --border: rgba(184, 255, 122, 0.14);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+        }
 
-    h2 {
-      margin: 32px 0 10px;
-      font-size: 1.35rem;
-    }
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme="light"]) {
+                --text-main: #f0f7f1;
+                --text-soft: #b8c5bb;
+                --bg-1: #0a120d;
+                --bg-2: #0f1912;
+                --card: rgba(20, 32, 24, 0.84);
+                --border: rgba(184, 255, 122, 0.14);
+                --shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+            }
+        }
 
-    p,
-    li {
-      color: var(--text-soft);
-    }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
 
-    ul {
-      padding-left: 22px;
-    }
+        body {
+            margin: 0;
+            padding: 32px 16px 56px;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text-main);
+            background:
+                    radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.16), transparent 30%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    a {
-      color: var(--primary);
-      font-weight: 700;
-    }
+        html[data-theme="dark"] body {
+            background:
+                    radial-gradient(circle at 15% 15%, rgba(87, 178, 108, 0.08), transparent 30%),
+                    linear-gradient(180deg, var(--bg-1), var(--bg-2));
+        }
 
-    .footer-note {
-      margin-top: 34px;
-      padding-top: 22px;
-      border-top: 1px solid var(--border);
-      color: var(--text-soft);
-      font-size: 0.92rem;
-    }
-  </style>
+        .page {
+            width: min(920px, 100%);
+            margin: 0 auto;
+        }
+
+        .top-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 800;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 999px;
+            transition: background 0.25s ease;
+        }
+
+        .top-link:hover,
+        .top-link:focus-visible {
+            background: rgba(87, 178, 108, 0.12);
+            outline: none;
+        }
+
+        .top-link:focus-visible {
+            box-shadow: 0 0 0 3px rgba(87, 178, 108, 0.35);
+        }
+
+        .lang-switch {
+            display: inline-flex;
+            gap: 6px;
+            margin-bottom: 22px;
+            margin-left: 10px;
+            padding: 5px;
+            border-radius: 999px;
+            background: rgba(87, 178, 108, 0.08);
+            border: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .lang-btn {
+            min-width: 44px;
+            height: 34px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--text-soft);
+            font-size: 0.85rem;
+            font-weight: 900;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .lang-btn:hover {
+            color: var(--primary);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .lang-btn.active {
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        }
+
+        .card {
+            padding: clamp(26px, 5vw, 52px);
+            border: 1px solid var(--border);
+            border-radius: 32px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        h1 {
+            margin: 0 0 16px;
+            font-size: clamp(2rem, 6vw, 3.4rem);
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            margin: 32px 0 10px;
+            font-size: 1.35rem;
+            letter-spacing: -0.01em;
+        }
+
+        p,
+        li {
+            color: var(--text-soft);
+        }
+
+        ul {
+            padding-left: 22px;
+        }
+
+        li + li {
+            margin-top: 6px;
+        }
+
+        a {
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        a:focus-visible {
+            outline: 3px solid rgba(87, 178, 108, 0.45);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        .footer-note {
+            margin-top: 34px;
+            padding-top: 22px;
+            border-top: 1px solid var(--border);
+            color: var(--text-soft);
+            font-size: 0.92rem;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        @media print {
+            .top-link,
+            .lang-switch {
+                display: none !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <main class="page">
-    <a class="top-link" href="/">← Back to Homepage</a>
+<main class="page">
+    <a class="top-link" href="/" id="topLink">
+        <span aria-hidden="true">←</span>
+        <span id="topLinkText">Back to Homepage</span>
+    </a>
+
+    <div class="lang-switch" role="group" aria-label="Language Switcher">
+        <button type="button" class="lang-btn active" data-lang="en" aria-pressed="true" aria-label="Switch to English">EN</button>
+        <button type="button" class="lang-btn" data-lang="tr" aria-pressed="false" aria-label="Türkçe'ye geç">TR</button>
+    </div>
 
     <article class="card">
-      <h1>Terms of Use</h1>
+        <h1 id="title">Terms of Use</h1>
 
-      <p>
-        These Terms of Use explain the basic rules for using the Upcycling Patterns Erasmus+ KA210-SCH project website.
-      </p>
+        <p id="intro">
+            These Terms of Use explain the basic rules for using the Upcycling Patterns Erasmus+ KA210-SCH project website.
+        </p>
 
-      <h2>1. Purpose of This Website</h2>
-      <p>
-        This website provides information about the Upcycling Patterns project, its goals, partners, activities, outputs, news, and dissemination materials.
-      </p>
+        <h2 id="s1">1. Purpose of This Website</h2>
+        <p id="s1p">
+            This website provides information about the Upcycling Patterns project, its goals, partners, activities, outputs, news, and dissemination materials.
+        </p>
 
-      <h2>2. Educational and Informational Use</h2>
-      <p>
-        The website is intended for educational, project communication, and dissemination purposes. Visitors may view the website content for personal, educational, and non-commercial use.
-      </p>
+        <h2 id="s2">2. Educational and Informational Use</h2>
+        <p id="s2p">
+            The website is intended for educational, project communication, and dissemination purposes. Visitors may view the website content for personal, educational, and non-commercial use.
+        </p>
 
-      <h2>3. Content Accuracy</h2>
-      <p>
-        We aim to keep the information on this website accurate and up to date. However, project details, activity dates, outputs, and media content may change during the project period.
-      </p>
+        <h2 id="s3">3. Content Accuracy</h2>
+        <p id="s3p">
+            We aim to keep the information on this website accurate and up to date. However, project details, activity dates, outputs, and media content may change during the project period.
+        </p>
 
-      <h2>4. Intellectual Property</h2>
-      <p>
-        Text, images, logos, graphics, and downloadable materials on this website may belong to the project, partner schools, Erasmus+ visibility sources, or other credited owners. Do not copy, modify, or republish materials without proper permission.
-      </p>
+        <h2 id="s4">4. Intellectual Property</h2>
+        <p id="s4p">
+            Text, images, logos, graphics, and downloadable materials on this website may belong to the project, partner schools, Erasmus+ visibility sources, or other credited owners. Do not copy, modify, or republish materials without proper permission.
+        </p>
 
-      <h2>5. External Links</h2>
-      <p>
-        This website may contain links to external websites, social media pages, or partner institutions. We are not responsible for the content, privacy practices, or security of external websites.
-      </p>
+        <h2 id="s5">5. External Links</h2>
+        <p id="s5p">
+            This website may contain links to external websites, social media pages, or partner institutions. We are not responsible for the content, privacy practices, or security of external websites.
+        </p>
 
-      <h2>6. User Conduct</h2>
-      <p>
-        Visitors must not misuse the website, attempt unauthorized access to the admin panel, upload harmful content, or interfere with the website’s normal operation.
-      </p>
+        <h2 id="s6">6. User Conduct</h2>
+        <p id="s6p">
+            Visitors must not misuse the website, attempt unauthorized access to the admin panel, upload harmful content, or interfere with the website's normal operation.
+        </p>
 
-      <h2>7. Contact</h2>
-      <p>
-        For questions about these terms, contact:
-        <a href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
-      </p>
+        <h2 id="s7">7. Contact</h2>
+        <p id="s7p">
+            <span id="s7pText">For questions about these terms, contact:</span>
+            <a href="mailto:upcyclingpatterns@gmail.com">upcyclingpatterns@gmail.com</a>
+        </p>
 
-      <p class="footer-note">
-        Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns
-      </p>
+        <p class="footer-note" id="footerNote">
+            Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns
+        </p>
     </article>
-  </main>
+</main>
+
+<script>
+    (function () {
+        "use strict";
+
+        var SUPPORTED = ["en", "tr"];
+        var DEFAULT_LANG = "en";
+        var STORAGE_KEY = "siteLanguage";
+
+        var dict = {
+            en: {
+                pageTitle: "Terms of Use | Upcycling Patterns",
+                metaDescription: "Terms of use for the Upcycling Patterns Erasmus+ KA210-SCH project website.",
+                ogLocale: "en_US",
+                topLinkText: "Back to Homepage",
+                title: "Terms of Use",
+                intro: "These Terms of Use explain the basic rules for using the Upcycling Patterns Erasmus+ KA210-SCH project website.",
+                s1: "1. Purpose of This Website",
+                s1p: "This website provides information about the Upcycling Patterns project, its goals, partners, activities, outputs, news, and dissemination materials.",
+                s2: "2. Educational and Informational Use",
+                s2p: "The website is intended for educational, project communication, and dissemination purposes. Visitors may view the website content for personal, educational, and non-commercial use.",
+                s3: "3. Content Accuracy",
+                s3p: "We aim to keep the information on this website accurate and up to date. However, project details, activity dates, outputs, and media content may change during the project period.",
+                s4: "4. Intellectual Property",
+                s4p: "Text, images, logos, graphics, and downloadable materials on this website may belong to the project, partner schools, Erasmus+ visibility sources, or other credited owners. Do not copy, modify, or republish materials without proper permission.",
+                s5: "5. External Links",
+                s5p: "This website may contain links to external websites, social media pages, or partner institutions. We are not responsible for the content, privacy practices, or security of external websites.",
+                s6: "6. User Conduct",
+                s6p: "Visitors must not misuse the website, attempt unauthorized access to the admin panel, upload harmful content, or interfere with the website's normal operation.",
+                s7: "7. Contact",
+                s7pText: "For questions about these terms, contact:",
+                footerNote: "Last updated: 10 May 2026 · © 2025–2027 Upcycling Patterns"
+            },
+            tr: {
+                pageTitle: "Kullanım Koşulları | Upcycling Patterns",
+                metaDescription: "Upcycling Patterns Erasmus+ KA210-SCH proje web sitesi için kullanım koşulları.",
+                ogLocale: "tr_TR",
+                topLinkText: "Ana Sayfaya Dön",
+                title: "Kullanım Koşulları",
+                intro: "Bu Kullanım Koşulları, Upcycling Patterns Erasmus+ KA210-SCH proje web sitesinin kullanımına ilişkin temel kuralları açıklar.",
+                s1: "1. Bu Web Sitesinin Amacı",
+                s1p: "Bu web sitesi; Upcycling Patterns projesi, hedefleri, ortakları, etkinlikleri, çıktıları, haberleri ve yaygınlaştırma materyalleri hakkında bilgi sağlar.",
+                s2: "2. Eğitsel ve Bilgilendirici Kullanım",
+                s2p: "Web sitesi; eğitim, proje iletişimi ve yaygınlaştırma amaçlarına yöneliktir. Ziyaretçiler, web sitesi içeriğini kişisel, eğitsel ve ticari olmayan kullanım için görüntüleyebilirler.",
+                s3: "3. İçerik Doğruluğu",
+                s3p: "Bu web sitesindeki bilgileri doğru ve güncel tutmayı amaçlıyoruz. Ancak proje detayları, etkinlik tarihleri, çıktılar ve medya içeriği proje süresince değişebilir.",
+                s4: "4. Fikri Mülkiyet",
+                s4p: "Bu web sitesindeki metinler, görseller, logolar, grafikler ve indirilebilir materyaller projeye, ortak okullara, Erasmus+ görünürlük kaynaklarına veya diğer kayıtlı sahiplere ait olabilir. Materyalleri uygun izin olmadan kopyalamayın, değiştirmeyin veya yeniden yayımlamayın.",
+                s5: "5. Harici Bağlantılar",
+                s5p: "Bu web sitesi harici web sitelerine, sosyal medya sayfalarına veya ortak kurumlara bağlantılar içerebilir. Harici web sitelerinin içeriğinden, gizlilik uygulamalarından veya güvenliğinden sorumlu değiliz.",
+                s6: "6. Kullanıcı Davranışı",
+                s6p: "Ziyaretçiler; web sitesini kötüye kullanamaz, yönetim paneline yetkisiz erişim girişiminde bulunamaz, zararlı içerik yükleyemez veya web sitesinin normal işleyişine müdahale edemez.",
+                s7: "7. İletişim",
+                s7pText: "Bu koşullar hakkındaki sorularınız için iletişime geçin:",
+                footerNote: "Son güncelleme: 10 Mayıs 2026 · © 2025–2027 Upcycling Patterns"
+            }
+        };
+
+        function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+        function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+        function detectLang() {
+            try {
+                var p = new URLSearchParams(window.location.search).get("lang");
+                if (p && SUPPORTED.indexOf(p.toLowerCase()) !== -1) return p.toLowerCase();
+            } catch (e) {}
+            var s = safeGet(STORAGE_KEY);
+            if (s && SUPPORTED.indexOf(s) !== -1) return s;
+            var n = ((navigator.language || navigator.userLanguage || "en") + "").toLowerCase();
+            return n.indexOf("tr") === 0 ? "tr" : DEFAULT_LANG;
+        }
+
+        function setText(id, value) {
+            var el = document.getElementById(id);
+            if (el && typeof value === "string") el.textContent = value;
+        }
+
+        function setMeta(sel, attr, value) {
+            var el = document.querySelector(sel);
+            if (el && typeof value === "string") el.setAttribute(attr, value);
+        }
+
+        function applyLang(lang) {
+            var L = SUPPORTED.indexOf(lang) !== -1 ? lang : DEFAULT_LANG;
+            var d = dict[L];
+
+            document.documentElement.lang = L;
+            document.title = d.pageTitle;
+
+            setMeta('#metaDescription', 'content', d.metaDescription);
+            setMeta('meta[property="og:title"]', 'content', d.pageTitle);
+            setMeta('meta[property="og:description"]', 'content', d.metaDescription);
+            setMeta('meta[property="og:locale"]', 'content', d.ogLocale);
+            setMeta('meta[name="twitter:title"]', 'content', d.pageTitle);
+            setMeta('meta[name="twitter:description"]', 'content', d.metaDescription);
+
+            setText("topLinkText", d.topLinkText);
+            setText("title", d.title);
+            setText("intro", d.intro);
+            setText("s1", d.s1);
+            setText("s1p", d.s1p);
+            setText("s2", d.s2);
+            setText("s2p", d.s2p);
+            setText("s3", d.s3);
+            setText("s3p", d.s3p);
+            setText("s4", d.s4);
+            setText("s4p", d.s4p);
+            setText("s5", d.s5);
+            setText("s5p", d.s5p);
+            setText("s6", d.s6);
+            setText("s6p", d.s6p);
+            setText("s7", d.s7);
+            setText("s7pText", d.s7pText);
+            setText("footerNote", d.footerNote);
+
+            var btns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < btns.length; i++) {
+                var active = btns[i].getAttribute("data-lang") === L;
+                btns[i].classList.toggle("active", active);
+                btns[i].setAttribute("aria-pressed", active ? "true" : "false");
+            }
+
+            safeSet(STORAGE_KEY, L);
+        }
+
+        function bind() {
+            var btns = document.querySelectorAll(".lang-btn");
+            for (var i = 0; i < btns.length; i++) {
+                (function (btn) {
+                    btn.addEventListener("click", function () {
+                        applyLang(btn.getAttribute("data-lang"));
+                    });
+                })(btns[i]);
+            }
+
+            window.addEventListener("storage", function (e) {
+                if (e.key === STORAGE_KEY && e.newValue && SUPPORTED.indexOf(e.newValue) !== -1) {
+                    applyLang(e.newValue);
+                }
+                if (e.key === "siteTheme" && (e.newValue === "dark" || e.newValue === "light")) {
+                    document.documentElement.setAttribute("data-theme", e.newValue);
+                }
+            });
+        }
+
+        function init() {
+            applyLang(detectLang());
+            bind();
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init, { once: true });
+        } else {
+            init();
+        }
+    })();
+</script>
 </body>
 </html>
