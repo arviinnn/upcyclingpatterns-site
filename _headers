@@ -1,25 +1,86 @@
+# =====================================================================
+#  _headers — Upcycling Patterns
+#  Erasmus+ KA210-SCH Project
+# ---------------------------------------------------------------------
+#  PRIMARY rules live in netlify.toml. This file is a defence-in-depth
+#  fallback that guarantees baseline security and cache headers even
+#  if the .toml file is ignored. Where this file and netlify.toml
+#  define the same header, netlify.toml wins (it is processed first).
+# =====================================================================
+
+# ---------------------------------------------------------------------
+#  GLOBAL SECURITY HEADERS
+# ---------------------------------------------------------------------
 /*
   X-Content-Type-Options: nosniff
-  Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
+  X-DNS-Prefetch-Control: on
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), accelerometer=(), gyroscope=(), magnetometer=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
 
+# ---------------------------------------------------------------------
+#  ADMIN PANEL — never index, never cache, never embed elsewhere
+# ---------------------------------------------------------------------
 /admin/*
-  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex
+  X-Frame-Options: SAMEORIGIN
   Cache-Control: public, max-age=0, must-revalidate
+  Cross-Origin-Resource-Policy: same-site
 
+# ---------------------------------------------------------------------
+#  CMS DATA — accessible to the site, hidden from search engines
+# ---------------------------------------------------------------------
 /data/*
   X-Robots-Tag: noindex, nofollow
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=300, stale-while-revalidate=86400
+  Access-Control-Allow-Origin: *
+
+# ---------------------------------------------------------------------
+#  HTML — always revalidate so editors see new content immediately
+# ---------------------------------------------------------------------
+/
   Cache-Control: public, max-age=0, must-revalidate
 
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# ---------------------------------------------------------------------
+#  STATIC ASSETS — long cache, with stale-while-revalidate
+# ---------------------------------------------------------------------
 /style.css
-  Cache-Control: public, max-age=604800, must-revalidate
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
 /script.js
-  Cache-Control: public, max-age=604800, must-revalidate
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
 
+# ---------------------------------------------------------------------
+#  IMAGES — 30 days, accept cross-origin (used in social previews)
+# ---------------------------------------------------------------------
+/images/*
+  Cache-Control: public, max-age=2592000, stale-while-revalidate=86400
+  Access-Control-Allow-Origin: *
+
+# Long-lived images that effectively never change
+/og-image.png
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# ---------------------------------------------------------------------
+#  FONTS — 1 year, immutable, CORS-enabled
+#  (browsers refuse cross-origin fonts without ACAO)
+# ---------------------------------------------------------------------
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# ---------------------------------------------------------------------
+#  PWA / SEO META FILES
+# ---------------------------------------------------------------------
 /manifest.webmanifest
   Content-Type: application/manifest+json; charset=utf-8
   Cache-Control: public, max-age=86400, must-revalidate
@@ -32,6 +93,17 @@
   Content-Type: application/xml; charset=utf-8
   Cache-Control: public, max-age=86400, must-revalidate
 
+# ---------------------------------------------------------------------
+#  SERVICE WORKER — never cache, always update fast
+#  (only needed if/when /sw.js is added; harmless otherwise)
+# ---------------------------------------------------------------------
+/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+  Service-Worker-Allowed: /
+
+# ---------------------------------------------------------------------
+#  FAVICONS / APP ICONS — long, immutable
+# ---------------------------------------------------------------------
 /favicon.ico
   Cache-Control: public, max-age=31536000, immutable
 
@@ -44,5 +116,5 @@
 /icon-512.png
   Cache-Control: public, max-age=31536000, immutable
 
-/og-image.png
+/icon-maskable.png
   Cache-Control: public, max-age=31536000, immutable
